@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indicadores Productivos LATAM · 333</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ─── CSS VARIABLES ─────────────────────────────────────────── */
+:root {
+  --azul: #1F6DB1;
+  --azul-dark: #155087;
+  --azul-light: #E6F0F9;
+  --naranja: #E97721;
+  --naranja-light: #FDF0E4;
+  --gris: #53565A;
+  --gris-light: #F5F5F5;
+  --gris-border: #E0E0E0;
+  --blanco: #FFFFFF;
+  --verde: #2A8F4F;
+  --verde-light: #E6F4EB;
+  --rojo: #C0392B;
+  --rojo-light: #FCEAEA;
+}
+
+/* ─── RESET & BASE ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  color: var(--gris);
+  background: var(--gris-light);
+  min-height: 100vh;
+}
+
+/* ─── HEADER ─────────────────────────────────────────────────── */
+.header {
+  background: var(--blanco);
+  border-bottom: 3px solid var(--azul);
+  padding: 12px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  position: sticky; top: 0; z-index: 100;
+}
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand-logo-img { height: 48px; width: auto; flex-shrink: 0; }
+.brand-text h1 {
+  font-size: 20px; color: var(--azul); font-weight: 700;
+  letter-spacing: -0.3px; line-height: 1.2;
+}
+.brand-text p {
+  font-size: 11px; color: var(--gris);
+  text-transform: uppercase; letter-spacing: 1.2px; margin-top: 2px;
+}
+.header-right { display: flex; align-items: center; gap: 16px; }
+.data-source-badge {
+  background: var(--azul-light);
+  border: 1px solid var(--azul);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 11px; font-weight: 600; color: var(--azul-dark);
+  letter-spacing: 0.3px;
+}
+.lang-switch {
+  display: flex;
+  border: 1.5px solid var(--azul);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.lang-btn {
+  background: var(--blanco); color: var(--azul);
+  border: none;
+  padding: 6px 12px; font-size: 12px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  letter-spacing: 0.5px;
+  transition: all 0.15s;
+  border-right: 1px solid var(--azul);
+}
+.lang-btn:last-child { border-right: none; }
+.lang-btn:hover { background: var(--azul-light); }
+.lang-btn.active { background: var(--naranja); color: var(--blanco); border-color: var(--naranja); }
+
+/* ─── TABS NAV ───────────────────────────────────────────────── */
+.tabs-nav {
+  background: var(--blanco);
+  border-bottom: 1px solid var(--gris-border);
+  padding: 0 32px;
+  display: flex; gap: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.tab-btn {
+  background: transparent; border: none;
+  padding: 13px 22px; font-size: 13.5px; font-weight: 600;
+  color: var(--gris); cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--azul); background: var(--azul-light); }
+.tab-btn.active { color: var(--azul); border-bottom-color: var(--naranja); }
+.tab-btn.coming-soon { opacity: 0.45; cursor: default; }
+.tab-btn.coming-soon:hover { background: transparent; color: var(--gris); }
+
+/* ─── CONTAINER ──────────────────────────────────────────────── */
+.container { max-width: 1700px; margin: 0 auto; padding: 20px 28px; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ─── CARDS ──────────────────────────────────────────────────── */
+.card {
+  background: var(--blanco);
+  border-radius: 10px;
+  border: 1px solid var(--gris-border);
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.card-header {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--gris-border);
+  background: linear-gradient(to right, var(--azul-light), var(--blanco));
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-header h3 { font-size: 13.5px; color: var(--azul-dark); font-weight: 700; }
+.card-header p { font-size: 11px; color: var(--gris); margin-top: 1px; }
+.card-body { padding: 16px; }
+
+/* ─── VAR TAGS ───────────────────────────────────────────────── */
+.var-tag {
+  font-size: 9.5px; font-weight: 700;
+  padding: 1px 5px; border-radius: 3px;
+  letter-spacing: 0.2px; display: inline-block;
+}
+.var-pos { background: var(--verde-light); color: var(--verde); }
+.var-neg { background: var(--rojo-light); color: var(--rojo); }
+.var-zero { background: #F0F0F0; color: var(--gris); }
+.var-new { background: var(--naranja-light); color: var(--naranja); font-style: italic; }
+
+/* ─── TAB 1 — HISTÓRICO PAÍSES ──────────────────────────────── */
+.t1-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.t1-sidebar { display: flex; flex-direction: column; gap: 12px; }
+.sidebar-label {
+  font-size: 10px; font-weight: 700; color: var(--gris);
+  text-transform: uppercase; letter-spacing: 0.8px;
+  padding: 0 4px 6px;
+  border-bottom: 1px solid var(--gris-border);
+  margin-bottom: 2px;
+}
+.ind-list { display: flex; flex-direction: column; gap: 2px; }
+.ind-btn {
+  background: transparent; border: none;
+  text-align: left; padding: 7px 10px;
+  font-size: 12px; color: var(--gris);
+  cursor: pointer; font-family: inherit;
+  border-radius: 6px; line-height: 1.3;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+}
+.ind-btn:hover { background: var(--azul-light); color: var(--azul-dark); }
+.ind-btn.active {
+  background: var(--azul);
+  color: var(--blanco);
+  font-weight: 600;
+  border-left-color: var(--naranja);
+}
+
+/* Mini-charts grid */
+.t1-main { display: flex; flex-direction: column; gap: 14px; }
+.t1-header-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 4px;
+}
+.t1-ind-title {
+  font-size: 18px; font-weight: 700; color: var(--azul-dark);
+}
+.t1-ind-subtitle { font-size: 12px; color: var(--gris); margin-top: 1px; }
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.mini-card {
+  background: var(--blanco);
+  border: 1px solid var(--gris-border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+.mini-card:hover {
+  box-shadow: 0 4px 14px rgba(31,109,177,0.15);
+  border-color: var(--azul);
+}
+.mini-card-header {
+  padding: 6px 10px 4px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.mini-flag {
+  display: flex; align-items: center; gap: 6px;
+}
+.mini-flag {
+  display: flex; align-items: center; gap: 6px;
+}
+.mini-flag img {
+  width: 22px; height: 15px; border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+.mini-flag span {
+  font-size: 12px; font-weight: 700; color: var(--azul-dark);
+}
+.mini-last-val {
+  font-size: 13px; font-weight: 700; color: var(--azul-dark);
+  text-align: right;
+}
+.mini-header-kpis {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+.mini-kpi-block {
+  display: flex; align-items: center; gap: 3px;
+}
+.mini-ref-block {
+  display: flex; align-items: center; gap: 2px;
+}
+.mini-ref-label {
+  font-size: 8.5px; font-weight: 600; color: #aaa;
+  text-transform: uppercase; letter-spacing: 0.2px;
+}
+.mini-ref {
+  font-size: 10px; font-weight: 700;
+  white-space: nowrap;
+}
+.mini-ref-year {
+  font-size: 8px; font-weight: 400; color: #bbb;
+}
+.mini-divider {
+  color: #ddd; font-size: 10px; margin: 0 1px;
+}
+.mini-country-name {
+  font-size: 12px; font-weight: 700; color: var(--azul-dark);
+}
+.mini-chart-wrap {
+  padding: 0 4px 4px 2px;
+  height: 76px;
+  position: relative;
+}
+.mini-chart-wrap canvas { width: 100% !important; height: 100% !important; }
+
+.mini-no-data {
+  display: flex; align-items: center; justify-content: center;
+  height: 72px;
+  font-size: 11px; color: #bbb; font-style: italic;
+}
+
+/* ─── TOOLTIP (global) ───────────────────────────────────────── */
+.tooltip-box {
+  position: fixed; background: var(--blanco);
+  border: 2px solid var(--azul); border-radius: 8px;
+  padding: 10px 12px; pointer-events: none; opacity: 0;
+  transition: opacity 0.1s;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  min-width: 180px; z-index: 2000; font-size: 11.5px;
+}
+.tooltip-box.visible { opacity: 1; }
+.tooltip-title {
+  font-size: 13px; font-weight: 700; color: var(--azul-dark);
+  padding-bottom: 5px; margin-bottom: 5px;
+  border-bottom: 2px solid var(--naranja);
+}
+.tooltip-row {
+  display: flex; justify-content: space-between; gap: 12px;
+  padding: 1.5px 0;
+}
+.tooltip-row .lbl { color: var(--gris); font-size: 11px; }
+.tooltip-row .val { color: var(--azul-dark); font-weight: 700; }
+
+/* ─── TAB 2 — COMPARATIVO ANUAL ─────────────────────────────── */
+.t2-controls {
+  background: var(--blanco);
+  border: 1px solid var(--gris-border);
+  border-radius: 10px;
+  padding: 14px 20px;
+  margin-bottom: 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  flex-wrap: wrap;
+}
+.t2-controls-left { display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+.t2-control-group { display: flex; flex-direction: column; gap: 5px; }
+.t2-label {
+  font-size: 10px; font-weight: 700; color: var(--gris);
+  text-transform: uppercase; letter-spacing: 0.6px;
+}
+.t2-year-btns { display: flex; gap: 4px; }
+.t2-year-btn {
+  background: var(--blanco);
+  border: 1.5px solid var(--gris-border);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px; font-weight: 600; color: var(--gris);
+  cursor: pointer; font-family: inherit;
+  transition: all 0.15s;
+}
+.t2-year-btn:hover { border-color: var(--azul); color: var(--azul); background: var(--azul-light); }
+.t2-year-btn.active-a { background: #85B7EB; border-color: #85B7EB; color: var(--blanco); }
+.t2-year-btn.active-b { background: var(--azul); border-color: var(--azul); color: var(--blanco); }
+.t2-legend {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; font-weight: 600; color: var(--gris);
+}
+.t2-leg-dot {
+  width: 12px; height: 12px; border-radius: 3px; display: inline-block;
+}
+.t2-sort-btn {
+  background: var(--blanco); border: 1.5px solid var(--gris-border);
+  border-radius: 6px; padding: 5px 12px;
+  font-size: 11px; font-weight: 600; color: var(--gris);
+  cursor: pointer; font-family: inherit; transition: all 0.15s;
+}
+.t2-sort-btn:hover { border-color: var(--azul); color: var(--azul); }
+.t2-sort-btn.active { background: var(--azul-light); border-color: var(--azul); color: var(--azul-dark); }
+#t2SortToggle { display: flex; gap: 6px; }
+
+/* ─── TAB 3 — FICHA POR PAÍS ─────────────────────────────────── */
+.t3-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.t3-sidebar {}
+.t3-main {}
+.t3-country-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 7px;
+}
+.t3-country-btn {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 5px;
+  background: var(--azul);
+  border: 2px solid var(--azul);
+  border-radius: 8px;
+  padding: 8px 4px;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.15s;
+  aspect-ratio: 1 / 0.85;
+}
+.t3-country-btn:hover {
+  background: var(--azul-dark);
+  border-color: var(--naranja);
+  transform: scale(1.03);
+}
+.t3-country-btn.active {
+  background: #1a1a2e;
+  border-color: var(--naranja);
+  box-shadow: 0 0 0 2px var(--naranja-light);
+}
+.t3-country-btn img {
+  width: 28px; height: 19px; border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.t3-country-btn span {
+  font-size: 10.5px; font-weight: 700;
+  color: var(--blanco); text-align: center;
+  line-height: 1.2;
+}
+
+/* Table */
+.t3-table-wrap {
+  overflow-x: auto;
+}
+.t3-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px;
+}
+.t3-table thead tr {
+  background: var(--azul);
+  color: var(--blanco);
+}
+.t3-table th {
+  padding: 10px 14px;
+  font-size: 11.5px; font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+.t3-th-ind { text-align: left !important; min-width: 260px; }
+.t3-table td {
+  padding: 8px 14px;
+  text-align: right;
+  border-bottom: 1px solid var(--gris-border);
+  white-space: nowrap;
+  color: var(--azul-dark);
+  font-weight: 600;
+}
+.t3-table td.t3-td-ind {
+  text-align: left;
+  color: var(--gris);
+  font-weight: 400;
+  font-size: 12.5px;
+}
+.t3-table tbody tr:nth-child(even) { background: var(--azul-light); }
+.t3-table tbody tr:hover { background: #d4e8f7; }
+.t3-table td.t3-nd { color: #ccc; font-weight: 400; font-style: italic; }
+.t3-table td.t3-best { color: var(--verde); font-weight: 700; }
+.t3-table td.t3-worst { color: var(--rojo); font-weight: 700; }
+.t3-var-pos { color: var(--verde) !important; font-weight: 700 !important; }
+.t3-var-neg { color: var(--rojo) !important; font-weight: 700 !important; }
+.t3-var-zero { color: var(--gris) !important; }
+
+/* ─── COMING SOON PLACEHOLDER ────────────────────────────────── */
+.coming-soon-panel {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 80px 20px;
+  color: var(--gris);
+  gap: 12px;
+}
+.coming-soon-panel svg { opacity: 0.2; }
+.coming-soon-panel h3 { font-size: 18px; color: var(--azul-dark); opacity: 0.5; }
+.coming-soon-panel p { font-size: 13px; opacity: 0.6; }
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ──────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="brand">
+    <img src="data:image/png;base64,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" alt="333" style="height:48px;width:auto;">
+    <div class="brand-text">
+      <h1 data-tr="brand_title">INDICADORES PRODUCTIVOS LATAM</h1>
+      <p data-tr="brand_sub">Benchmarking · Sector porcino · Fuente: AGRINESS</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="data-source-badge">2021 – 2025 · 15 países</span>
+    <div class="lang-switch">
+      <button class="lang-btn active" data-lang="es">ES</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="pt">PT</button>
+    </div>
+  </div>
+</header>
+
+<!-- ─── TABS NAV ─────────────────────────────────────────────────── -->
+<nav class="tabs-nav">
+  <button class="tab-btn active" data-tab="tab1" data-tr="tab1">Histórico países</button>
+  <button class="tab-btn" data-tab="tab2" data-tr="tab2">Comparativo anual</button>
+  <button class="tab-btn" data-tab="tab3" data-tr="tab3">Ficha por país</button>
+  <button class="tab-btn" data-tab="tab4" data-tr="tab4">Análisis comparativo</button>
+</nav>
+
+<!-- ─── TOOLTIP ──────────────────────────────────────────────────── -->
+<div class="tooltip-box" id="globalTooltip"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- TAB 1 — HISTÓRICO PAÍSES                                        -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="tab-content active" id="tab1">
+  <div class="container">
+    <div class="t1-layout">
+
+      <!-- SIDEBAR: indicator list -->
+      <aside class="t1-sidebar">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 data-tr="t1_sidebar_title">Indicador</h3>
+              <p data-tr="t1_sidebar_sub">Selecciona para visualizar</p>
+            </div>
+          </div>
+          <div class="card-body" style="padding:8px;">
+            <div class="ind-list" id="indList"></div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN: mini-charts grid -->
+      <main class="t1-main">
+        <div class="t1-header-row">
+          <div>
+            <div class="t1-ind-title" id="t1IndTitle">Destetados/Hembra/Año</div>
+            <div class="t1-ind-subtitle" id="t1IndSub"></div>
+          </div>
+          <div style="font-size:11px;color:var(--gris);background:var(--gris-light);padding:5px 12px;border-radius:20px;border:1px solid var(--gris-border);">
+            <span data-tr="t1_period">Período</span>: <strong>2021 – 2025</strong>
+          </div>
+        </div>
+        <div class="mini-grid" id="miniGrid"></div>
+      </main>
+
+    </div><!-- /.t1-layout -->
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- TAB 2 — COMPARATIVO ANUAL                                        -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab2">
+  <div class="container">
+
+    <!-- Controls bar -->
+    <div class="t2-controls">
+      <div class="t2-controls-left">
+        <div class="t2-control-group">
+          <label class="t2-label" data-tr="t2_indicador">Indicador</label>
+          <select class="comp-select" id="t2IndSelect"></select>
+        </div>
+        <div class="t2-control-group">
+          <label class="t2-label" data-tr="t2_año_base">Año 1</label>
+          <select class="comp-select" id="t2SelA" style="min-width:100px;"></select>
+        </div>
+        <div class="t2-control-group">
+          <label class="t2-label" data-tr="t2_año_comp">Año 2</label>
+          <select class="comp-select" id="t2SelB" style="min-width:100px;"></select>
+        </div>
+      </div>
+      <div class="t2-legend">
+        <span class="t2-leg-dot" style="background:#85B7EB;"></span><span id="t2LegA">2024</span>
+        <span class="t2-leg-dot" style="background:#1F6DB1;"></span><span id="t2LegB">2025</span>
+      </div>
+    </div>
+
+    <!-- Chart card -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 id="t2ChartTitle">Destetados/Hembra/Año</h3>
+          <p id="t2ChartSub">Comparativo por país · ordenado de mayor a menor</p>
+        </div>
+        <div id="t2SortToggle">
+          <button class="t2-sort-btn active" data-sort="desc" data-tr="t2_mayor_menor">Mayor → Menor</button>
+          <button class="t2-sort-btn" data-sort="asc" data-tr="t2_menor_mayor">Menor → Mayor</button>
+        </div>
+      </div>
+      <div class="card-body" style="padding:16px 20px;">
+        <div style="position:relative; height:480px;">
+          <canvas id="t2Chart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- TAB 3 — FICHA POR PAÍS                                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab3">
+  <div class="container">
+    <div class="t3-layout">
+
+      <!-- LEFT: country selector grid -->
+      <aside class="t3-sidebar">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 data-tr="t3_pais">País</h3>
+              <p data-tr="t3_pais_sub">Selecciona un país</p>
+            </div>
+          </div>
+          <div class="card-body" style="padding:12px;">
+            <div class="t3-country-grid" id="t3CountryGrid"></div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- RIGHT: data table -->
+      <main class="t3-main">
+        <div class="card">
+          <div class="card-header" id="t3TableHeader">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div id="t3FlagWrap"></div>
+              <div>
+                <h3 id="t3CountryName" style="font-size:18px;">Argentina</h3>
+                <p data-tr="t3_tabla_sub">Indicadores productivos 2021–2025</p>
+              </div>
+            </div>
+            <div id="t3MadresBadge" style="font-size:11px;color:var(--gris);background:var(--azul-light);padding:5px 14px;border-radius:20px;border:1px solid var(--azul);"></div>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="t3-table-wrap">
+              <table class="t3-table" id="t3Table">
+                <thead>
+                  <tr>
+                    <th class="t3-th-ind" data-tr="t3_indicador">Indicador</th>
+                    <th>2021</th>
+                    <th>2022</th>
+                    <th>2023</th>
+                    <th>2024</th>
+                    <th>2025</th>
+                    <th data-tr="t3_var">Var. 24→25</th>
+                  </tr>
+                </thead>
+                <tbody id="t3TableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- TAB 4 — ANÁLISIS COMPARATIVO (placeholder)                      -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab4">
+  <div class="container">
+    <div class="card">
+      <div class="card-body">
+        <div class="coming-soon-panel">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--azul)" stroke-width="1.5">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          <h3 data-tr="tab4">Análisis comparativo</h3>
+          <p data-tr="cs_msg">Esta pestaña se construirá en la siguiente iteración</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SCRIPT                                                           -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<script>
+/* ─── I18N ─────────────────────────────────────────────────────── */
+let currentLang = 'es';
+
+const TR = {
+  es: {
+    brand_title: 'INDICADORES PRODUCTIVOS LATAM',
+    brand_sub: 'Benchmarking · Sector porcino · Fuente: AGRINESS',
+    tab1: 'Histórico países',
+    tab2: 'Comparativo anual',
+    tab3: 'Ficha por país',
+    tab4: 'Análisis comparativo',
+    t1_sidebar_title: 'Indicador',
+    t1_sidebar_sub: 'Selecciona para visualizar',
+    t1_period: 'Período',
+    t2_indicador: 'Indicador',
+    t2_año_base: 'Año base',
+    t2_año_comp: 'Comparar con',
+    t2_mayor_menor: 'Mayor → Menor',
+    t2_menor_mayor: 'Menor → Mayor',
+    t3_pais: 'País',
+    t3_pais_sub: 'Selecciona un país',
+    t3_tabla_sub: 'Indicadores productivos 2021–2025',
+    t3_indicador: 'Indicador',
+    t3_var: 'Var. 24→25',
+    cs_msg: 'Esta pestaña se construirá en la siguiente iteración',
+    nd: 'N/D',
+    no_data: 'Sin datos',
+    paises: {
+      'Argentina':'Argentina','Bolivia':'Bolivia','Brasil':'Brasil','Chile':'Chile',
+      'Colombia':'Colombia','Ecuador':'Ecuador','Honduras':'Honduras','México':'México',
+      'Nicaragua':'Nicaragua','Otros':'Otros','Panamá':'Panamá','Paraguay':'Paraguay',
+      'Perú':'Perú','Uruguay':'Uruguay','Venezuela':'Venezuela'
+    }
+  },
+  en: {
+    brand_title: 'LATAM PRODUCTIVE INDICATORS',
+    brand_sub: 'Benchmarking · Swine sector · Source: AGRINESS',
+    tab1: 'Country history',
+    tab2: 'Annual comparison',
+    tab3: 'Country profile',
+    tab4: 'Comparative analysis',
+    t1_sidebar_title: 'Indicator',
+    t1_sidebar_sub: 'Select to visualize',
+    t1_period: 'Period',
+    t2_indicador: 'Indicator',
+    t2_año_base: 'Base year',
+    t2_año_comp: 'Compare with',
+    t2_mayor_menor: 'High → Low',
+    t2_menor_mayor: 'Low → High',
+    t3_pais: 'Country',
+    t3_pais_sub: 'Select a country',
+    t3_tabla_sub: 'Productive indicators 2021–2025',
+    t3_indicador: 'Indicator',
+    t3_var: 'Var. 24→25',
+    cs_msg: 'This tab will be built in the next iteration',
+    nd: 'N/A',
+    no_data: 'No data',
+    paises: {
+      'Argentina':'Argentina','Bolivia':'Bolivia','Brasil':'Brazil','Chile':'Chile',
+      'Colombia':'Colombia','Ecuador':'Ecuador','Honduras':'Honduras','México':'Mexico',
+      'Nicaragua':'Nicaragua','Otros':'Others','Panamá':'Panama','Paraguay':'Paraguay',
+      'Perú':'Peru','Uruguay':'Uruguay','Venezuela':'Venezuela'
+    }
+  },
+  pt: {
+    brand_title: 'INDICADORES PRODUTIVOS LATAM',
+    brand_sub: 'Benchmarking · Setor suíno · Fonte: AGRINESS',
+    tab1: 'Histórico por país',
+    tab2: 'Comparativo anual',
+    tab3: 'Ficha por país',
+    tab4: 'Análise comparativa',
+    t1_sidebar_title: 'Indicador',
+    t1_sidebar_sub: 'Selecione para visualizar',
+    t1_period: 'Período',
+    t2_indicador: 'Indicador',
+    t2_año_base: 'Ano base',
+    t2_año_comp: 'Comparar com',
+    t2_mayor_menor: 'Maior → Menor',
+    t2_menor_mayor: 'Menor → Maior',
+    t3_pais: 'País',
+    t3_pais_sub: 'Selecione um país',
+    t3_tabla_sub: 'Indicadores produtivos 2021–2025',
+    t3_indicador: 'Indicador',
+    t3_var: 'Var. 24→25',
+    cs_msg: 'Esta aba será construída na próxima iteração',
+    nd: 'N/D',
+    no_data: 'Sem dados',
+    paises: {
+      'Argentina':'Argentina','Bolivia':'Bolívia','Brasil':'Brasil','Chile':'Chile',
+      'Colombia':'Colômbia','Ecuador':'Equador','Honduras':'Honduras','México':'México',
+      'Nicaragua':'Nicarágua','Otros':'Outros','Panamá':'Panamá','Paraguay':'Paraguai',
+      'Perú':'Peru','Uruguay':'Uruguai','Venezuela':'Venezuela'
+    }
+  }
+};
+
+function t(key) {
+  return (TR[currentLang] && TR[currentLang][key]) || TR['es'][key] || key;
+}
+function tPais(p) {
+  return (TR[currentLang].paises && TR[currentLang].paises[p]) || p;
+}
+function fmt(n, dec) {
+  if (n === null || n === undefined || isNaN(n)) return t('nd');
+  dec = (dec === undefined) ? 2 : dec;
+  const locale = currentLang === 'en' ? 'en-US' : (currentLang === 'pt' ? 'pt-BR' : 'es-ES');
+  return new Intl.NumberFormat(locale, {
+    minimumFractionDigits: dec, maximumFractionDigits: dec
+  }).format(n);
+}
+function applyTranslations() {
+  document.documentElement.lang = currentLang;
+  document.querySelectorAll('[data-tr]').forEach(el => {
+    el.textContent = t(el.getAttribute('data-tr'));
+  });
+  // re-render active tab content
+  renderTab1();
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentLang = btn.dataset.lang;
+    applyTranslations();
+  });
+});
+
+/* ─── TAB NAVIGATION ───────────────────────────────────────────── */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.classList.contains('coming-soon')) return;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ─── FLAGS ────────────────────────────────────────────────────── */
+const FLAGS = {
+  'Argentina':'ar','Bolivia':'bo','Brasil':'br','Chile':'cl','Colombia':'co',
+  'Ecuador':'ec','Honduras':'hn','México':'mx','Nicaragua':'ni','Otros':null,
+  'Panamá':'pa','Paraguay':'py','Perú':'pe','Uruguay':'uy','Venezuela':'ve'
+};
+
+function flagImg(pais, w) {
+  const iso = FLAGS[pais];
+  if (!iso) return `<div style="width:${w}px;height:${Math.round(w*0.67)}px;background:var(--gris-light);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--gris);">OT</div>`;
+  return `<img src="https://flagcdn.com/w40/${iso}.png" alt="${pais}" width="${w}" height="${Math.round(w*0.67)}" style="border-radius:2px;object-fit:cover;display:block;" onerror="this.outerHTML='<span style=\\'font-size:9px;font-weight:700;color:var(--azul)\\'>${iso.toUpperCase()}</span>'">`;
+}
+
+/* ─── DATA ─────────────────────────────────────────────────────── */
+const DATA = {"Argentina": {"Destetados/Hembra/Año": {"2021": 28.4, "2022": 28.68, "2023": 28.49, "2024": 28.46, "2025": 29.33}, "Destete-Cubrición (días)": {"2021": 7.15, "2022": 7.1, "2023": 7.37, "2024": 7.51, "2025": 7.29}, "Días No Productivos": {"2021": 17.17, "2022": 18.7, "2023": 19.77, "2024": 21.1, "2025": 19.82}, "Edad de 1º Servicio (días)": {"2021": 239.3, "2022": 239.27, "2023": 243.24, "2024": 242.22, "2025": 242.0}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": 50.23, "2025": 53.1}, "Momificados (%)": {"2021": 2.36, "2022": 2.44, "2023": 2.51, "2024": 2.56, "2025": 2.52}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": 10.76, "2025": 10.29}, "Muertes en la Maternidad (%)": {"2021": 12.09, "2022": 12.14, "2023": 12.44, "2024": 12.55, "2025": 11.79}, "Natimortos y Muertos al Nacer (%)": {"2021": 7.3, "2022": 7.32, "2023": 7.43, "2024": 7.38, "2025": 7.17}, "Número de granjas": {"2021": 238.0, "2022": 249.0, "2023": 285.0, "2024": 290.0, "2025": 313.0}, "Número de madres": {"2021": 162768.0, "2022": 177993.0, "2023": 192054.0, "2024": 192474.0, "2025": 226326.0}, "Partos/Hembra/Año": {"2021": 2.38, "2022": 2.36, "2023": 2.35, "2024": 2.33, "2025": 2.35}, "Pérdidas Reproductivas (%)": {"2021": 14.15, "2022": 14.93, "2023": 16.49, "2024": 16.75, "2025": 15.51}, "Peso de Nacimiento (kg)": {"2021": 1.32, "2022": 1.31, "2023": 1.31, "2024": 1.3, "2025": 1.29}, "Promedio de Destetados": {"2021": 11.9, "2022": 12.11, "2023": 12.1, "2024": 12.17, "2025": 12.45}, "Promedio de Nacidos Totales": {"2021": 15.04, "2022": 15.31, "2023": 15.43, "2024": 15.54, "2025": 15.71}, "Promedio de Nacidos Vivos": {"2021": 13.57, "2022": 13.81, "2023": 13.88, "2024": 13.98, "2025": 14.18}, "Promedio de Partos": {"2021": 3.59, "2022": 3.49, "2023": 3.55, "2024": 3.6, "2025": 3.58}, "Tasa de Parición (%)": {"2021": 85.85, "2022": 85.07, "2023": 83.51, "2024": 83.25, "2025": 84.49}}, "Bolivia": {"Destetados/Hembra/Año": {"2021": 26.45, "2022": 26.52, "2023": 26.71, "2024": 26.35, "2025": 27.45}, "Destete-Cubrición (días)": {"2021": 6.66, "2022": 6.83, "2023": 7.02, "2024": 6.96, "2025": 7.0}, "Días No Productivos": {"2021": 16.72, "2022": 16.86, "2023": 16.28, "2024": 18.61, "2025": 16.09}, "Edad de 1º Servicio (días)": {"2021": 233.95, "2022": 230.69, "2023": 230.69, "2024": 235.4, "2025": 237.16}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": 46.91, "2025": 52.92}, "Momificados (%)": {"2021": 2.55, "2022": 2.47, "2023": 2.8, "2024": 2.75, "2025": 2.48}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": 7.59, "2025": 6.92}, "Muertes en la Maternidad (%)": {"2021": 7.83, "2022": 6.81, "2023": 7.33, "2024": 7.83, "2025": 8.61}, "Natimortos y Muertos al Nacer (%)": {"2021": 5.97, "2022": 5.7, "2023": 6.05, "2024": 6.45, "2025": 6.14}, "Número de granjas": {"2021": null, "2022": 27.0, "2023": 28.0, "2024": 36.0, "2025": 41.0}, "Número de madres": {"2021": null, "2022": 14988.0, "2023": 15038.0, "2024": 19744.0, "2025": 22703.0}, "Partos/Hembra/Año": {"2021": 2.36, "2022": 2.36, "2023": 2.36, "2024": 2.31, "2025": 2.36}, "Pérdidas Reproductivas (%)": {"2021": 14.62, "2022": 15.57, "2023": 14.98, "2024": 16.44, "2025": 15.89}, "Peso de Nacimiento (kg)": {"2021": 1.36, "2022": 1.37, "2023": 1.38, "2024": 1.38, "2025": 1.37}, "Promedio de Destetados": {"2021": 11.19, "2022": 11.22, "2023": 11.27, "2024": 11.34, "2025": 11.59}, "Promedio de Nacidos Totales": {"2021": 13.31, "2022": 13.16, "2023": 13.42, "2024": 13.62, "2025": 13.95}, "Promedio de Nacidos Vivos": {"2021": 12.17, "2022": 12.07, "2023": 12.18, "2024": 12.35, "2025": 12.74}, "Promedio de Partos": {"2021": 3.67, "2022": 3.74, "2023": 3.86, "2024": 3.85, "2025": 3.69}, "Tasa de Parición (%)": {"2021": 85.38, "2022": 84.43, "2023": 85.02, "2024": 83.56, "2025": 84.11}}, "Brasil": {"Destetados/Hembra/Año": {"2021": 29.41, "2022": 29.52, "2023": 30.05, "2024": 29.99, "2025": 30.67}, "Destete-Cubrición (días)": {"2021": 6.14, "2022": 6.3, "2023": 6.25, "2024": 6.39, "2025": 6.33}, "Días No Productivos": {"2021": 14.26, "2022": 14.64, "2023": 14.45, "2024": 14.89, "2025": 14.41}, "Edad de 1º Servicio (días)": {"2021": 231.91, "2022": 232.5, "2023": 232.35, "2024": 231.97, "2025": 231.67}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": 59.51, "2025": 61.29}, "Momificados (%)": {"2021": 2.17, "2022": 2.21, "2023": 2.25, "2024": 2.25, "2025": 2.19}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": 8.52, "2025": 7.95}, "Muertes en la Maternidad (%)": {"2021": 8.98, "2022": 9.0, "2023": 8.91, "2024": 8.95, "2025": 9.0}, "Natimortos y Muertos al Nacer (%)": {"2021": 6.0, "2022": 5.98, "2023": 6.03, "2024": 6.01, "2025": 5.95}, "Número de granjas": {"2021": 1715.0, "2022": 1725.0, "2023": 1681.0, "2024": 1627.0, "2025": 1563.0}, "Número de madres": {"2021": 1538548.0, "2022": 1598719.0, "2023": 1685844.0, "2024": 1677256.0, "2025": 1685774.0}, "Partos/Hembra/Año": {"2021": 2.35, "2022": 2.34, "2023": 2.35, "2024": 2.34, "2025": 2.34}, "Pérdidas Reproductivas (%)": {"2021": 12.19, "2022": 12.37, "2023": 11.85, "2024": 12.71, "2025": 12.27}, "Peso de Nacimiento (kg)": {"2021": 1.37, "2022": 1.34, "2023": 1.33, "2024": 1.28, "2025": 1.33}, "Promedio de Destetados": {"2021": 12.48, "2022": 12.57, "2023": 12.78, "2024": 12.78, "2025": 13.05}, "Promedio de Nacidos Totales": {"2021": 14.99, "2022": 15.12, "2023": 15.36, "2024": 15.37, "2025": 15.69}, "Promedio de Nacidos Vivos": {"2021": 13.75, "2022": 13.87, "2023": 14.08, "2024": 14.1, "2025": 14.41}, "Promedio de Partos": {"2021": 3.58, "2022": 3.57, "2023": 3.65, "2024": 3.68, "2025": 3.63}, "Tasa de Parición (%)": {"2021": 87.81, "2022": 87.63, "2023": 88.15, "2024": 87.32, "2025": 87.73}}, "Chile": {"Destetados/Hembra/Año": {"2021": 29.61, "2022": 30.4, "2023": 31.22, "2024": 30.27, "2025": 31.09}, "Destete-Cubrición (días)": {"2021": 6.68, "2022": 6.74, "2023": 6.42, "2024": 6.49, "2025": 6.8}, "Días No Productivos": {"2021": 13.56, "2022": 13.5, "2023": 13.14, "2024": 16.43, "2025": 14.58}, "Edad de 1º Servicio (días)": {"2021": 223.17, "2022": 217.2, "2023": 212.93, "2024": 212.36, "2025": 212.52}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": 50.27, "2025": 54.01}, "Momificados (%)": {"2021": 2.4, "2022": 1.74, "2023": 2.36, "2024": 2.57, "2025": 2.44}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": 15.62, "2025": 15.2}, "Muertes en la Maternidad (%)": {"2021": 10.2, "2022": 11.43, "2023": 10.76, "2024": 12.43, "2025": 12.91}, "Natimortos y Muertos al Nacer (%)": {"2021": 3.65, "2022": 4.53, "2023": 5.42, "2024": 5.74, "2025": 5.59}, "Número de granjas": {"2021": null, "2022": 7.0, "2023": 6.0, "2024": 10.0, "2025": 10.0}, "Número de madres": {"2021": null, "2022": 18454.0, "2023": 17856.0, "2024": 25444.0, "2025": 25896.0}, "Partos/Hembra/Año": {"2021": 2.43, "2022": 2.44, "2023": 2.44, "2024": 2.4, "2025": 2.42}, "Pérdidas Reproductivas (%)": {"2021": 10.61, "2022": 9.06, "2023": 10.26, "2024": 11.7, "2025": 10.94}, "Peso de Nacimiento (kg)": {"2021": 1.27, "2022": 1.26, "2023": 1.27, "2024": 1.27, "2025": 1.09}, "Promedio de Destetados": {"2021": 12.15, "2022": 12.46, "2023": 12.82, "2024": 12.61, "2025": 12.87}, "Promedio de Nacidos Totales": {"2021": 14.41, "2022": 15.02, "2023": 15.6, "2024": 15.85, "2025": 16.14}, "Promedio de Nacidos Vivos": {"2021": 13.53, "2022": 14.07, "2023": 14.38, "2024": 14.53, "2025": 14.84}, "Promedio de Partos": {"2021": 3.34, "2022": 3.46, "2023": 3.39, "2024": 3.4, "2025": 3.41}, "Tasa de Parición (%)": {"2021": 89.39, "2022": 90.94, "2023": 89.74, "2024": 88.3, "2025": 89.06}}, "Colombia": {"Destetados/Hembra/Año": {"2021": 27.48, "2022": 27.84, "2023": 28.33, "2024": 27.96, "2025": 28.49}, "Destete-Cubrición (días)": {"2021": 7.58, "2022": 7.83, "2023": 7.8, "2024": 8.02, "2025": 8.22}, "Días No Productivos": {"2021": 17.1, "2022": 18.16, "2023": 17.72, "2024": 19.12, "2025": 19.58}, "Edad de 1º Servicio (días)": {"2021": 235.77, "2022": 239.25, "2023": 240.3, "2024": 244.75, "2025": 242.72}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": 53.22, "2025": 54.25}, "Momificados (%)": {"2021": 4.33, "2022": 4.36, "2023": 4.5, "2024": 4.7, "2025": 4.51}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": 8.71, "2025": 9.1}, "Muertes en la Maternidad (%)": {"2021": 8.07, "2022": 8.41, "2023": 8.58, "2024": 9.04, "2025": 9.66}, "Natimortos y Muertos al Nacer (%)": {"2021": 5.52, "2022": 5.67, "2023": 5.81, "2024": 6.17, "2025": 6.19}, "Número de granjas": {"2021": 147.0, "2022": 246.0, "2023": 311.0, "2024": 375.0, "2025": 395.0}, "Número de madres": {"2021": 58903.0, "2022": 108079.0, "2023": 150532.0, "2024": 176794.0, "2025": 193559.0}, "Partos/Hembra/Año": {"2021": 2.39, "2022": 2.37, "2023": 2.38, "2024": 2.36, "2025": 2.35}, "Pérdidas Reproductivas (%)": {"2021": 14.13, "2022": 14.41, "2023": 14.62, "2024": 15.48, "2025": 15.42}, "Peso de Nacimiento (kg)": {"2021": 1.35, "2022": 1.36, "2023": 1.37, "2024": 1.36, "2025": 1.36}, "Promedio de Destetados": {"2021": 11.48, "2022": 11.72, "2023": 11.89, "2024": 11.81, "2025": 12.07}, "Promedio de Nacidos Totales": {"2021": 13.88, "2022": 14.25, "2023": 14.55, "2024": 14.63, "2025": 15.03}, "Promedio de Nacidos Vivos": {"2021": 12.52, "2022": 12.81, "2023": 13.03, "2024": 13.02, "2025": 13.41}, "Promedio de Partos": {"2021": 3.96, "2022": 3.81, "2023": 3.9, "2024": 3.94, "2025": 3.78}, "Tasa de Parición (%)": {"2021": 85.87, "2022": 85.59, "2023": 85.38, "2024": 84.52, "2025": 84.58}}, "Ecuador": {"Destetados/Hembra/Año": {"2021": 27.44, "2022": 28.67, "2023": 27.94, "2024": 28.56, "2025": 28.68}, "Destete-Cubrición (días)": {"2021": 8.67, "2022": 8.77, "2023": 9.23, "2024": 8.67, "2025": 9.13}, "Días No Productivos": {"2021": 18.92, "2022": 17.01, "2023": 20.5, "2024": 19.37, "2025": 20.75}, "Edad de 1º Servicio (días)": {"2021": 235.5, "2022": 238.79, "2023": 244.11, "2024": 236.75, "2025": 244.26}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": 51.59, "2025": 50.94}, "Momificados (%)": {"2021": 3.85, "2022": 3.54, "2023": 3.46, "2024": 3.65, "2025": 3.3}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": 6.33, "2025": 5.63}, "Muertes en la Maternidad (%)": {"2021": 7.32, "2022": 7.16, "2023": 7.9, "2024": 7.42, "2025": 7.74}, "Natimortos y Muertos al Nacer (%)": {"2021": 3.76, "2022": 3.6, "2023": 4.13, "2024": 4.66, "2025": 4.72}, "Número de granjas": {"2021": null, "2022": 16.0, "2023": 19.0, "2024": 28.0, "2025": 38.0}, "Número de madres": {"2021": null, "2022": 7866.0, "2023": 10927.0, "2024": 17033.0, "2025": 21904.0}, "Partos/Hembra/Año": {"2021": 2.35, "2022": 2.39, "2023": 2.34, "2024": 2.35, "2025": 2.32}, "Pérdidas Reproductivas (%)": {"2021": 15.64, "2022": 14.08, "2023": 15.86, "2024": 17.18, "2025": 17.46}, "Peso de Nacimiento (kg)": {"2021": 1.38, "2022": 1.37, "2023": 1.37, "2024": 1.37, "2025": 1.36}, "Promedio de Destetados": {"2021": 11.67, "2022": 12.0, "2023": 11.93, "2024": 12.13, "2025": 12.31}, "Promedio de Nacidos Totales": {"2021": 13.63, "2022": 13.92, "2023": 14.06, "2024": 14.32, "2025": 14.53}, "Promedio de Nacidos Vivos": {"2021": 12.58, "2022": 12.93, "2023": 12.99, "2024": 13.12, "2025": 13.37}, "Promedio de Partos": {"2021": 4.08, "2022": 3.85, "2023": 3.95, "2024": 3.87, "2025": 3.73}, "Tasa de Parición (%)": {"2021": 84.36, "2022": 85.92, "2023": 84.14, "2024": 82.83, "2025": 82.54}}, "Honduras": {"Destetados/Hembra/Año": {"2021": null, "2022": 21.89, "2023": 22.03, "2024": 22.93, "2025": 25.13}, "Destete-Cubrición (días)": {"2021": null, "2022": 8.5, "2023": 8.28, "2024": 7.8, "2025": 7.26}, "Días No Productivos": {"2021": null, "2022": 36.33, "2023": 33.51, "2024": 27.74, "2025": 24.1}, "Edad de 1º Servicio (días)": {"2021": null, "2022": 242.64, "2023": 251.2, "2024": 255.64, "2025": 234.64}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": 43.37, "2025": 39.65}, "Momificados (%)": {"2021": null, "2022": 2.71, "2023": 2.58, "2024": 2.2, "2025": 2.08}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": 12.89, "2025": 12.89}, "Muertes en la Maternidad (%)": {"2021": null, "2022": 8.0, "2023": 8.69, "2024": 9.95, "2025": 7.86}, "Natimortos y Muertos al Nacer (%)": {"2021": null, "2022": 4.97, "2023": 5.97, "2024": 5.86, "2025": 5.33}, "Número de granjas": {"2021": null, "2022": 10.0, "2023": 11.0, "2024": 9.0, "2025": 8.0}, "Número de madres": {"2021": null, "2022": 3874.0, "2023": 4348.0, "2024": 4438.0, "2025": 4337.0}, "Partos/Hembra/Año": {"2021": null, "2022": 2.13, "2023": 2.15, "2024": 2.2, "2025": 2.24}, "Pérdidas Reproductivas (%)": {"2021": null, "2022": 30.81, "2023": 29.16, "2024": 28.12, "2025": 25.04}, "Peso de Nacimiento (kg)": {"2021": null, "2022": 2.84, "2023": 2.88, "2024": 2.95, "2025": 2.99}, "Promedio de Destetados": {"2021": null, "2022": 10.26, "2023": 10.24, "2024": 10.37, "2025": 11.19}, "Promedio de Nacidos Totales": {"2021": null, "2022": 12.13, "2023": 12.33, "2024": 12.49, "2025": 13.23}, "Promedio de Nacidos Vivos": {"2021": null, "2022": 11.18, "2023": 11.27, "2024": 11.46, "2025": 12.24}, "Promedio de Partos": {"2021": null, "2022": 3.28, "2023": 3.73, "2024": 3.73, "2025": 3.21}, "Tasa de Parición (%)": {"2021": null, "2022": 69.19, "2023": 70.84, "2024": 71.88, "2025": 74.96}}, "México": {"Destetados/Hembra/Año": {"2021": 23.8, "2022": 23.31, "2023": 23.87, "2024": 23.96, "2025": 24.35}, "Destete-Cubrición (días)": {"2021": 8.01, "2022": 7.75, "2023": 7.97, "2024": 7.62, "2025": 7.89}, "Días No Productivos": {"2021": 22.91, "2022": 23.8, "2023": 24.0, "2024": 25.33, "2025": 27.05}, "Edad de 1º Servicio (días)": {"2021": 257.11, "2022": 244.07, "2023": 240.58, "2024": 239.77, "2025": 244.39}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": 44.49, "2025": 45.21}, "Momificados (%)": {"2021": 4.05, "2022": 3.76, "2023": 3.72, "2024": 4.21, "2025": 3.96}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": 11.96, "2025": 10.91}, "Muertes en la Maternidad (%)": {"2021": 14.04, "2022": 15.64, "2023": 14.1, "2024": 14.96, "2025": 14.09}, "Natimortos y Muertos al Nacer (%)": {"2021": 6.86, "2022": 7.01, "2023": 7.16, "2024": 7.13, "2025": 7.23}, "Número de granjas": {"2021": null, "2022": 43.0, "2023": 42.0, "2024": 47.0, "2025": 52.0}, "Número de madres": {"2021": null, "2022": 41150.0, "2023": 43922.0, "2024": 59832.0, "2025": 48999.0}, "Partos/Hembra/Año": {"2021": 2.28, "2022": 2.26, "2023": 2.25, "2024": 2.23, "2025": 2.22}, "Pérdidas Reproductivas (%)": {"2021": 17.28, "2022": 19.12, "2023": 19.36, "2024": 20.5, "2025": 21.02}, "Peso de Nacimiento (kg)": {"2021": 1.33, "2022": 1.35, "2023": 1.32, "2024": 1.31, "2025": 1.36}, "Promedio de Destetados": {"2021": 10.41, "2022": 10.31, "2023": 10.57, "2024": 10.7, "2025": 10.91}, "Promedio de Nacidos Totales": {"2021": 13.76, "2022": 13.88, "2023": 14.03, "2024": 14.41, "2025": 14.53}, "Promedio de Nacidos Vivos": {"2021": 12.23, "2022": 12.34, "2023": 12.45, "2024": 12.72, "2025": 12.87}, "Promedio de Partos": {"2021": 3.48, "2022": 3.59, "2023": 3.56, "2024": 3.64, "2025": 3.6}, "Tasa de Parición (%)": {"2021": 82.72, "2022": 80.88, "2023": 80.64, "2024": 79.5, "2025": 78.98}}, "Nicaragua": {"Destetados/Hembra/Año": {"2021": null, "2022": null, "2023": null, "2024": 20.85, "2025": 22.64}, "Destete-Cubrición (días)": {"2021": null, "2022": null, "2023": null, "2024": 10.56, "2025": 10.97}, "Días No Productivos": {"2021": null, "2022": null, "2023": null, "2024": 38.82, "2025": 32.05}, "Edad de 1º Servicio (días)": {"2021": null, "2022": null, "2023": null, "2024": 248.29, "2025": 242.26}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": 44.95, "2025": 38.06}, "Momificados (%)": {"2021": null, "2022": null, "2023": null, "2024": 2.44, "2025": 2.73}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": 12.15, "2025": 12.15}, "Muertes en la Maternidad (%)": {"2021": null, "2022": null, "2023": null, "2024": 11.35, "2025": 7.07}, "Natimortos y Muertos al Nacer (%)": {"2021": null, "2022": null, "2023": null, "2024": 6.26, "2025": 5.93}, "Número de granjas": {"2021": null, "2022": null, "2023": null, "2024": 5.0, "2025": 8.0}, "Número de madres": {"2021": null, "2022": null, "2023": null, "2024": 1240.0, "2025": 259.0}, "Partos/Hembra/Año": {"2021": null, "2022": null, "2023": null, "2024": 2.11, "2025": 2.14}, "Pérdidas Reproductivas (%)": {"2021": null, "2022": null, "2023": null, "2024": 35.64, "2025": 33.68}, "Peso de Nacimiento (kg)": {"2021": null, "2022": null, "2023": null, "2024": 2.59, "2025": 2.62}, "Promedio de Destetados": {"2021": null, "2022": null, "2023": null, "2024": 9.88, "2025": 10.55}, "Promedio de Nacidos Totales": {"2021": null, "2022": null, "2023": null, "2024": 12.24, "2025": 12.45}, "Promedio de Nacidos Vivos": {"2021": null, "2022": null, "2023": null, "2024": 11.17, "2025": 11.36}, "Promedio de Partos": {"2021": null, "2022": null, "2023": null, "2024": 3.6, "2025": 3.63}, "Tasa de Parición (%)": {"2021": null, "2022": null, "2023": null, "2024": 64.36, "2025": 66.32}}, "Otros": {"Destetados/Hembra/Año": {"2021": 25.38, "2022": 24.65, "2023": 23.6, "2024": 24.99, "2025": 26.4}, "Destete-Cubrición (días)": {"2021": 7.58, "2022": 7.7, "2023": 7.83, "2024": 7.0, "2025": 7.48}, "Días No Productivos": {"2021": 19.08, "2022": 19.9, "2023": 26.87, "2024": 22.97, "2025": 19.73}, "Edad de 1º Servicio (días)": {"2021": 243.26, "2022": 241.44, "2023": 253.09, "2024": 254.94, "2025": 252.8}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": 52.47, "2025": 54.64}, "Momificados (%)": {"2021": 2.33, "2022": 2.59, "2023": 2.99, "2024": 2.86, "2025": 2.79}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": 12.23, "2025": 6.18}, "Muertes en la Maternidad (%)": {"2021": 10.84, "2022": 12.01, "2023": 10.21, "2024": 12.52, "2025": 10.52}, "Natimortos y Muertos al Nacer (%)": {"2021": 6.29, "2022": 6.16, "2023": 7.7, "2024": 7.44, "2025": 6.88}, "Número de granjas": {"2021": null, "2022": 36.0, "2023": 22.0, "2024": 10.0, "2025": 17.0}, "Número de madres": {"2021": null, "2022": 32409.0, "2023": 12936.0, "2024": 7884.0, "2025": 19943.0}, "Partos/Hembra/Año": {"2021": 2.33, "2022": 2.31, "2023": 2.21, "2024": 2.27, "2025": 2.31}, "Pérdidas Reproductivas (%)": {"2021": 15.96, "2022": 17.77, "2023": 22.88, "2024": 22.24, "2025": 17.21}, "Peso de Nacimiento (kg)": {"2021": 1.38, "2022": 1.65, "2023": 1.85, "2024": 1.97, "2025": 1.86}, "Promedio de Destetados": {"2021": 10.9, "2022": 10.65, "2023": 10.6, "2024": 11.01, "2025": 11.32}, "Promedio de Nacidos Totales": {"2021": 13.45, "2022": 13.38, "2023": 13.52, "2024": 14.15, "2025": 13.96}, "Promedio de Nacidos Vivos": {"2021": 12.28, "2022": 12.19, "2023": 12.04, "2024": 12.68, "2025": 12.64}, "Promedio de Partos": {"2021": 3.7, "2022": 3.53, "2023": 3.65, "2024": 3.9, "2025": 3.69}, "Tasa de Parición (%)": {"2021": 84.04, "2022": 82.23, "2023": 77.12, "2024": 77.76, "2025": 82.79}}, "Panamá": {"Destetados/Hembra/Año": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 25.13}, "Destete-Cubrición (días)": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 7.67}, "Días No Productivos": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 25.62}, "Edad de 1º Servicio (días)": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 248.16}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 47.94}, "Momificados (%)": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 2.75}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 6.87}, "Muertes en la Maternidad (%)": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 8.21}, "Natimortos y Muertos al Nacer (%)": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 6.28}, "Número de granjas": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 6.0}, "Número de madres": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 4101.0}, "Partos/Hembra/Año": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 2.27}, "Pérdidas Reproductivas (%)": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 21.36}, "Peso de Nacimiento (kg)": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 2.28}, "Promedio de Destetados": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 11.07}, "Promedio de Nacidos Totales": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 13.27}, "Promedio de Nacidos Vivos": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 12.07}, "Promedio de Partos": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 3.53}, "Tasa de Parición (%)": {"2021": null, "2022": null, "2023": null, "2024": null, "2025": 78.65}}, "Paraguay": {"Destetados/Hembra/Año": {"2021": 29.81, "2022": 28.92, "2023": 28.92, "2024": 28.97, "2025": 30.28}, "Destete-Cubrición (días)": {"2021": 6.03, "2022": 6.58, "2023": 6.19, "2024": 6.78, "2025": 6.62}, "Días No Productivos": {"2021": 12.59, "2022": 15.4, "2023": 15.97, "2024": 15.78, "2025": 15.95}, "Edad de 1º Servicio (días)": {"2021": 249.32, "2022": 244.6, "2023": 237.95, "2024": 240.51, "2025": 245.13}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": 55.99, "2025": 58.57}, "Momificados (%)": {"2021": 2.94, "2022": 3.29, "2023": 3.07, "2024": 3.02, "2025": 3.04}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": 7.74, "2025": 7.66}, "Muertes en la Maternidad (%)": {"2021": 10.74, "2022": 12.95, "2023": 11.88, "2024": 11.76, "2025": 10.21}, "Natimortos y Muertos al Nacer (%)": {"2021": 6.71, "2022": 7.01, "2023": 7.17, "2024": 7.01, "2025": 7.35}, "Número de granjas": {"2021": null, "2022": 16.0, "2023": 18.0, "2024": 20.0, "2025": 16.0}, "Número de madres": {"2021": null, "2022": 17898.0, "2023": 19129.0, "2024": 27128.0, "2025": 24784.0}, "Partos/Hembra/Año": {"2021": 2.41, "2022": 2.38, "2023": 2.37, "2024": 2.37, "2025": 2.38}, "Pérdidas Reproductivas (%)": {"2021": 12.1, "2022": 14.01, "2023": 14.57, "2024": 15.33, "2025": 14.16}, "Peso de Nacimiento (kg)": {"2021": 1.39, "2022": 1.36, "2023": 1.38, "2024": 1.39, "2025": 1.39}, "Promedio de Destetados": {"2021": 12.31, "2022": 12.11, "2023": 12.18, "2024": 12.16, "2025": 12.7}, "Promedio de Nacidos Totales": {"2021": 15.37, "2022": 15.6, "2023": 15.4, "2024": 15.34, "2025": 15.81}, "Promedio de Nacidos Vivos": {"2021": 13.88, "2022": 13.99, "2023": 13.81, "2024": 13.8, "2025": 14.17}, "Promedio de Partos": {"2021": 3.4, "2022": 3.69, "2023": 3.8, "2024": 3.6, "2025": 3.55}, "Tasa de Parición (%)": {"2021": 87.9, "2022": 85.99, "2023": 85.43, "2024": 84.67, "2025": 85.85}}, "Perú": {"Destetados/Hembra/Año": {"2021": null, "2022": null, "2023": null, "2024": 31.19, "2025": 31.62}, "Destete-Cubrición (días)": {"2021": null, "2022": null, "2023": null, "2024": 7.72, "2025": 7.08}, "Días No Productivos": {"2021": null, "2022": null, "2023": null, "2024": 13.9, "2025": 14.85}, "Edad de 1º Servicio (días)": {"2021": null, "2022": null, "2023": null, "2024": 226.03, "2025": 226.78}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": 31.42, "2025": 43.2}, "Momificados (%)": {"2021": null, "2022": null, "2023": null, "2024": 4.13, "2025": 4.53}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": 7.9, "2025": 9.06}, "Muertes en la Maternidad (%)": {"2021": null, "2022": null, "2023": null, "2024": 7.56, "2025": 6.73}, "Natimortos y Muertos al Nacer (%)": {"2021": null, "2022": null, "2023": null, "2024": 4.6, "2025": 5.13}, "Número de granjas": {"2021": null, "2022": null, "2023": null, "2024": 10.0, "2025": 9.0}, "Número de madres": {"2021": null, "2022": null, "2023": null, "2024": 12843.0, "2025": 11907.0}, "Partos/Hembra/Año": {"2021": null, "2022": null, "2023": null, "2024": 2.42, "2025": 2.4}, "Pérdidas Reproductivas (%)": {"2021": null, "2022": null, "2023": null, "2024": 9.17, "2025": 10.62}, "Peso de Nacimiento (kg)": {"2021": null, "2022": null, "2023": null, "2024": 1.35, "2025": 1.4}, "Promedio de Destetados": {"2021": null, "2022": null, "2023": null, "2024": 12.86, "2025": 13.16}, "Promedio de Nacidos Totales": {"2021": null, "2022": null, "2023": null, "2024": 15.43, "2025": 15.72}, "Promedio de Nacidos Vivos": {"2021": null, "2022": null, "2023": null, "2024": 14.08, "2025": 14.19}, "Promedio de Partos": {"2021": null, "2022": null, "2023": null, "2024": 3.22, "2025": 3.51}, "Tasa de Parición (%)": {"2021": null, "2022": null, "2023": null, "2024": 90.83, "2025": 89.38}}, "Uruguay": {"Destetados/Hembra/Año": {"2021": null, "2022": null, "2023": 23.51, "2024": 23.88, "2025": 24.51}, "Destete-Cubrición (días)": {"2021": null, "2022": null, "2023": 6.25, "2024": 6.69, "2025": 5.92}, "Días No Productivos": {"2021": null, "2022": null, "2023": 15.67, "2024": 16.61, "2025": 19.49}, "Edad de 1º Servicio (días)": {"2021": null, "2022": null, "2023": 230.64, "2024": 234.33, "2025": 257.68}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": 41.77, "2025": 52.12}, "Momificados (%)": {"2021": null, "2022": null, "2023": 2.15, "2024": 2.04, "2025": 2.08}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": 6.56, "2025": 9.31}, "Muertes en la Maternidad (%)": {"2021": null, "2022": null, "2023": 13.42, "2024": 10.36, "2025": 12.09}, "Natimortos y Muertos al Nacer (%)": {"2021": null, "2022": null, "2023": 7.63, "2024": 10.08, "2025": 7.32}, "Número de granjas": {"2021": null, "2022": null, "2023": 6.0, "2024": 7.0, "2025": 7.0}, "Número de madres": {"2021": null, "2022": null, "2023": 4038.0, "2024": 4296.0, "2025": 4264.0}, "Partos/Hembra/Año": {"2021": null, "2022": null, "2023": 2.38, "2024": 2.34, "2025": 2.31}, "Pérdidas Reproductivas (%)": {"2021": null, "2022": null, "2023": 15.98, "2024": 19.75, "2025": 19.55}, "Peso de Nacimiento (kg)": {"2021": null, "2022": null, "2023": 1.16, "2024": 1.26, "2025": 1.34}, "Promedio de Destetados": {"2021": null, "2022": null, "2023": 9.85, "2024": 10.22, "2025": 10.58}, "Promedio de Nacidos Totales": {"2021": null, "2022": null, "2023": 12.58, "2024": 12.87, "2025": 13.3}, "Promedio de Nacidos Vivos": {"2021": null, "2022": null, "2023": 11.36, "2024": 11.29, "2025": 12.05}, "Promedio de Partos": {"2021": null, "2022": null, "2023": 3.9, "2024": 3.96, "2025": 4.1}, "Tasa de Parición (%)": {"2021": null, "2022": null, "2023": 84.02, "2024": 80.25, "2025": 80.45}}, "Venezuela": {"Destetados/Hembra/Año": {"2021": null, "2022": null, "2023": 23.34, "2024": 21.98, "2025": 23.14}, "Destete-Cubrición (días)": {"2021": null, "2022": null, "2023": 7.11, "2024": 7.71, "2025": 8.36}, "Días No Productivos": {"2021": null, "2022": null, "2023": 18.07, "2024": 19.31, "2025": 19.62}, "Edad de 1º Servicio (días)": {"2021": null, "2022": null, "2023": 239.88, "2024": 231.58, "2025": 249.08}, "Lechones Producidos en la Vida de la Madre": {"2021": null, "2022": null, "2023": null, "2024": 25.46, "2025": 30.56}, "Momificados (%)": {"2021": null, "2022": null, "2023": 1.87, "2024": 2.13, "2025": 2.17}, "Muerte de madres (%)": {"2021": null, "2022": null, "2023": null, "2024": 6.25, "2025": 7.67}, "Muertes en la Maternidad (%)": {"2021": null, "2022": null, "2023": 9.13, "2024": 9.13, "2025": 9.87}, "Natimortos y Muertos al Nacer (%)": {"2021": null, "2022": null, "2023": 4.67, "2024": 5.3, "2025": 5.57}, "Número de granjas": {"2021": null, "2022": null, "2023": 6.0, "2024": 13.0, "2025": 18.0}, "Número de madres": {"2021": null, "2022": null, "2023": 6482.0, "2024": 14712.0, "2025": 19283.0}, "Partos/Hembra/Año": {"2021": null, "2022": null, "2023": 2.3, "2024": 2.29, "2025": 2.3}, "Pérdidas Reproductivas (%)": {"2021": null, "2022": null, "2023": 20.27, "2024": 21.67, "2025": 19.81}, "Peso de Nacimiento (kg)": {"2021": null, "2022": null, "2023": 1.39, "2024": 1.39, "2025": 1.39}, "Promedio de Destetados": {"2021": null, "2022": null, "2023": 10.12, "2024": 9.54, "2025": 10.04}, "Promedio de Nacidos Totales": {"2021": null, "2022": null, "2023": 11.99, "2024": 11.45, "2025": 12.15}, "Promedio de Nacidos Vivos": {"2021": null, "2022": null, "2023": 11.21, "2024": 10.6, "2025": 11.2}, "Promedio de Partos": {"2021": null, "2022": null, "2023": 3.53, "2024": 3.54, "2025": 3.44}, "Tasa de Parición (%)": {"2021": null, "2022": null, "2023": 79.73, "2024": 78.33, "2025": 80.19}}};
+
+const PAISES = ['Argentina','Bolivia','Brasil','Chile','Colombia','Ecuador',
+  'Honduras','México','Nicaragua','Otros','Panamá','Paraguay','Perú','Uruguay','Venezuela'];
+
+const AÑOS = ['2021','2022','2023','2024','2025'];
+
+const INDICADORES = [
+  'Destetados/Hembra/Año','Destete-Cubrición (días)','Días No Productivos',
+  'Edad de 1º Servicio (días)','Lechones Producidos en la Vida de la Madre',
+  'Momificados (%)','Muerte de madres (%)','Muertes en la Maternidad (%)',
+  'Natimortos y Muertos al Nacer (%)','Número de granjas','Número de madres',
+  'Partos/Hembra/Año','Pérdidas Reproductivas (%)','Peso de Nacimiento (kg)',
+  'Promedio de Destetados','Promedio de Nacidos Totales','Promedio de Nacidos Vivos',
+  'Promedio de Partos','Tasa de Parición (%)'
+];
+
+/* ─── TAB 1 STATE & CHARTS ─────────────────────────────────────── */
+let currentInd = INDICADORES[0];
+const miniCharts = {}; // pais → Chart instance
+
+function variationTag(curr, prev) {
+  if (prev === null || prev === undefined) {
+    if (curr !== null && curr !== undefined) return `<span class="var-tag var-new">NUEVO</span>`;
+    return '';
+  }
+  if (curr === null || curr === undefined) return '';
+  const g = ((curr - prev) / Math.abs(prev)) * 100;
+  const cls = g > 0.5 ? 'var-pos' : (g < -0.5 ? 'var-neg' : 'var-zero');
+  const sym = g > 0 ? '▲' : (g < 0 ? '▼' : '▬');
+  return `<span class="var-tag ${cls}">${sym} ${Math.abs(g).toFixed(1)}%</span>`;
+}
+
+function buildIndList() {
+  const list = document.getElementById('indList');
+  list.innerHTML = '';
+  INDICADORES.forEach(ind => {
+    const btn = document.createElement('button');
+    btn.className = 'ind-btn' + (ind === currentInd ? ' active' : '');
+    btn.textContent = ind;
+    btn.addEventListener('click', () => {
+      currentInd = ind;
+      document.querySelectorAll('.ind-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('t1IndTitle').textContent = ind;
+      updateMiniGrid();
+    });
+    list.appendChild(btn);
+  });
+}
+
+function getMiniChartData(pais, ind) {
+  const raw = DATA[pais][ind];
+  return AÑOS.map(a => raw[a]);
+}
+
+function maxInfoInline(vals, dec) {
+  const validPairs = vals.map((v, i) => ({ v, year: parseInt(AÑOS[i]) })).filter(p => p.v !== null);
+  if (validPairs.length < 2) return '';
+  const maxItem = validPairs.reduce((a, b) => b.v > a.v ? b : a);
+  const minItem = validPairs.reduce((a, b) => b.v < a.v ? b : a);
+  let out = `<span class="mini-divider">|</span><span class="mini-ref-block"><span class="mini-ref-label">Máx</span><span class="mini-ref" style="color:var(--verde);">${fmt(maxItem.v, dec)}</span><span class="mini-ref-year">${maxItem.year}</span></span>`;
+  if (minItem.year !== maxItem.year) {
+    out += `<span class="mini-divider">|</span><span class="mini-ref-block"><span class="mini-ref-label">Mín</span><span class="mini-ref" style="color:var(--rojo);">${fmt(minItem.v, dec)}</span><span class="mini-ref-year">${minItem.year}</span></span>`;
+  }
+  return out;
+}
+
+function maxInfo(vals, dec) {
+  const validPairs = vals.map((v, i) => ({ v, year: parseInt(AÑOS[i]) })).filter(p => p.v !== null);
+  if (validPairs.length < 2) return '';
+  const maxItem = validPairs.reduce((a, b) => b.v > a.v ? b : a);
+  const minItem = validPairs.reduce((a, b) => b.v < a.v ? b : a);
+  // Show max always; show min only if it differs from max year
+  const parts = [];
+  parts.push(`<span style="color:var(--verde);font-weight:700;">↑${fmt(maxItem.v, dec)}</span><span style="color:#bbb;">(${maxItem.year})</span>`);
+  if (minItem.year !== maxItem.year) {
+    parts.push(`<span style="color:var(--rojo);font-weight:700;">↓${fmt(minItem.v, dec)}</span><span style="color:#bbb;">(${minItem.year})</span>`);
+  }
+  return `<div style="font-size:9px;margin-top:3px;display:flex;flex-direction:column;align-items:flex-end;gap:1px;line-height:1.3;">${parts.join('')}</div>`;
+}
+
+function renderMiniCard(pais) {
+  const vals = getMiniChartData(pais, currentInd);
+  const hasAnyData = vals.some(v => v !== null);
+  const lastVal = vals[4];
+  const prevVal = vals[3];
+  const dec = currentInd.includes('madres') || currentInd.includes('granjas') ? 0 : 2;
+
+  // Compute color based on trend
+  const validVals = vals.filter(v => v !== null);
+  let trendColor = '#1F6DB1';
+  if (validVals.length >= 2) {
+    const first = validVals[0];
+    const last = validVals[validVals.length-1];
+    // For "bad" indicators (higher = worse), invert logic
+    const higherIsBad = ['Días No Productivos','Momificados (%)','Muerte de madres (%)',
+      'Muertes en la Maternidad (%)','Natimortos y Muertos al Nacer (%)','Pérdidas Reproductivas (%)'];
+    const isHighBad = higherIsBad.includes(currentInd);
+    if (isHighBad) {
+      trendColor = last < first ? '#2A8F4F' : (last > first ? '#C0392B' : '#1F6DB1');
+    } else {
+      trendColor = last > first ? '#2A8F4F' : (last < first ? '#C0392B' : '#1F6DB1');
+    }
+  }
+
+  const card = document.createElement('div');
+  card.className = 'mini-card';
+  card.innerHTML = `
+    <div class="mini-card-header">
+      <div class="mini-flag">
+        ${flagImg(pais, 22)}
+        <span>${tPais(pais)}</span>
+      </div>
+      <div style="text-align:right;">
+        <div class="mini-last-val" style="color:${trendColor}">
+          ${lastVal !== null ? fmt(lastVal, dec) : '—'}
+        </div>
+        <div style="margin-top:1px;">${variationTag(lastVal, prevVal)}</div>
+      </div>
+    </div>
+    ${hasAnyData
+      ? `<div class="mini-chart-wrap"><canvas id="mc_${pais.replace(/[^a-z]/gi,'_')}"></canvas></div>`
+      : `<div class="mini-no-data">${t('no_data')}</div>`
+    }
+
+  `;
+  return { card, vals, trendColor };
+}
+
+function updateMiniGrid() {
+  // Destroy old charts
+  Object.values(miniCharts).forEach(c => { try { c.destroy(); } catch(e){} });
+  Object.keys(miniCharts).forEach(k => delete miniCharts[k]);
+
+  const grid = document.getElementById('miniGrid');
+  grid.innerHTML = '';
+
+  PAISES.forEach(pais => {
+    const { card, vals, trendColor } = renderMiniCard(pais);
+    grid.appendChild(card);
+
+    const hasAnyData = vals.some(v => v !== null);
+    if (!hasAnyData) return;
+
+    // Build chart after DOM insertion
+    requestAnimationFrame(() => {
+      const canvasId = `mc_${pais.replace(/[^a-z]/gi,'_')}`;
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      const chartData = AÑOS.map((a, i) => vals[i]);
+
+      // Always 333 blue for lines/points/fill
+      const lineColor = '#1F6DB1';
+      const gradient2 = ctx.createLinearGradient(0, 0, 0, 72);
+      gradient2.addColorStop(0, 'rgba(31,109,177,0.22)');
+      gradient2.addColorStop(1, 'rgba(31,109,177,0.03)');
+
+      // Data labels plugin: show value on each point
+      const datalabelsPlugin = {
+        id: 'pointLabels',
+        afterDatasetsDraw(chart) {
+          const { ctx: c, data } = chart;
+          const meta = chart.getDatasetMeta(0);
+          const dec = currentInd.includes('madres') || currentInd.includes('granjas') ? 0 : 2;
+          c.save();
+          meta.data.forEach((point, i) => {
+            const v = data.datasets[0].data[i];
+            if (v === null || v === undefined) return;
+            const label = fmt(v, dec);
+            c.font = '600 8.5px Segoe UI, sans-serif';
+            c.textAlign = 'center';
+            // Position: above the point, or below if near top
+            const yPos = point.y < 20 ? point.y + 14 : point.y - 8;
+            // Background pill
+            const w = c.measureText(label).width + 6;
+            c.fillStyle = 'rgba(255,255,255,0.88)';
+            c.beginPath();
+            c.roundRect(point.x - w/2, yPos - 8, w, 12, 3);
+            c.fill();
+            c.fillStyle = '#155087';
+            c.fillText(label, point.x, yPos);
+          });
+          c.restore();
+        }
+      };
+
+      miniCharts[pais] = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: AÑOS,
+          datasets: [{
+            data: chartData,
+            borderColor: lineColor,
+            borderWidth: 2,
+            backgroundColor: gradient2,
+            fill: true,
+            pointBackgroundColor: lineColor,
+            pointBorderColor: '#fff',
+            pointBorderWidth: 1.5,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            spanGaps: true,
+            tension: 0.3
+          }]
+        },
+        plugins: [datalabelsPlugin],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 400 },
+          layout: { padding: { top: 14, bottom: 2, left: -8, right: 4 } },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => {
+                  const v = ctx.parsed.y;
+                  const dec = currentInd.includes('madres') || currentInd.includes('granjas') ? 0 : 2;
+                  return v !== null ? fmt(v, dec) : t('nd');
+                }
+              },
+              displayColors: false,
+              backgroundColor: 'rgba(255,255,255,0.97)',
+              titleColor: '#155087',
+              bodyColor: '#53565A',
+              borderColor: '#1F6DB1',
+              borderWidth: 1.5,
+              padding: 8,
+              titleFont: { weight: '700', size: 11 }
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: { size: 8.5 },
+                color: '#999',
+                maxRotation: 0,
+                padding: 2
+              },
+              grid: { display: false },
+              border: { display: false }
+            },
+            y: {
+              ticks: { display: false },
+              grid: { display: false },
+              border: { display: false },
+              afterFit(scale) { scale.width = 0; }
+            }
+          }
+        }
+      });
+    });
+  });
+}
+
+function renderTab1() {
+  document.getElementById('t1IndTitle').textContent = currentInd;
+  buildIndList();
+  updateMiniGrid();
+}
+
+/* ─── TAB 2 — COMPARATIVO ANUAL ────────────────────────────────── */
+let t2YearA = '2024';
+let t2YearB = '2025';
+let t2CurrentInd = INDICADORES[0];
+let t2Sort = 'desc';
+let t2BarChart = null;
+
+function buildT2Controls() {
+  // Indicator select
+  const sel = document.getElementById('t2IndSelect');
+  sel.innerHTML = '';
+  INDICADORES.forEach(ind => {
+    const opt = document.createElement('option');
+    opt.value = ind; opt.textContent = ind;
+    if (ind === t2CurrentInd) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  sel.onchange = () => { t2CurrentInd = sel.value; renderT2Chart(); };
+
+  // Year A dropdown
+  const selA = document.getElementById('t2SelA');
+  selA.innerHTML = '';
+  AÑOS.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a; opt.textContent = a;
+    if (a === t2YearA) opt.selected = true;
+    selA.appendChild(opt);
+  });
+  selA.onchange = () => { t2YearA = selA.value; renderT2Chart(); };
+
+  // Year B dropdown
+  const selB = document.getElementById('t2SelB');
+  selB.innerHTML = '';
+  AÑOS.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a; opt.textContent = a;
+    if (a === t2YearB) opt.selected = true;
+    selB.appendChild(opt);
+  });
+  selB.onchange = () => { t2YearB = selB.value; renderT2Chart(); };
+
+  // Sort buttons
+  document.querySelectorAll('.t2-sort-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.sort === t2Sort);
+    btn.onclick = () => {
+      t2Sort = btn.dataset.sort;
+      document.querySelectorAll('.t2-sort-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderT2Chart();
+    };
+  });
+}
+
+function renderT2Chart() {
+  const dec = t2CurrentInd.includes('madres') || t2CurrentInd.includes('granjas') ? 0 : 2;
+
+  // Build sorted data
+  let items = PAISES.map(pais => ({
+    pais,
+    vA: DATA[pais][t2CurrentInd][t2YearA],
+    vB: DATA[pais][t2CurrentInd][t2YearB]
+  })).filter(d => d.vA !== null || d.vB !== null);
+
+  const sortVal = d => d.vB !== null ? d.vB : (d.vA !== null ? d.vA : -Infinity);
+  items.sort((a, b) => t2Sort === 'desc' ? sortVal(b) - sortVal(a) : sortVal(a) - sortVal(b));
+
+  // Update legend + title
+  document.getElementById('t2LegA').textContent = t2YearA;
+  document.getElementById('t2LegB').textContent = t2YearB;
+  document.getElementById('t2ChartTitle').textContent = t2CurrentInd;
+  document.getElementById('t2ChartSub').textContent =
+    `${t2YearA} vs ${t2YearB} · ordenado de ${t2Sort === 'desc' ? 'mayor a menor' : 'menor a mayor'}`;
+
+  const labels = items.map(d => tPais(d.pais));
+  const dataA  = items.map(d => d.vA);
+  const dataB  = items.map(d => d.vB);
+
+  // Value labels on top of bars plugin
+  const valueLabelPlugin = {
+    id: 'valueLabelPlugin',
+    afterDatasetsDraw(chart) {
+      const { ctx: c } = chart;
+      c.save();
+      chart.data.datasets.forEach((dataset, dsIdx) => {
+        const meta = chart.getDatasetMeta(dsIdx);
+        meta.data.forEach((bar, i) => {
+          const v = dataset.data[i];
+          if (v === null || v === undefined) return;
+          const label = fmt(v, dec);
+          c.font = '600 8.5px Segoe UI, sans-serif';
+          c.fillStyle = '#155087';
+          c.textAlign = 'center';
+          c.fillText(label, bar.x, bar.y - 4);
+        });
+      });
+      c.restore();
+    }
+  };
+
+  const ctx = document.getElementById('t2Chart').getContext('2d');
+  if (t2BarChart) t2BarChart.destroy();
+
+  t2BarChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: t2YearA,
+          data: dataA,
+          backgroundColor: '#85B7EB',
+          borderColor: '#5B9FD4',
+          borderWidth: 1,
+          borderRadius: 3,
+          barPercentage: 0.75,
+          categoryPercentage: 0.8
+        },
+        {
+          label: t2YearB,
+          data: dataB,
+          backgroundColor: '#1F6DB1',
+          borderColor: '#155087',
+          borderWidth: 1,
+          borderRadius: 3,
+          barPercentage: 0.75,
+          categoryPercentage: 0.8
+        }
+      ]
+    },
+    plugins: [valueLabelPlugin],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 500 },
+      layout: { padding: { top: 20, right: 10, bottom: 4, left: 4 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${fmt(ctx.parsed.y, dec)}`
+          },
+          displayColors: true,
+          backgroundColor: 'rgba(255,255,255,0.97)',
+          titleColor: '#155087',
+          bodyColor: '#53565A',
+          borderColor: '#1F6DB1',
+          borderWidth: 1.5,
+          padding: 10
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            font: { size: 11, weight: '600' },
+            color: '#155087',
+            maxRotation: 35,
+            minRotation: 35
+          },
+          grid: { display: false },
+          border: { display: false }
+        },
+        y: {
+          beginAtZero: false,
+          ticks: {
+            font: { size: 11 },
+            color: '#999',
+            callback: v => fmt(v, dec)
+          },
+          grid: { color: '#F0F0F0' },
+          border: { display: false }
+        }
+      }
+    }
+  });
+}
+
+function renderTab2() {
+  buildT2Controls();
+  renderT2Chart();
+}
+
+/* ─── TAB 3 — FICHA POR PAÍS ────────────────────────────────────── */
+let t3CurrentPais = 'Argentina';
+
+// Indicators where higher = worse (for coloring best/worst)
+const HIGHER_IS_BAD = new Set([
+  'Días No Productivos','Momificados (%)','Muerte de madres (%)',
+  'Muertes en la Maternidad (%)','Natimortos y Muertos al Nacer (%)',
+  'Pérdidas Reproductivas (%)','Destete-Cubrición (días)',
+  'Edad de 1º Servicio (días)'
+]);
+
+function buildT3CountryGrid() {
+  const grid = document.getElementById('t3CountryGrid');
+  grid.innerHTML = '';
+  PAISES.forEach(pais => {
+    const btn = document.createElement('button');
+    btn.className = 't3-country-btn' + (pais === t3CurrentPais ? ' active' : '');
+    btn.dataset.pais = pais;
+    const iso = FLAGS[pais];
+    btn.innerHTML = `
+      ${iso
+        ? `<img src="https://flagcdn.com/w40/${iso}.png" alt="${pais}"
+              onerror="this.style.display='none'">`
+        : ''
+      }
+      <span>${tPais(pais)}</span>
+    `;
+    btn.addEventListener('click', () => {
+      t3CurrentPais = pais;
+      document.querySelectorAll('.t3-country-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderT3Table();
+    });
+    grid.appendChild(btn);
+  });
+}
+
+function renderT3Table() {
+  const pais = t3CurrentPais;
+  const iso  = FLAGS[pais];
+  const dec  = 2;
+
+  // Header: flag + name + madres badge
+  document.getElementById('t3CountryName').textContent = tPais(pais);
+  const flagWrap = document.getElementById('t3FlagWrap');
+  flagWrap.innerHTML = iso
+    ? `<img src="https://flagcdn.com/w80/${iso}.png" alt="${pais}"
+          style="height:36px;border-radius:4px;box-shadow:0 2px 6px rgba(0,0,0,0.2);"
+          onerror="this.style.display='none'">`
+    : '';
+
+  // Madres badge (most recent year available)
+  const madresData = DATA[pais]['Número de madres'];
+  const lastMadres = ['2025','2024','2023','2022','2021'].map(y => madresData[y]).find(v => v !== null);
+  const granjas    = DATA[pais]['Número de granjas'];
+  const lastGranjas = ['2025','2024','2023','2022','2021'].map(y => granjas[y]).find(v => v !== null);
+  const badge = document.getElementById('t3MadresBadge');
+  const parts = [];
+  if (lastMadres) parts.push(`${fmt(lastMadres, 0)} madres`);
+  if (lastGranjas) parts.push(`${fmt(lastGranjas, 0)} granjas`);
+  badge.textContent = parts.length ? parts.join(' · ') + ' (2025)' : '';
+
+  // Build table rows
+  const tbody = document.getElementById('t3TableBody');
+  tbody.innerHTML = '';
+
+  // Indicators to show in table (exclude structural ones shown in badge)
+  const tableInds = INDICADORES.filter(i =>
+    i !== 'Número de madres' && i !== 'Número de granjas'
+  );
+
+  tableInds.forEach(ind => {
+    const rowData = AÑOS.map(a => DATA[pais][ind][a]);
+    const validVals = rowData.filter(v => v !== null);
+    if (validVals.length === 0) return; // skip fully empty rows
+
+    // Decimals: special cases
+    const d = ind === 'Número de madres' || ind === 'Número de granjas' ? 0 : 2;
+
+    // Find best and worst among valid values
+    const maxVal = Math.max(...validVals);
+    const minVal = Math.min(...validVals);
+    const bestVal  = HIGHER_IS_BAD.has(ind) ? minVal : maxVal;
+    const worstVal = HIGHER_IS_BAD.has(ind) ? maxVal : minVal;
+
+    // Variation 2024 → 2025
+    const v24 = DATA[pais][ind]['2024'];
+    const v25 = DATA[pais][ind]['2025'];
+    let varCell = '<td class="t3-var-zero">—</td>';
+    if (v24 !== null && v25 !== null) {
+      const pct = ((v25 - v24) / Math.abs(v24)) * 100;
+      const sym = pct > 0 ? '▲' : (pct < 0 ? '▼' : '▬');
+      // For "bad" indicators, positive change = red
+      const good = HIGHER_IS_BAD.has(ind) ? pct < -0.05 : pct > 0.05;
+      const bad  = HIGHER_IS_BAD.has(ind) ? pct > 0.05  : pct < -0.05;
+      const cls  = good ? 't3-var-pos' : (bad ? 't3-var-neg' : 't3-var-zero');
+      varCell = `<td class="${cls}">${sym} ${Math.abs(pct).toFixed(1)}%</td>`;
+    }
+
+    const cells = AÑOS.map((a, i) => {
+      const v = rowData[i];
+      if (v === null) return `<td class="t3-nd">N/D</td>`;
+      const isBest  = validVals.length > 1 && v === bestVal;
+      const isWorst = validVals.length > 1 && v === worstVal;
+      const cls = isBest ? 't3-best' : (isWorst ? 't3-worst' : '');
+      return `<td class="${cls}">${fmt(v, d)}</td>`;
+    }).join('');
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="t3-td-ind">${ind}</td>${cells}${varCell}`;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderTab3() {
+  buildT3CountryGrid();
+  renderT3Table();
+}
+
+/* ─── INIT ──────────────────────────────────────────────────────── */
+window.addEventListener('DOMContentLoaded', () => {
+  renderTab1();
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.tab === 'tab2') renderTab2();
+      if (btn.dataset.tab === 'tab3') renderTab3();
+    });
+  });
+});
+</script>
+</body>
+</html>

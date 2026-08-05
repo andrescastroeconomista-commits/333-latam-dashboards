@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>333 Intelligence Hub · LATAM</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --azul:        #1F6DB1;
+  --azul-dark:   #155087;
+  --azul-light:  #E6F0F9;
+  --azul-claro:  #D1E3F6;
+  --naranja:     #E97721;
+  --naranja-light: #FDF0E4;
+  --gris:        #53565A;
+  --gris-light:  #F5F5F5;
+  --gris-border: #E0E0E0;
+  --verde:       #8CC63F;
+  --blanco:      #FFFFFF;
+}
+
+body {
+  font-family: 'Montserrat', 'Segoe UI', sans-serif;
+  background: #EEF4FB;
+  color: var(--gris);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── HEADER ─────────────────────────────────────────────── */
+.header {
+  background: var(--blanco);
+  border-bottom: 3px solid var(--azul);
+  padding: 14px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  position: sticky; top: 0; z-index: 100;
+}
+.brand { display: flex; align-items: center; gap: 16px; }
+.brand img { height: 48px; width: auto; }
+.brand-text h1 {
+  font-size: 18px; color: var(--azul); font-weight: 800;
+  letter-spacing: -0.3px; line-height: 1.2;
+  text-transform: uppercase;
+}
+.brand-text p {
+  font-size: 10.5px; color: var(--gris);
+  text-transform: uppercase; letter-spacing: 1.4px; margin-top: 2px;
+  font-weight: 500;
+}
+.header-badge {
+  background: var(--azul-light);
+  border: 1.5px solid var(--azul);
+  border-radius: 20px;
+  padding: 5px 16px;
+  font-size: 11px; font-weight: 700; color: var(--azul-dark);
+  letter-spacing: 0.3px;
+}
+
+/* ─── HERO ───────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, var(--azul-dark) 0%, var(--azul) 60%, #2E86C1 100%);
+  padding: 52px 40px 44px;
+  text-align: center;
+  color: var(--blanco);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.hero-eyebrow {
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2.5px;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 10px;
+}
+.hero h2 {
+  font-size: 32px; font-weight: 800;
+  color: var(--blanco);
+  line-height: 1.15; margin-bottom: 12px;
+}
+.hero h2 span { color: var(--naranja); }
+.hero p {
+  font-size: 14px; color: rgba(255,255,255,0.8);
+  max-width: 560px; margin: 0 auto;
+  line-height: 1.6; font-weight: 500;
+}
+
+/* ─── MAIN CONTENT ───────────────────────────────────────── */
+.main {
+  flex: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 32px;
+  width: 100%;
+}
+
+.section-label {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--azul);
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-label::after {
+  content: '';
+  flex: 1; height: 1px; background: var(--gris-border);
+}
+
+/* ─── DASHBOARD CARDS ────────────────────────────────────── */
+.dashboards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.dash-card {
+  background: var(--blanco);
+  border-radius: 16px;
+  border: 1.5px solid var(--gris-border);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: all 0.25s;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex; flex-direction: column;
+}
+.dash-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(31,109,177,0.18);
+  border-color: var(--azul);
+}
+
+.dash-card-banner {
+  height: 8px;
+}
+.dash-card-body {
+  padding: 28px 28px 24px;
+  flex: 1; display: flex; flex-direction: column;
+}
+.dash-card-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+  font-size: 22px;
+}
+.dash-card h3 {
+  font-size: 17px; font-weight: 800;
+  color: var(--azul-dark); margin-bottom: 6px;
+  line-height: 1.2;
+}
+.dash-card .dash-desc {
+  font-size: 12.5px; color: var(--gris);
+  line-height: 1.6; flex: 1; margin-bottom: 20px;
+  font-weight: 500;
+}
+
+/* Tag pills */
+.dash-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 20px;
+}
+.dash-tag {
+  font-size: 10px; font-weight: 700;
+  padding: 3px 9px; border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+
+/* Stats row */
+.dash-stats {
+  display: flex; gap: 20px;
+  padding: 14px 0;
+  border-top: 1px solid var(--gris-border);
+  border-bottom: 1px solid var(--gris-border);
+  margin-bottom: 20px;
+}
+.dash-stat {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.dash-stat .val {
+  font-size: 17px; font-weight: 800; color: var(--azul-dark);
+  line-height: 1;
+}
+.dash-stat .lbl {
+  font-size: 9.5px; font-weight: 600; color: var(--gris);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+/* CTA button */
+.dash-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--azul);
+  color: var(--blanco);
+  border: none; border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 12.5px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.15s;
+  text-decoration: none;
+  align-self: flex-start;
+}
+.dash-cta:hover { background: var(--azul-dark); }
+.dash-cta svg { flex-shrink: 0; }
+
+/* ─── INFO STRIP ─────────────────────────────────────────── */
+.info-strip {
+  background: var(--blanco);
+  border: 1.5px solid var(--gris-border);
+  border-radius: 12px;
+  padding: 20px 28px;
+  display: flex; align-items: center; gap: 24px;
+  flex-wrap: wrap;
+}
+.info-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: var(--gris); font-weight: 500;
+}
+.info-item svg { flex-shrink: 0; color: var(--azul); }
+.info-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gris-border); }
+
+/* ─── FOOTER ─────────────────────────────────────────────── */
+.footer {
+  background: var(--azul-dark);
+  color: rgba(255,255,255,0.6);
+  padding: 18px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 11px; font-weight: 500;
+  flex-wrap: wrap; gap: 8px;
+}
+.footer strong { color: rgba(255,255,255,0.9); }
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ──────────────────────────────────────────── -->
+<header class="header">
+  <div class="brand">
+    <img src="data:image/png;base64,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" alt="333">
+    <div class="brand-text">
+      <h1>333 Intelligence Hub</h1>
+      <p>Departamento de Economía y Sostenibilidad · LATAM</p>
+    </div>
+  </div>
+  <span class="header-badge">7 Dashboards · Sector Porcino, Macroeconomía & Marketing</span>
+</header>
+
+<!-- ─── HERO ─────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-eyebrow">Plataforma de análisis sectorial</div>
+  <h2>Dashboards de <span>Inteligencia 333</span><br>para LATAM</h2>
+  <p>Accede a los tableros de análisis del sector porcino latinoamericano y marketing digital. Datos actualizados, visualizaciones interactivas y benchmarking regional.</p>
+</section>
+
+<!-- ─── MAIN ──────────────────────────────────────────────── -->
+<main class="main">
+
+  <div class="section-label">Dashboards disponibles</div>
+
+  <div class="dashboards-grid">
+
+    <!-- Card 1: Panorama Porcino -->
+    <a class="dash-card" href="Dashboard_Porcino_LATAM.html" target="_blank">
+      <div class="dash-card-banner" style="background: linear-gradient(90deg, #1F6DB1, #2E86C1);"></div>
+      <div class="dash-card-body">
+        <div class="dash-card-icon" style="background:#E6F0F9;">🌎</div>
+        <h3>Panorama Porcino LATAM</h3>
+        <p class="dash-desc">Análisis macroeconómico del sector porcino en Latinoamérica. Producción, comercio exterior, consumo per cápita y evolución de precios por país.</p>
+        <div class="dash-tags">
+          <span class="dash-tag" style="background:#E6F0F9;color:#1F6DB1;">Macroeconomía</span>
+          <span class="dash-tag" style="background:#E6F0F9;color:#1F6DB1;">Comercio</span>
+          <span class="dash-tag" style="background:#E6F0F9;color:#1F6DB1;">Producción</span>
+          <span class="dash-tag" style="background:#FDF0E4;color:#E97721;">Precios</span>
+        </div>
+        <div class="dash-stats">
+          <div class="dash-stat">
+            <span class="val">15</span>
+            <span class="lbl">Países</span>
+          </div>
+          <div class="dash-stat">
+            <span class="val">4</span>
+            <span class="lbl">Pestañas</span>
+          </div>
+          <div class="dash-stat">
+            <span class="val">ES·EN·IT</span>
+            <span class="lbl">Idiomas</span>
+          </div>
+        </div>
+        <span class="dash-cta">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Abrir dashboard
+        </span>
+      </div>
+    </a>
+
+    <!-- Card 2: Indicadores Productivos -->
+    <a class="dash-card" href="Dashboard_Indicadores_LATAM.html" target="_blank">
+      <div class="dash-card-banner" style="background: linear-gradient(90deg, #E97721, #F4A23A);"></div>
+      <div class="dash-card-body">
+        <div class="dash-card-icon" style="background:#FDF0E4;">📊</div>
+        <h3>Indicadores Productivos LATAM</h3>
+        <p class="dash-desc">Benchmarking zootécnico del sector porcino. Indicadores reproductivos y productivos por país, con histórico 2021–2025. Fuente: AGRINESS.</p>
+        <div class="dash-tags">
+          <span class="dash-tag" style="background:#FDF0E4;color:#E97721;">Benchmarking</span>
+          <span class="dash-tag" style="background:#FDF0E4;color:#E97721;">Zootecnia</span>
+          <span class="dash-tag" style="background:#E6F0F9;color:#1F6DB1;">AGRINESS</span>
+          <span class="dash-tag" style="background:#E6F0F9;color:#1F6DB1;">2021–2025</span>
+        </div>
+        <div class="dash-stats">
+          <div class="dash-stat">
+            <span class="val">15</span>
+            <span class="lbl">Países</span>
+          </div>
+          <div class="dash-stat">
+            <span class="val">4</span>
+            <span class="lbl">Pestañas</span>
+          </div>
+          <div class="dash-stat">
+            <span class="val">19</span>
+            <span class="lbl">Indicadores</span>
+          </div>
+        </div>
+        <span class="dash-cta" style="background:var(--naranja);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Abrir dashboard
+        </span>
+      </div>
+    </a>
+
+    <!-- Card 3: Estadísticas MSD Chile -->
+    <a class="dash-card" href="Dashboard_MSD_Chile.html" target="_blank">
+      <div class="dash-card-banner" style="background: linear-gradient(90deg, #2A8F4F, #3DAE65);"></div>
+      <div class="dash-card-body">
+        <div class="dash-card-icon" style="background:#E6F4EB;">📈</div>
+        <h3>Estadísticas MSD Chile</h3>
+        <p class="dash-desc">Análisis de campaña de marketing digital para MSD Animal Health. Impresiones, clics, CTR y CPM por categoría y mes. Comparativo entre campañas.</p>
+        <div class="dash-tags">
+          <span class="dash-tag" style="background:#E6F4EB;color:#2A8F4F;">Marketing</span>
+          <span class="dash-tag" style="background:#E6F4EB;color:#2A8F4F;">MSD Chile</span>
+          <span class="dash-tag" style="background:#E6F0F9;color:#1F6DB1;">2024–2025</span>
+          <span class="dash-tag" style="background:#E6F0F9;color:#1F6DB1;">2 campañas</span>
+        </div>
+        <div class="dash-stats">
+          <div class="dash-stat">
+            <span class="val">2</span>
+            <span class="lbl">Campañas</span>
+          </div>
+          <div class="dash-stat">
+            <span class="val">5</span>
+            <span class="lbl">Categorías</span>
+          </div>
+          <div class="dash-stat">
+            <span class="val">400K+</span>
+            <span class="lbl">Impresiones</span>
+          </div>
+        </div>
+        <span class="dash-cta" style="background:#2A8F4F;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Abrir dashboard
+        </span>
+      </div>
+    </a>
+
+    <!-- Card 4: Res, Cerdo y Pollo Mundial -->
+    <a class="dash-card" href="https://indicadoresrescerdopollousda.netlify.app/" target="_blank">
+      <div class="dash-card-banner" style="background: linear-gradient(90deg, #0E7C86, #17A2B8);"></div>
+      <div class="dash-card-body">
+        <div class="dash-card-icon" style="background:#E0F7FA;">🥩</div>
+        <h3>Res, Cerdo y Pollo — Mundial</h3>
+        <p class="dash-desc">Análisis sectorial mundial de producción, comercio exterior y consumo aparente de res, cerdo y pollo. Serie histórica 2011–2025, fuente USDA PSD.</p>
+        <div class="dash-tags">
+          <span class="dash-tag" style="background:#E0F7FA;color:#0E7C86;">Producción</span>
+          <span class="dash-tag" style="background:#E0F7FA;color:#0E7C86;">Comercio Exterior</span>
+          <span class="dash-tag" style="background:#E0F7FA;color:#0E7C86;">Consumo Aparente</span>
+          <span class="dash-tag" style="background:#E6F0F9;color:#1F6DB1;">USDA</span>
+        </div>
+        <div class="dash-stats">
+          <div class="dash-stat">
+            <span class="val">3</span>
+            <span class="lbl">Proteínas</span>
+          </div>
+          <div class="dash-stat">
+            <span class="val">2011–25</span>
+            <span class="lbl">Período</span>
+          </div>
+          <div class="dash-stat">
+            <span class="val">Mundial</span>
+            <span class="lbl">Alcance</span>
+          </div>
+        </div>
+        <span class="dash-cta" style="background:#0E7C86;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Abrir dashboard
+        </span>
+      </div>
+    </a>
+
+    <!-- Card 5: Brújula PIB FMI -->
+    <a class="dash-card" href="https://pibmundialproyectado.netlify.app/" target="_blank">
+      <div class="dash-card-banner" style="background: linear-gradient(90deg, #6B46C1, #9F7AEA);"></div>
+      <div class="dash-card-body">
+        <div class="dash-card-icon" style="background:#F0E9FB;">🧭</div>
+        <h3>Brújula PIB · Diagnóstico FMI</h3>
+        <p class="dash-desc">Diagnóstico interactivo de exposición macroeconómica basado en las proyecciones del FMI (abril 2026). Panorama global, datos por país y lectura personalizada por perfil de negocio.</p>
+        <div class="dash-tags">
+          <span class="dash-tag" style="background:#F0E9FB;color:#6B46C1;">Macroeconomía</span>
+          <span class="dash-tag" style="background:#F0E9FB;color:#6B46C1;">FMI</span>
+          <span class="dash-tag" style="background:#F0E9FB;color:#6B46C1;">Diagnóstico</span>
+          <span class="dash-tag" style="background:#E6F0F9;color:#1F6DB1;">Global</span>
+        </div>
+        <div class="dash-stats">
+          <div class="dash-stat">
+            <span class="val">3.1%</span>
+            <span class="lbl">PIB 2026</span>
+          </div>
+          <div class="dash-stat">
+            <span class="val">4</span>
+            <span class="lbl">Preguntas</span>
+          </div>
+          <div class="dash-stat">
+            <span class="val">2026–27</span>
+            <span class="lbl">Horizonte</span>
+          </div>
+        </div>
+        <span class="dash-cta" style="background:#6B46C1;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Abrir dashboard
+        </span>
+      </div>
+    </a>
+
+    <!-- Card 6: Variables Fundamentales LATAM -->
+    <a class="dash-card" href="https://avancevariablesfundamentaleslatam.netlify.app/" target="_blank">
+      <div class="dash-card-banner" style="background: linear-gradient(90deg, #B0224D, #E0447A);"></div>
+      <div class="dash-card-body">
+        <div class="dash-card-icon" style="background:#FCE4EC;">🐖</div>
+        <h3>Variables Fundamentales LATAM</h3>
+        <p class="dash-desc">Ficha de seguimiento y proyección por país de las variables fundamentales de la porcicultura LATAM. Vistas de tabla y gráfica, con exportación a PDF.</p>
+        <div class="dash-tags">
+          <span class="dash-tag" style="background:#FCE4EC;color:#B0224D;">Proyecciones</span>
+          <span class="dash-tag" style="background:#FCE4EC;color:#B0224D;">Porcicultura</span>
+          <span class="dash-tag" style="background:#E6F0F9;color:#1F6DB1;">LATAM</span>
+          <span class="dash-tag" style="background:#E6F0F9;color:#1F6DB1;">Ficha país</span>
+        </div>
+        <div class="dash-stats">
+          <div class="dash-stat">
+            <span class="val">4</span>
+            <span class="lbl">Frecuencias</span>
+          </div>
+          <div class="dash-stat">
+            <span class="val">2</span>
+            <span class="lbl">Métodos proy.</span>
+          </div>
+          <div class="dash-stat">
+            <span class="val">PDF</span>
+            <span class="lbl">Exportable</span>
+          </div>
+        </div>
+        <span class="dash-cta" style="background:#B0224D;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Abrir dashboard
+        </span>
+      </div>
+    </a>
+
+    <!-- Card 7: Pork Economics versión web -->
+    <a class="dash-card" href="https://webporkeconomics.netlify.app/" target="_blank">
+      <div class="dash-card-banner" style="background: linear-gradient(90deg, #1F6DB1, #2E86C1);"></div>
+      <div class="dash-card-body">
+        <div class="dash-card-icon" style="background:#E6F0F9;">📰</div>
+        <h3>Pork Economics versión web</h3>
+        <p class="dash-desc">Repositorio de los boletines del Pork Economics.</p>
+        <div class="dash-tags">
+          <span class="dash-tag" style="background:#E6F0F9;color:#1F6DB1;">Informes Económicos</span>
+        </div>
+        <span class="dash-cta">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Abrir dashboard
+        </span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Info strip -->
+  <div class="info-strip">
+    <div class="info-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      Actualización periódica · Fuentes: AGRINESS, datos sectoriales & MSD
+    </div>
+    <div class="info-dot"></div>
+    <div class="info-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      333 Departamento de Economía y Sostenibilidad
+    </div>
+    <div class="info-dot"></div>
+    <div class="info-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Uso interno · 333 Corporate®
+    </div>
+  </div>
+
+</main>
+
+<!-- ─── FOOTER ─────────────────────────────────────────────── -->
+<footer class="footer">
+  <span><strong>333 Corporate®</strong> · Departamento de Economía y Sostenibilidad · LATAM</span>
+  <span>Para uso interno · pig333.com</span>
+</footer>
+
+</body>
+</html>

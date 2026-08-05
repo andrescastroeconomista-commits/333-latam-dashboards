@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brújula PIB · Diagnóstico de exposición macroeconómica FMI 2026–2027</title>
+<meta name="description" content="Diagnóstico interactivo para directivos basado en las proyecciones de crecimiento del FMI, abril de 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-950:#08111f;
+    --navy-900:#0d1c30;
+    --navy-800:#16304f;
+    --navy-700:#1e3f66;
+    --paper:#f3f5f8;
+    --paper-2:#e8ecf2;
+    --line:#d7dee8;
+    --line-strong:#b9c4d4;
+    --ink:#0d1c30;
+    --ink-soft:#4b5c74;
+    --teal:#1fb6a6;
+    --teal-dark:#0f8a7d;
+    --amber:#dc9f3e;
+    --coral:#e05a3f;
+    --white:#ffffff;
+    --radius:14px;
+    --shadow-sm:0 1px 2px rgba(13,28,48,.06), 0 1px 1px rgba(13,28,48,.04);
+    --shadow-md:0 8px 24px rgba(13,28,48,.10);
+    --shadow-lg:0 20px 50px rgba(8,17,31,.28);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+  }
+  body{
+    margin:0;
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  img,svg{display:block;max-width:100%;}
+  button{font-family:inherit;}
+  :focus-visible{outline:3px solid var(--amber); outline-offset:3px;}
+
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+  @media (max-width:640px){.wrap{padding:0 18px;}}
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:sticky;top:0;z-index:40;
+    background:rgba(8,17,31,.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .nav-inner{
+    max-width:1120px;margin:0 auto;padding:14px 24px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    color:var(--white);font-weight:700;font-size:1rem;
+  }
+  .brand-mark{
+    width:28px;height:28px;border-radius:8px;
+    background:linear-gradient(135deg,var(--teal),var(--amber));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--navy-950);font-weight:700;
+    flex:none;
+  }
+  .nav-links{display:flex;gap:4px;list-style:none;margin:0;padding:0;}
+  .nav-links a{
+    color:rgba(255,255,255,.75);text-decoration:none;font-size:.88rem;font-weight:500;
+    padding:8px 12px;border-radius:8px;transition:background .15s,color .15s;
+  }
+  .nav-links a:hover{color:#fff;background:rgba(255,255,255,.08);}
+  .nav-cta{
+    background:var(--teal);color:var(--navy-950)!important;font-weight:600!important;
+  }
+  .nav-cta:hover{background:#2bd0bd;}
+  .nav-toggle{display:none;background:none;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:7px 10px;}
+  @media (max-width:820px){
+    .nav-links{position:fixed;top:58px;left:0;right:0;background:var(--navy-950);flex-direction:column;
+      padding:10px 20px 18px;border-bottom:1px solid rgba(255,255,255,.08);display:none;gap:2px;}
+    .nav-links.open{display:flex;}
+    .nav-toggle{display:inline-flex;align-items:center;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:
+      radial-gradient(circle at 82% -10%, rgba(31,182,166,.28), transparent 55%),
+      radial-gradient(circle at 8% 110%, rgba(220,159,62,.18), transparent 50%),
+      linear-gradient(180deg,var(--navy-950),var(--navy-900) 60%,var(--navy-800));
+    color:#fff;
+    padding:76px 0 84px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-grid{
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse at 60% 30%, black, transparent 72%);
+    pointer-events:none;
+  }
+  .hero-inner{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;}
+  @media (max-width:900px){.hero-inner{grid-template-columns:1fr;}}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--teal);background:rgba(31,182,166,.12);border:1px solid rgba(31,182,166,.35);
+    padding:6px 12px;border-radius:100px;margin-bottom:22px;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 2.4s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+  .hero h1{font-size:clamp(2rem,4.4vw,3.1rem);line-height:1.08;font-weight:700;max-width:620px;}
+  .hero h1 em{font-style:normal;color:var(--teal);}
+  .hero p.lead{color:rgba(255,255,255,.72);font-size:1.05rem;max-width:520px;margin-top:20px;}
+  .hero-actions{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap;}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:13px 22px;border-radius:10px;font-weight:600;font-size:.95rem;
+    text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .15s,background .15s,border-color .15s;
+  }
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--teal);color:var(--navy-950);}
+  .btn-primary:hover{background:#2bd0bd;}
+  .btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.3);}
+  .btn-ghost:hover{border-color:rgba(255,255,255,.7);}
+  .btn-dark{background:var(--navy-900);color:#fff;}
+  .btn-dark:hover{background:var(--navy-700);}
+  .btn[disabled]{opacity:.4;cursor:not-allowed;}
+
+  .hero-stat-card{
+    background:rgba(255,255,255,.045);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:18px;padding:26px;
+    box-shadow:var(--shadow-lg);
+  }
+  .hero-stat-card .label{font-size:.75rem;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.07em;font-family:'IBM Plex Mono',monospace;}
+  .hero-stat-big{font-size:3.2rem;font-weight:700;color:#fff;margin-top:6px;font-family:'Space Grotesk';}
+  .hero-stat-big span{font-size:1.4rem;color:var(--teal);}
+  .hero-stat-sub{color:rgba(255,255,255,.65);font-size:.88rem;margin-top:4px;}
+  .hero-mini-row{display:flex;gap:10px;margin-top:20px;}
+  .hero-mini{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 12px;}
+  .hero-mini .k{font-family:'IBM Plex Mono';font-size:1.15rem;font-weight:600;color:#fff;}
+  .hero-mini .t{font-size:.72rem;color:rgba(255,255,255,.55);margin-top:2px;}
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:80px 0;}
+  @media (max-width:640px){section{padding:56px 0;}}
+  .section-head{max-width:640px;margin-bottom:40px;}
+  .section-tag{
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;
+    color:var(--teal-dark);font-weight:600;
+  }
+  .section-head h2{font-size:clamp(1.5rem,3vw,2.1rem);margin-top:8px;}
+  .section-head p{color:var(--ink-soft);margin-top:12px;font-size:1rem;}
+
+  .stat-band{background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);}
+  .stat-cell{background:var(--white);padding:26px 20px;}
+  .stat-cell .k{font-family:'Space Grotesk';font-size:1.9rem;font-weight:700;}
+  .stat-cell .k.down{color:var(--coral);}
+  .stat-cell .k.up{color:var(--teal-dark);}
+  .stat-cell .t{color:var(--ink-soft);font-size:.85rem;margin-top:4px;}
+  @media (max-width:760px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+
+  /* ---------- PANORAMA ---------- */
+  .risk-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;}
+  @media (max-width:860px){.risk-grid{grid-template-columns:1fr;}}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow-sm);}
+  .card h3{font-size:1.05rem;margin-bottom:14px;}
+  .bullet-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;}
+  .bullet-list li{display:flex;gap:12px;font-size:.92rem;color:var(--ink-soft);}
+  .bullet-list .ico{flex:none;width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.8rem;}
+  .ico-down{background:rgba(224,90,63,.12);color:var(--coral);}
+  .ico-up{background:rgba(31,182,166,.14);color:var(--teal-dark);}
+  .ico-flat{background:rgba(220,159,62,.16);color:var(--amber);}
+  .quote-box{background:var(--navy-950);color:#fff;border-radius:var(--radius);padding:26px;}
+  .quote-box .section-tag{color:var(--teal);}
+  .quote-box p{color:rgba(255,255,255,.85);font-size:.98rem;margin-top:14px;}
+  .quote-box .src{margin-top:18px;font-size:.78rem;color:rgba(255,255,255,.45);}
+
+  /* ---------- COUNTRY TABLE ---------- */
+  .filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
+  .chip{
+    border:1px solid var(--line-strong);background:var(--white);color:var(--ink-soft);
+    padding:8px 14px;border-radius:100px;font-size:.83rem;cursor:pointer;font-weight:500;
+    transition:all .15s;
+  }
+  .chip:hover{border-color:var(--teal-dark);}
+  .chip.active{background:var(--navy-950);color:#fff;border-color:var(--navy-950);}
+  .country-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;}
+  .c-card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px;transition:box-shadow .15s,transform .15s;}
+  .c-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);}
+  .c-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+  .c-card .flag{font-size:1.5rem;line-height:1;}
+  .c-card h4{font-size:.98rem;margin-top:8px;}
+  .c-card .region{font-size:.72rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
+  .c-card .nums{display:flex;gap:16px;margin-top:14px;}
+  .c-card .num{flex:1;}
+  .c-card .num .yr{font-size:.68rem;color:var(--ink-soft);font-family:'IBM Plex Mono';}
+  .c-card .num .val{font-family:'Space Grotesk';font-size:1.25rem;font-weight:700;}
+  .c-card .val.up{color:var(--teal-dark);}
+  .c-card .val.down{color:var(--coral);}
+  .c-card .note{font-size:.8rem;color:var(--ink-soft);margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;}
+  .empty-note{grid-column:1/-1;color:var(--ink-soft);font-size:.9rem;padding:20px;text-align:center;background:var(--white);border:1px dashed var(--line-strong);border-radius:12px;}
+
+  /* ---------- DIAGNOSTIC ---------- */
+  .diag-shell{
+    background:var(--navy-950);border-radius:22px;padding:40px;color:#fff;
+    display:grid;grid-template-columns:1fr 1fr;gap:36px;
+  }
+  @media (max-width:900px){.diag-shell{grid-template-columns:1fr;padding:26px;}}
+  .progress-track{display:flex;gap:6px;margin-bottom:26px;}
+  .progress-seg{height:4px;flex:1;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden;}
+  .progress-seg i{display:block;height:100%;width:0%;background:var(--teal);transition:width .3s;}
+  .q-step{display:none;}
+  .q-step.active{display:block;animation:fadein .25s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  .q-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-family:'IBM Plex Mono';}
+  .q-title{font-size:1.3rem;margin-top:10px;margin-bottom:20px;font-family:'Space Grotesk';font-weight:600;}
+  .opt-list{display:flex;flex-direction:column;gap:10px;}
+  .opt{
+    text-align:left;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+    border-radius:10px;padding:14px 16px;color:#fff;cursor:pointer;font-size:.93rem;font-weight:500;
+    transition:background .15s,border-color .15s;
+  }
+  .opt:hover{border-color:var(--teal);}
+  .opt.selected{background:rgba(31,182,166,.16);border-color:var(--teal);}
+  .feedback{
+    margin-top:16px;background:rgba(255,255,255,.06);border-left:3px solid var(--teal);
+    border-radius:8px;padding:12px 14px;font-size:.86rem;color:rgba(255,255,255,.85);
+    display:none;
+  }
+  .feedback.show{display:block;animation:fadein .25s ease;}
+  .q-nav{display:flex;justify-content:space-between;margin-top:26px;}
+
+  .compass-side{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+  .compass-caption{font-size:.8rem;color:rgba(255,255,255,.55);margin-top:14px;max-width:280px;}
+  .needle{transform-origin:150px 150px;transition:transform .6s cubic-bezier(.34,1.56,.64,1);}
+  .compass-value{font-family:'Space Grotesk';font-size:2rem;font-weight:700;margin-top:10px;}
+  .compass-tag{font-family:'IBM Plex Mono';font-size:.75rem;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;}
+
+  .result-panel{display:none;}
+  .result-panel.show{display:block;animation:fadein .3s ease;}
+  .result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px;}
+  @media (max-width:760px){.result-grid{grid-template-columns:1fr;}}
+  .result-cell{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px;}
+  .result-cell .t{font-size:.75rem;text-transform:uppercase;color:var(--ink-soft);letter-spacing:.05em;}
+  .result-cell .v{font-family:'Space Grotesk';font-size:1.5rem;font-weight:700;margin-top:4px;}
+
+  /* ---------- SÍNTESIS ---------- */
+  .synth-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media (max-width:820px){.synth-grid{grid-template-columns:1fr;}}
+  .synth-card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:22px;}
+  .synth-card .num{
+    display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;
+    border-radius:8px;background:var(--navy-950);color:#fff;font-family:'IBM Plex Mono';font-size:.8rem;font-weight:600;
+    margin-bottom:12px;
+  }
+  .synth-card h4{font-size:1rem;margin-bottom:8px;}
+  .synth-card p{font-size:.88rem;color:var(--ink-soft);margin:0;}
+  #diag-actions-list{list-style:none;margin:20px 0 0;padding:0;display:flex;flex-direction:column;gap:12px;}
+  #diag-actions-list li{
+    background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;
+    font-size:.92rem;display:flex;gap:10px;
+  }
+  #diag-actions-list li b{color:var(--teal-dark);font-family:'IBM Plex Mono';font-size:.8rem;flex:none;}
+
+  footer{background:var(--navy-950);color:rgba(255,255,255,.6);padding:40px 0;font-size:.82rem;}
+  footer a{color:var(--teal);text-decoration:none;}
+  footer .foot-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+  .disclaimer{max-width:1120px;margin:0 auto 18px;padding:0 24px;color:rgba(255,255,255,.4);font-size:.76rem;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="brand-mark">PIB</span> Brújula Macro</div>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks">☰ Menú</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#panorama">Panorama global</a></li>
+      <li><a href="#paises">Por país</a></li>
+      <li><a href="#diagnostico">Diagnóstico</a></li>
+      <li><a href="#sintesis">Síntesis</a></li>
+      <li><a href="#diagnostico" class="nav-cta">Iniciar diagnóstico</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="inicio">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <div>
+      <span class="eyebrow"><span class="dot"></span> FMI · Perspectivas de la Economía Mundial, abril 2026</span>
+      <h1>Convierta las proyecciones del PIB mundial en <em>decisiones de negocio</em>, no en cifras sueltas.</h1>
+      <p class="lead">Esta herramienta traduce el informe del FMI a un diagnóstico de tres minutos para su empresa: dónde crece la economía, dónde se frena, y qué significa eso para su exposición comercial en 2026 y 2027.</p>
+      <div class="hero-actions">
+        <a href="#diagnostico" class="btn btn-primary">Iniciar diagnóstico interactivo →</a>
+        <a href="#panorama" class="btn btn-ghost">Ver panorama global</a>
+      </div>
+    </div>
+    <div class="hero-stat-card">
+      <div class="label">Crecimiento mundial proyectado</div>
+      <div class="hero-stat-big">3.1<span>% · 2026</span></div>
+      <div class="hero-stat-sub">3.2% en 2027 — desaceleración desde el 3.4% estimado de 2025, por el conflicto en Medio Oriente.</div>
+      <div class="hero-mini-row">
+        <div class="hero-mini"><div class="k">4.4%</div><div class="t">Inflación mundial 2026</div></div>
+        <div class="hero-mini"><div class="k">+21%</div><div class="t">Precio del petróleo 2026</div></div>
+        <div class="hero-mini"><div class="k">2.8%</div><div class="t">Comercio mundial 2026</div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= PANORAMA ================= -->
+<section id="panorama">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">01 · Panorama global</span>
+      <h2>La economía mundial resiste, pero con menos margen de maniobra</h2>
+      <p>El escenario de referencia del FMI asume un conflicto en Medio Oriente relativamente breve. Si se prolonga, el propio FMI calcula un impacto adicional a la baja de hasta 1.1 puntos porcentuales en el crecimiento mundial de 2026.</p>
+    </div>
+
+    <div class="risk-grid">
+      <div class="card">
+        <h3>Lo que cambió frente a enero de 2026</h3>
+        <ul class="bullet-list">
+          <li><span class="ico ico-down">▼</span><span><b>Crecimiento mundial 2026: 3.1%</b>, 0.2 puntos por debajo del pronóstico de enero, por el cierre parcial del estrecho de Ormuz y el alza de precios de energía.</span></li>
+          <li><span class="ico ico-up">▲</span><span><b>Estados Unidos: 2.3%</b> en 2026, sostenido por política fiscal y el rezago de los recortes de tasas de 2025, pese a mayores aranceles.</span></li>
+          <li><span class="ico ico-flat">■</span><span><b>China: 4.4%</b> en 2026 (revisado al alza frente a octubre) gracias a menores aranceles efectivos de EE. UU., aunque persiste la desaceleración estructural.</span></li>
+          <li><span class="ico ico-down">▼</span><span><b>Zona euro: 1.1%</b> en 2026, presionada por la dependencia energética y la apreciación del euro frente a competidores.</span></li>
+          <li><span class="ico ico-up">▲</span><span><b>América Latina y el Caribe: 2.3%</b> en 2026 y 2.7% en 2027, con impacto heterogéneo: Brasil se beneficia levemente por ser exportador neto de energía; México inicia una recuperación moderada.</span></li>
+        </ul>
+      </div>
+
+      <div class="quote-box">
+        <span class="section-tag">Lectura para el directorio</span>
+        <p>El FMI advierte que los riesgos están "decisivamente sesgados a la baja": un conflicto más prolongado, mayor fragmentación geopolítica, una decepción en la productividad impulsada por IA, o el resurgimiento de tensiones comerciales podrían debilitar aún más el crecimiento.</p>
+        <p>La revisión conjunta del T-MEC está prevista para julio de 2026, en la misma ventana en que vencen los aranceles temporales de la Sección 122 de EE. UU. — un punto de inflexión concreto para planear en el corto plazo.</p>
+        <div class="src">Fuente: FMI, World Economic Outlook, abril de 2026 (Capítulo 1).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat-band" style="margin-top:48px;">
+    <div class="wrap" style="padding-top:0;padding-bottom:0;">
+      <div class="stat-grid">
+        <div class="stat-cell"><div class="k down">3.1%</div><div class="t">PIB mundial 2026</div></div>
+        <div class="stat-cell"><div class="k up">3.2%</div><div class="t">PIB mundial 2027</div></div>
+        <div class="stat-cell"><div class="k">3.1%</div><div class="t">Crecimiento potencial medio 2028–31 (vs. 3.7% histórico prepandemia)</div></div>
+        <div class="stat-cell"><div class="k down">25%</div><div class="t">Probabilidad estimada de crecimiento mundial &lt;2% en 2026</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAÍSES ================= -->
+<section id="paises">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">02 · Datos por país y región</span>
+      <h2>Explore el crecimiento proyectado por geografía</h2>
+      <p>Filtre por región para ubicar rápidamente los mercados relevantes para su cadena de valor.</p>
+    </div>
+
+    <div class="filter-row" id="filterRow">
+      <button class="chip active" data-region="todos">Todos</button>
+      <button class="chip" data-region="Agregados">Agregados mundiales</button>
+      <button class="chip" data-region="Norteamérica">Norteamérica</button>
+      <button class="chip" data-region="LatAm">América Latina</button>
+      <button class="chip" data-region="Europa">Europa</button>
+      <button class="chip" data-region="Asia">Asia</button>
+      <button class="chip" data-region="MOA">Medio Oriente y África</button>
+    </div>
+
+    <div class="country-grid" id="countryGrid"></div>
+  </div>
+</section>
+
+<!-- ================= DIAGNÓSTICO ================= -->
+<section id="diagnostico" style="background:var(--paper-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">03 · Diagnóstico interactivo</span>
+      <h2>¿Qué significan estas cifras para su empresa?</h2>
+      <p>Responda cuatro preguntas sobre la exposición de su negocio. Cada respuesta muestra de inmediato el dato del FMI relacionado, y al final recibirá una lectura personalizada con acciones concretas.</p>
+    </div>
+
+    <div class="diag-shell">
+      <div>
+        <div class="progress-track" id="progressTrack"></div>
+
+        <!-- PASO 1 -->
+        <div class="q-step active" data-step="1">
+          <div class="q-label">Pregunta 1 de 4</div>
+          <div class="q-title">¿Cuál es la región de mayor exposición de ingresos o proveedores de su empresa?</div>
+          <div class="opt-list" data-question="region">
+            <button class="opt" data-value="latam">América Latina</button>
+            <button class="opt" data-value="namerica">Norteamérica (EE. UU. / Canadá)</button>
+            <button class="opt" data-value="europe">Europa</button>
+            <button class="opt" data-value="asia">Asia (China, India y otros)</button>
+            <button class="opt" data-value="global">Exposición diversificada / global</button>
+          </div>
+          <div class="feedback" id="fb-region"></div>
+        </div>
+
+        <!-- PASO 2 -->
+        <div class="q-step" data-step="2">
+          <div class="q-label">Pregunta 2 de 4</div>
+          <div class="q-title">¿Cuál es la naturaleza principal de su negocio?</div>
+          <div class="opt-list" data-question="sector">
+            <button class="opt" data-value="commodities">Exportador de materias primas o energía</button>
+            <button class="opt" data-value="manufacturing">Manufactura / industria</button>
+            <button class="opt" data-value="services">Servicios o tecnología</button>
+            <button class="opt" data-value="domestic">Consumo interno / mercado local</button>
+          </div>
+          <div class="feedback" id="fb-sector"></div>
+        </div>
+
+        <!-- PASO 3 -->
+        <div class="q-step" data-step="3">
+          <div class="q-label">Pregunta 3 de 4</div>
+          <div class="q-title">¿Cómo calificaría la exposición de su empresa a riesgos geopolíticos y energéticos?</div>
+          <div class="opt-list" data-question="risk">
+            <button class="opt" data-value="high">Alta: dependemos de energía importada o rutas marítimas sensibles</button>
+            <button class="opt" data-value="medium">Media: exposición parcial, con capacidad de trasladar costos</button>
+            <button class="opt" data-value="low">Baja: somos exportadores de energía o poco sensibles a materias primas</button>
+          </div>
+          <div class="feedback" id="fb-risk"></div>
+        </div>
+
+        <!-- PASO 4 -->
+        <div class="q-step" data-step="4">
+          <div class="q-label">Pregunta 4 de 4</div>
+          <div class="q-title">¿Cuál es su horizonte de decisión estratégica?</div>
+          <div class="opt-list" data-question="horizon">
+            <button class="opt" data-value="short">Corto plazo (2026): gestionar el choque inmediato</button>
+            <button class="opt" data-value="medium">Mediano plazo (2026–2027): ciclo de recuperación e inversión</button>
+            <button class="opt" data-value="long">Estratégico (2028–2031): crecimiento potencial y estructural</button>
+          </div>
+          <div class="feedback" id="fb-horizon"></div>
+        </div>
+
+        <div class="q-nav">
+          <button class="btn btn-dark" id="btnBack" disabled>← Atrás</button>
+          <button class="btn btn-primary" id="btnNext" disabled>Siguiente →</button>
+        </div>
+      </div>
+
+      <div class="compass-side">
+        <div class="compass-tag" id="compassTag">Brújula económica</div>
+        <svg viewBox="0 0 300 170" width="260" height="150" role="img" aria-label="Indicador de crecimiento proyectado">
+          <defs>
+            <linearGradient id="arcGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#e05a3f"/>
+              <stop offset="50%" stop-color="#dc9f3e"/>
+              <stop offset="100%" stop-color="#1fb6a6"/>
+            </linearGradient>
+          </defs>
+          <path d="M 20 150 A 130 130 0 0 1 280 150" fill="none" stroke="url(#arcGradient)" stroke-width="14" stroke-linecap="round"/>
+          <g id="needleGroup" class="needle" style="transform:rotate(-45deg);">
+            <line x1="150" y1="150" x2="150" y2="40" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="150" cy="150" r="8" fill="#ffffff"/>
+          </g>
+        </svg>
+        <div class="compass-value" id="compassValue">3.1%</div>
+        <div class="compass-caption" id="compassCaption">Referencia inicial: crecimiento mundial 2026. Responda las preguntas para ajustar la brújula a su exposición real.</div>
+      </div>
+    </div>
+
+    <!-- RESULTADO -->
+    <div class="result-panel" id="resultPanel">
+      <div class="section-head" style="margin-top:44px;">
+        <span class="section-tag">Resultado de su diagnóstico</span>
+        <h2 id="resultTitle">Su lectura personalizada</h2>
+        <p id="resultSummary"></p>
+      </div>
+      <div class="result-grid">
+        <div class="result-cell"><div class="t">Crecimiento 2026 (región elegida)</div><div class="v" id="resG26">—</div></div>
+        <div class="result-cell"><div class="t">Crecimiento 2027 (región elegida)</div><div class="v" id="resG27">—</div></div>
+        <div class="result-cell"><div class="t">Nivel de riesgo asignado</div><div class="v" id="resRisk">—</div></div>
+      </div>
+      <ul id="diag-actions-list"></ul>
+      <div style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;">
+        <button class="btn btn-dark" id="btnRestart">↺ Repetir diagnóstico</button>
+        <a href="#sintesis" class="btn btn-primary">Ver síntesis accionable →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SÍNTESIS ================= -->
+<section id="sintesis">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">04 · Síntesis accionable</span>
+      <h2>Cuatro movimientos que sugiere el FMI para cualquier directivo</h2>
+      <p>Independientemente de su diagnóstico específico, el informe de abril de 2026 deja cuatro implicaciones prácticas para la planeación empresarial de este año.</p>
+    </div>
+
+    <div class="synth-grid">
+      <div class="synth-card">
+        <div class="num">01</div>
+        <h4>Cubra su exposición a energía en el corto plazo</h4>
+        <p>El petróleo se proyecta 21% más caro en 2026. Si su estructura de costos depende de combustibles o fletes, revise coberturas y cláusulas de ajuste de precio antes del tercer trimestre.</p>
+      </div>
+      <div class="synth-card">
+        <div class="num">02</div>
+        <h4>Vigile la ventana comercial de julio de 2026</h4>
+        <p>La revisión conjunta del T-MEC y el vencimiento de aranceles temporales de EE. UU. coinciden en esa fecha. Las empresas con cadenas de suministro norteamericanas deben tener un plan B de origen y arancel.</p>
+      </div>
+      <div class="synth-card">
+        <div class="num">03</div>
+        <h4>Diversifique antes de concentrar</h4>
+        <p>El impacto del conflicto es desigual por región: los importadores netos de energía y economías de bajos ingresos son los más golpeados. Diversificar geografías de venta y proveeduría reduce la varianza del ingreso.</p>
+      </div>
+      <div class="synth-card">
+        <div class="num">04</div>
+        <h4>No pierda de vista el horizonte estructural</h4>
+        <p>El crecimiento potencial global promedia apenas 3.1% para 2028–2031, por debajo del 3.7% histórico. La productividad —incluida la adopción de IA— es la palanca que el FMI señala como determinante para superar ese techo.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:24px;">
+      <h3>Antes de la próxima decisión de inversión, pregúntese:</h3>
+      <ul class="bullet-list">
+        <li><span class="ico ico-flat">?</span><span>¿Qué porcentaje de mis costos o ingresos está expuesto a la región y al sector con el crecimiento más volátil de mi diagnóstico?</span></li>
+        <li><span class="ico ico-flat">?</span><span>¿Tengo un plan de contingencia si el conflicto en Medio Oriente se prolonga más allá del escenario de referencia del FMI?</span></li>
+        <li><span class="ico ico-flat">?</span><span>¿Estoy invirtiendo en productividad al mismo ritmo que el crecimiento estructural se desacelera?</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="disclaimer">
+    Este contenido tiene fines informativos y de orientación estratégica; no constituye asesoría financiera, de inversión ni legal personalizada. Las cifras provienen del Fondo Monetario Internacional (FMI), World Economic Outlook, abril de 2026, y de la página de país de Colombia del FMI (abril de 2026); consulte siempre la fuente original para decisiones formales.
+  </div>
+  <div class="wrap foot-row">
+    <div>© 2026 · Brújula Macro. Elaborado a partir de datos públicos del FMI.</div>
+    <div><a href="https://www.imf.org/en/publications/weo" target="_blank" rel="noopener">Fuente: IMF World Economic Outlook ↗</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- NAV MOBILE ---------- */
+  var navToggle = document.getElementById('navToggle');
+  var navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', function(){
+    var open = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  navLinks.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ navLinks.classList.remove('open'); });
+  });
+
+  /* ---------- DATOS FMI (WEO abril 2026) ---------- */
+  var countries = [
+    {name:"Mundo (PIB total)", flag:"🌍", region:"Agregados", g25:3.4, g26:3.1, g27:3.2, note:"Escenario de referencia; asume conflicto breve en Medio Oriente."},
+    {name:"Economías avanzadas", flag:"🏛️", region:"Agregados", g25:1.9, g26:1.8, g27:1.7, note:"Impacto moderado del conflicto gracias a términos de intercambio favorables en EE. UU."},
+    {name:"Economías emergentes y en desarrollo", flag:"📈", region:"Agregados", g25:4.4, g26:3.9, g27:4.2, note:"Mayor sensibilidad a precios de energía y alimentos que las economías avanzadas."},
+    {name:"Estados Unidos", flag:"🇺🇸", region:"Norteamérica", g25:2.1, g26:2.3, g27:2.1, note:"Sostenido por política fiscal y rezago de recortes de tasas; persisten aranceles más altos."},
+    {name:"Canadá", flag:"🇨🇦", region:"Norteamérica", g25:1.7, g26:1.5, g27:1.9, note:"Freno por menor crecimiento poblacional, compensado por política fiscal de apoyo."},
+    {name:"México", flag:"🇲🇽", region:"LatAm", g25:0.6, g26:1.6, g27:2.2, note:"Recuperación moderada tras un 2025 débil por consolidación fiscal y tensiones comerciales."},
+    {name:"Brasil", flag:"🇧🇷", region:"LatAm", g25:2.3, g26:1.9, g27:2.0, note:"Beneficio neto leve en 2026 por ser exportador de energía; reservas y buffers fiscales amortiguan el choque."},
+    {name:"Colombia", flag:"🇨🇴", region:"LatAm", g25:null, g26:2.3, g27:null, note:"Dato del país FMI (abril 2026); inflación proyectada de 5.9% para 2026."},
+    {name:"América Latina y el Caribe", flag:"🌎", region:"LatAm", g25:2.4, g26:2.3, g27:2.7, note:"Impacto del conflicto heterogéneo: economías pequeñas resultan más afectadas."},
+    {name:"Zona euro", flag:"🇪🇺", region:"Europa", g25:1.4, g26:1.1, g27:1.2, note:"Presionada por dependencia energética y apreciación real del euro."},
+    {name:"Alemania", flag:"🇩🇪", region:"Europa", g25:0.2, g26:0.8, g27:1.2, note:"Repunte apoyado en mayor gasto fiscal, aún por debajo de su potencial histórico."},
+    {name:"Francia", flag:"🇫🇷", region:"Europa", g25:0.9, g26:0.9, g27:0.9, note:"Crecimiento plano; sin catalizadores claros de aceleración en el horizonte."},
+    {name:"España", flag:"🇪🇸", region:"Europa", g25:2.8, g26:2.1, g27:1.8, note:"Desaceleración gradual tras liderar el crecimiento entre las grandes economías del euro."},
+    {name:"Italia", flag:"🇮🇹", region:"Europa", g25:0.5, g26:0.5, g27:0.5, note:"Crecimiento estructuralmente bajo, sin cambios frente a 2025."},
+    {name:"Reino Unido", flag:"🇬🇧", region:"Europa", g25:1.3, g26:0.8, g27:1.3, note:"El conflicto y un ritmo más lento de recortes de tasas frenan la actividad en 2026."},
+    {name:"Rusia", flag:"🇷🇺", region:"Europa", g25:1.0, g26:1.1, g27:1.1, note:"Revisión al alza por mayores precios de materias primas."},
+    {name:"Japón", flag:"🇯🇵", region:"Asia", g25:1.2, g26:0.7, g27:0.6, note:"Impulso fiscal del nuevo gobierno compensa parcialmente la menor demanda externa."},
+    {name:"China", flag:"🇨🇳", region:"Asia", g25:5.0, g26:4.4, g27:4.0, note:"Revisado al alza por menores aranceles de EE. UU.; persiste freno estructural del sector inmobiliario."},
+    {name:"India", flag:"🇮🇳", region:"Asia", g25:7.6, g26:6.5, g27:6.5, note:"Cifras en año fiscal; impulso por menor arancel de EE. UU. (de 50% a 10%) sobre bienes indios."},
+    {name:"Asia emergente y en desarrollo", flag:"🌏", region:"Asia", g25:5.5, g26:4.9, g27:4.8, note:"Región más dinámica del mundo, aunque con desaceleración generalizada."},
+    {name:"Arabia Saudita", flag:"🇸🇦", region:"MOA", g25:4.5, g26:3.1, g27:4.5, note:"Fuerte revisión a la baja en 2026 por menor actividad petrolera vinculada al conflicto."},
+    {name:"Oriente Medio y Asia Central", flag:"🕌", region:"MOA", g25:3.6, g26:1.9, g27:4.6, note:"Región con el mayor impacto directo del conflicto; rebote esperado en 2027."},
+    {name:"África subsahariana", flag:"🌍", region:"MOA", g25:4.5, g26:4.3, g27:4.4, note:"Relativamente estable; importadores de petróleo no intensivos en recursos son los más afectados."},
+    {name:"Nigeria", flag:"🇳🇬", region:"MOA", g25:4.0, g26:4.1, g27:4.3, note:"Momentum sostenido por mayor estabilidad macro y términos de intercambio favorables."},
+    {name:"Sudáfrica", flag:"🇿🇦", region:"MOA", g25:1.1, g26:1.0, g27:1.3, note:"Leve freno en 2026 por el conflicto; recuperación en 2027 vía reformas estructurales."}
+  ];
+
+  var grid = document.getElementById('countryGrid');
+  function fmtVal(v){
+    if(v===null || v===undefined) return '<span class="val" style="color:var(--ink-soft);font-size:.95rem;">s/d</span>';
+    var cls = v>=2.5 ? 'up' : (v<1.2 ? 'down' : '');
+    return '<span class="val '+cls+'">'+v.toFixed(1)+'%</span>';
+  }
+  function renderCountries(filter){
+    grid.innerHTML = '';
+    var list = countries.filter(function(c){ return filter==='todos' || c.region===filter; });
+    if(list.length===0){
+      grid.innerHTML = '<div class="empty-note">No hay datos para este filtro todavía.</div>';
+      return;
+    }
+    list.forEach(function(c){
+      var el = document.createElement('div');
+      el.className = 'c-card';
+      el.innerHTML =
+        '<div class="top"><span class="flag">'+c.flag+'</span><span class="region">'+c.region+'</span></div>'+
+        '<h4>'+c.name+'</h4>'+
+        '<div class="nums">'+
+          '<div class="num"><div class="yr">2026</div>'+fmtVal(c.g26)+'</div>'+
+          '<div class="num"><div class="yr">2027</div>'+fmtVal(c.g27)+'</div>'+
+        '</div>'+
+        '<div class="note">'+c.note+'</div>';
+      grid.appendChild(el);
+    });
+  }
+  renderCountries('todos');
+  document.getElementById('filterRow').addEventListener('click', function(e){
+    var btn = e.target.closest('.chip');
+    if(!btn) return;
+    document.querySelectorAll('#filterRow .chip').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    renderCountries(btn.dataset.region);
+  });
+
+  /* ---------- DIAGNÓSTICO ---------- */
+  var totalSteps = 4;
+  var current = 1;
+  var answers = {};
+
+  var track = document.getElementById('progressTrack');
+  for(var i=0;i<totalSteps;i++){
+    var seg = document.createElement('div');
+    seg.className = 'progress-seg';
+    seg.innerHTML = '<i></i>';
+    track.appendChild(seg);
+  }
+  function updateProgress(){
+    var segs = track.querySelectorAll('.progress-seg i');
+    segs.forEach(function(s,idx){ s.style.width = (idx < current) ? '100%' : '0%'; });
+  }
+
+  var feedbackText = {
+    region:{
+      latam:"América Latina y el Caribe crecería 2.3% en 2026 y 2.7% en 2027, con Brasil (1.9%/2.0%) y México (1.6%/2.2%) como referencias principales.",
+      namerica:"Estados Unidos crecería 2.3% en 2026 y 2.1% en 2027, sostenido por política fiscal, aunque persisten aranceles más altos desde abril de 2025.",
+      europe:"La zona euro se desaceleraría a 1.1% en 2026 y 1.2% en 2027, afectada por su dependencia energética y la apreciación del euro.",
+      asia:"Asia emergente crecería 4.9% en 2026, con China en 4.4% (freno estructural inmobiliario) e India en 6.5% (impulsada por menores aranceles de EE. UU.).",
+      global:"Con exposición diversificada, el punto de referencia es el crecimiento mundial: 3.1% en 2026 y 3.2% en 2027."
+    },
+    sector:{
+      commodities:"Los precios de energía subirían 21% en 2026 por el conflicto; los exportadores de materias primas pueden capturar un efecto positivo en términos de intercambio, salvo en las economías directamente afectadas por la guerra.",
+      manufacturing:"El comercio mundial de bienes se desacelera a 2.8% en 2026 (desde 5.1% en 2025); revise inventarios y contratos de suministro ante posibles cuellos de botella logísticos.",
+      services:"El comercio de servicios ha probado ser más resiliente a la fragmentación geopolítica que el de bienes, lo que ofrece cierta protección frente a la volatilidad actual.",
+      domestic:"La inflación mundial subiría a 4.4% en 2026 antes de bajar a 3.7% en 2027; los negocios de consumo interno deben vigilar el traslado de costos de energía y alimentos a precios finales."
+    },
+    risk:{
+      high:"Un choque geopolítico de una desviación estándar reduce el PIB en cerca de 0.8% un año después, impulsado por menor consumo e inversión. Con alta exposición, priorice coberturas y planes de contingencia logística.",
+      medium:"Con exposición parcial, la clave es la velocidad de traslado de costos: el FMI advierte que el paso de mayores precios de energía a inflación depende del poder de fijación de precios de cada sector.",
+      low:"Los países y empresas exportadoras netas de energía —como Brasil o Rusia en el agregado— podrían capturar un efecto neto positivo del alza de precios de energía en 2026."
+    },
+    horizon:{
+      short:"Para 2026, el FMI señala como prioridad inmediata preservar la estabilidad de precios y financiera ante el choque de oferta del conflicto.",
+      medium:"Entre 2026 y 2027 se espera una recuperación gradual: el crecimiento mundial pasa de 3.1% a 3.2%, y el comercio mundial de 2.8% a 3.8%.",
+      long:"Hacia 2028–2031, el crecimiento potencial mundial promediaría solo 3.1% anual, por debajo del 3.7% histórico prepandemia — la productividad y la adopción de IA son las palancas que el FMI destaca para revertir esa tendencia."
+    }
+  };
+
+  var regionData = {
+    latam:{name:"América Latina y el Caribe", g26:2.3, g27:2.7},
+    namerica:{name:"Estados Unidos", g26:2.3, g27:2.1},
+    europe:{name:"Zona euro", g26:1.1, g27:1.2},
+    asia:{name:"Asia emergente y en desarrollo", g26:4.9, g27:4.8},
+    global:{name:"Mundo", g26:3.1, g27:3.2}
+  };
+
+  function updateCompass(value, tag){
+    // map growth range -2..8 to angle -90..90 deg
+    var clamped = Math.max(-2, Math.min(8, value));
+    var angle = -90 + ((clamped - (-2)) / (8 - (-2))) * 180;
+    document.getElementById('needleGroup').style.transform = 'rotate('+angle+'deg)';
+    document.getElementById('compassValue').textContent = value.toFixed(1)+'%';
+    document.getElementById('compassTag').textContent = tag || 'Brújula económica';
+  }
+
+  function bindStep(stepEl){
+    var qKey = stepEl.querySelector('[data-question]').dataset.question;
+    stepEl.querySelectorAll('.opt').forEach(function(opt){
+      opt.addEventListener('click', function(){
+        stepEl.querySelectorAll('.opt').forEach(function(o){ o.classList.remove('selected'); });
+        opt.classList.add('selected');
+        answers[qKey] = opt.dataset.value;
+
+        var fb = stepEl.querySelector('.feedback');
+        fb.textContent = feedbackText[qKey][opt.dataset.value];
+        fb.classList.add('show');
+
+        document.getElementById('btnNext').disabled = false;
+
+        if(qKey === 'region'){
+          var rd = regionData[opt.dataset.value];
+          updateCompass(rd.g26, rd.name+' · 2026');
+        }
+      });
+    });
+  }
+  document.querySelectorAll('.q-step').forEach(bindStep);
+
+  function showStep(n){
+    document.querySelectorAll('.q-step').forEach(function(s){
+      s.classList.toggle('active', parseInt(s.dataset.step,10) === n);
+    });
+    document.getElementById('btnBack').disabled = (n === 1);
+    var qKeyMap = {1:'region',2:'sector',3:'risk',4:'horizon'};
+    document.getElementById('btnNext').disabled = !answers[qKeyMap[n]];
+    document.getElementById('btnNext').textContent = (n === totalSteps) ? 'Ver mi diagnóstico →' : 'Siguiente →';
+    current = n;
+    updateProgress();
+  }
+
+  document.getElementById('btnBack').addEventListener('click', function(){
+    if(current > 1) showStep(current - 1);
+  });
+  document.getElementById('btnNext').addEventListener('click', function(){
+    if(current < totalSteps){
+      showStep(current + 1);
+    } else {
+      buildResult();
+    }
+  });
+
+  function buildResult(){
+    var rd = regionData[answers.region];
+    document.getElementById('resG26').textContent = rd.g26.toFixed(1)+'%';
+    document.getElementById('resG27').textContent = rd.g27.toFixed(1)+'%';
+
+    var riskLabel = {high:'Alta', medium:'Media', low:'Baja'}[answers.risk];
+    document.getElementById('resRisk').textContent = riskLabel;
+
+    var sectorLabel = {commodities:'exportador de materias primas', manufacturing:'de manufactura', services:'de servicios/tecnología', domestic:'de consumo interno'}[answers.sector];
+    var horizonLabel = {short:'gestión del choque inmediato de 2026', medium:'el ciclo de recuperación 2026–2027', long:'la planeación estructural 2028–2031'}[answers.horizon];
+
+    document.getElementById('resultSummary').textContent =
+      'Con exposición principal a '+rd.name+' y un perfil '+sectorLabel+' con riesgo geopolítico '+riskLabel.toLowerCase()+
+      ', su horizonte declarado ('+horizonLabel+') define las siguientes prioridades:';
+
+    var actions = [];
+    actions.push('Referencia macro: '+rd.name+' crecería '+rd.g26.toFixed(1)+'% en 2026 y '+rd.g27.toFixed(1)+'% en 2027, según el FMI.');
+
+    if(answers.risk === 'high'){
+      actions.push('Con riesgo geopolítico alto, priorice coberturas de energía y rutas logísticas alternas: un choque geopolítico típico resta cerca de 0.8% al PIB del país expuesto un año después.');
+    } else if(answers.risk === 'medium'){
+      actions.push('Con riesgo medio, mapee qué proporción de sus costos puede trasladar a precios sin perder competitividad frente al alza esperada de insumos.');
+    } else {
+      actions.push('Con riesgo bajo, evalúe si su posición como negocio poco sensible a materias primas le da margen para ganar participación de mercado frente a competidores más expuestos.');
+    }
+
+    if(answers.sector === 'commodities'){
+      actions.push('Como exportador de materias primas, monitoree la trayectoria del petróleo (+21% proyectado en 2026) y de metales base, que inciden directamente en su ingreso.');
+    } else if(answers.sector === 'manufacturing'){
+      actions.push('Con el comercio mundial de bienes desacelerando a 2.8% en 2026, revise inventarios de seguridad y diversifique proveedores ante posibles cuellos de botella.');
+    } else if(answers.sector === 'services'){
+      actions.push('Los servicios han mostrado mayor resiliencia a la fragmentación geopolítica que los bienes; evalúe si puede escalar exportación de servicios como amortiguador.');
+    } else {
+      actions.push('Con inflación mundial subiendo a 4.4% en 2026, ajuste su estrategia de precios y contratos con antelación al traslado de costos de energía y alimentos.');
+    }
+
+    if(answers.region === 'namerica' || answers.region === 'latam'){
+      actions.push('La revisión conjunta del T-MEC y el vencimiento de aranceles temporales de EE. UU. coinciden en julio de 2026: si su cadena depende de Norteamérica, tenga un plan B de origen arancelario listo antes de esa fecha.');
+    }
+    if(answers.region === 'asia'){
+      actions.push('India se beneficia de la reducción de aranceles de EE. UU. (de 50% a 10%); China mantiene un frente exportador fuerte pero con debilidad persistente en el sector inmobiliario doméstico.');
+    }
+
+    if(answers.horizon === 'long'){
+      actions.push('Dado su horizonte estructural, invierta en productividad y adopción de IA: el crecimiento potencial mundial 2028–2031 (3.1%) queda por debajo del promedio histórico (3.7%), y la productividad es la palanca que el FMI señala para cerrar esa brecha.');
+    }
+
+    var seen = {};
+    var ul = document.getElementById('diag-actions-list');
+    ul.innerHTML = '';
+    actions.forEach(function(a, idx){
+      if(seen[a]) return;
+      seen[a] = true;
+      var li = document.createElement('li');
+      li.innerHTML = '<b>0'+(idx+1)+'</b><span>'+a+'</span>';
+      ul.appendChild(li);
+    });
+
+    updateCompass(rd.g26, rd.name+' · su diagnóstico');
+    document.getElementById('resultPanel').classList.add('show');
+    document.getElementById('resultPanel').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  document.getElementById('btnRestart').addEventListener('click', function(){
+    answers = {};
+    document.querySelectorAll('.opt.selected').forEach(function(o){ o.classList.remove('selected'); });
+    document.querySelectorAll('.feedback.show').forEach(function(f){ f.classList.remove('show'); });
+    document.getElementById('resultPanel').classList.remove('show');
+    updateCompass(3.1, 'Brújula económica');
+    showStep(1);
+    document.getElementById('diagnostico').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  showStep(1);
+  updateCompass(3.1, 'Brújula económica');
+})();
+</script>
+</body>
+</html>
