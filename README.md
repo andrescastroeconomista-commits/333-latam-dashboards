@@ -63,3 +63,15 @@ git push -u origin main
 ```
 
 Luego repite la vinculación de "Base directory" descrita arriba para cada sitio en Netlify.
+
+## URLs oficiales (GitHub Pages)
+
+- Hub: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/hub/
+- Brújula PIB FMI: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/brujula-pib-fmi/
+- Panorama Porcino LATAM: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/panorama-porcino-latam/
+- Indicadores Productivos LATAM: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/indicadores-productivos-latam/
+- Costos de Producción LATAM: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/costos-produccion-latam/
+- Indicadores Colombia: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/indicadores-colombia/
+
+> Nota: Res-Cerdo-Pollo Mundial, Variables Fundamentales y Pork Economics siguen en sus sitios de Netlify (siguen en línea, solo los despliegues nuevos están bloqueados por créditos). MSD Chile aún no está en este repo.
+
