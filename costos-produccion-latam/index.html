@@ -1,0 +1,1234 @@
+  <!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Benchmark de Costos de Producción Porcina LATAM · 333</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --azul:#1F6DB1; --azul-osc:#155589; --azul-claro:#D1E3F6; --azul-medio:#A9C4DE;
+  --naranja:#E87722; --gris:#53565A; --verde:#8CC63F;
+  --linea:#E8EDF2; --linea-suave:#F1F5F8; --fondo:#F4F7FA; --blanco:#fff;
+  --suave:#8B929B; --tinta:#3A424B;
+  --sombra:0 1px 2px rgba(21,85,137,.04), 0 4px 14px rgba(21,85,137,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Montserrat',sans-serif;color:var(--tinta);background:var(--fondo);
+  font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.wrap{max-width:1320px;margin:0 auto;padding:0 28px}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+
+/* ===================== HEADER ===================== */
+header{background:linear-gradient(115deg,#1F6DB1 0%,#155589 100%);color:#fff;padding:26px 0 22px}
+.hdr{display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:1.9px;text-transform:uppercase;opacity:.78;margin-bottom:8px}
+h1{font-size:29px;font-weight:800;letter-spacing:-.5px;line-height:1.12}
+.sub{font-size:12.5px;opacity:.85;margin-top:7px;font-weight:400;letter-spacing:.1px}
+.logo{height:48px;display:block}
+.logo-cap{font-size:7.5px;letter-spacing:3.8px;opacity:.78;font-weight:700;margin-top:8px;text-align:center}
+
+/* ===================== BARRA DE CONTROL ===================== */
+.ctrl{background:var(--blanco);border-bottom:1px solid var(--linea);padding:11px 0;
+  position:sticky;top:0;z-index:60;box-shadow:0 1px 8px rgba(21,85,137,.06)}
+.ctrl-in{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ctrl label{font-size:9.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--suave)}
+select{font-family:inherit;font-size:12.5px;font-weight:600;color:var(--azul);border:1.5px solid var(--linea);
+  border-radius:7px;padding:7px 11px;background:#fff;cursor:pointer;transition:.15s}
+select:hover{border-color:var(--azul-medio)}
+select:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 3px rgba(31,109,177,.1)}
+.btn{font-family:inherit;font-size:12px;font-weight:600;border:none;border-radius:7px;
+  padding:8px 16px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:7px}
+.btn-primary{background:var(--azul);color:#fff}
+.btn-primary:hover{background:var(--azul-osc)}
+.btn:disabled{opacity:.5;cursor:wait}
+.btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.estado{font-size:11.5px;font-weight:600;display:flex;align-items:center;gap:8px;margin-left:auto;
+  padding:5px 12px;border-radius:20px;background:var(--linea-suave)}
+.dot{width:7px;height:7px;border-radius:50%;flex:none}
+.dot.ok{background:var(--verde);box-shadow:0 0 0 3px rgba(140,198,63,.2)}
+.dot.warn{background:var(--naranja);box-shadow:0 0 0 3px rgba(232,119,34,.18)}
+.dot.load{background:var(--azul);animation:pulse 1.1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ===================== TABS ===================== */
+nav.tabs{background:var(--blanco);border-bottom:1px solid var(--linea)}
+.tabs-in{display:flex;gap:4px;overflow-x:auto}
+.tab{font-family:inherit;font-size:12.5px;font-weight:600;color:var(--suave);background:none;border:none;
+  border-bottom:3px solid transparent;padding:14px 20px;cursor:pointer;white-space:nowrap;transition:.16s;letter-spacing:.1px}
+.tab:hover{color:var(--azul)}
+.tab.on{color:var(--azul-osc);border-bottom-color:var(--naranja);font-weight:700}
+
+/* ===================== TARJETAS ===================== */
+.panel{display:none;padding:26px 0 44px}
+.panel.on{display:block}
+.card{background:var(--blanco);border:1px solid var(--linea);border-radius:12px;padding:24px 26px;
+  margin-bottom:20px;box-shadow:var(--sombra)}
+.card-hd{display:flex;justify-content:space-between;align-items:center;gap:18px;
+  margin-bottom:20px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid var(--linea-suave)}
+.card-tt{display:flex;align-items:center;gap:10px}
+.card-tt svg{width:16px;height:16px;stroke:var(--azul);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+h2{font-size:11.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--azul-osc)}
+.card-note{font-size:11px;color:var(--suave);font-weight:500}
+h3{font-size:13.5px;font-weight:700;color:var(--azul-osc);margin-bottom:4px}
+
+/* ===================== KPIs ===================== */
+.kpis{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;margin-bottom:20px}
+.kpi{background:var(--blanco);border:1px solid var(--linea);border-radius:12px;padding:15px 14px 13px;
+  box-shadow:var(--sombra);display:flex;flex-direction:column;position:relative;overflow:hidden;transition:.18s;min-width:0}
+.kpi:hover{border-color:var(--azul-medio);transform:translateY(-1px)}
+.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--azul-claro)}
+.kpi.destaca:before{background:var(--naranja)}
+.kpi-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px;min-height:28px}
+.kpi-lb{font-size:8.3px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--suave);line-height:1.4}
+.kpi-ic{width:25px;height:25px;border-radius:7px;background:var(--linea-suave);display:flex;align-items:center;
+  justify-content:center;flex:none}
+.kpi-ic svg{width:13px;height:13px;stroke:var(--azul);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.kpi.destaca .kpi-ic{background:#FDF0E4}
+.kpi.destaca .kpi-ic svg{stroke:var(--naranja)}
+.kpi-v{font-size:19px;font-weight:800;color:var(--azul-osc);letter-spacing:-.6px;line-height:1.05;
+  font-variant-numeric:tabular-nums;margin-top:auto;white-space:nowrap}
+.kpi-v .u{font-size:11px;font-weight:600;letter-spacing:0;color:var(--suave)}
+.kpi.destaca .kpi-v{color:var(--naranja)}
+.kpi-ft{font-size:9.8px;color:var(--suave);margin-top:8px;line-height:1.4;font-weight:500}
+@media(max-width:1180px){
+  .kpis{grid-template-columns:repeat(auto-fit,minmax(178px,1fr))}
+  .kpi-v{white-space:normal}
+}
+
+/* ===================== TABLAS ===================== */
+.tbl-wrap{overflow-x:auto;margin:0 -26px;padding:0 26px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{font-size:9px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--suave);
+  text-align:right;padding:9px 10px;border-bottom:1.5px solid var(--linea);vertical-align:bottom;white-space:nowrap}
+th.l,td.l{text-align:left}
+th.sec{color:var(--azul);text-align:center;border-bottom:none;padding-bottom:2px;font-size:8.5px;letter-spacing:1.1px}
+td{padding:11px 10px;border-bottom:1px solid var(--linea-suave);text-align:right;white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+tbody tr{transition:background .12s}
+tbody tr:hover{background:#FAFCFE}
+.grp{background:#FAFCFE}
+tr.tot{background:var(--azul-claro)!important}
+tr.tot td{border-bottom:none;color:var(--azul-osc);font-weight:700;background:transparent!important}
+tr.tot .big{font-size:19px}
+.pais{display:flex;align-items:center;gap:10px}
+.pais img{width:24px;height:17px;object-fit:cover;border-radius:2.5px;flex:none;box-shadow:0 0 0 1px rgba(0,0,0,.1)}
+.pais-n{font-weight:700;color:var(--tinta);font-size:13px;line-height:1.25}
+.n-badge{font-size:9.5px;color:var(--suave);font-weight:500;letter-spacing:.2px}
+.big{font-size:16.5px;font-weight:800;color:var(--azul);letter-spacing:-.4px}
+.chip{display:inline-block;font-size:10.5px;font-weight:700;padding:3.5px 9px;border-radius:12px;letter-spacing:.2px}
+.chip.neg{background:#EDF7E2;color:#5A8720}
+.chip.pos{background:#FDEFE3;color:#BE5D11}
+.chip.neu{background:#EDF0F3;color:var(--suave)}
+.med-dot{width:24px;height:17px;border-radius:4px;background:var(--azul);flex:none;display:inline-block}
+
+/* barra de rango (detalle del mockup) */
+.rng{width:124px;display:inline-block;vertical-align:middle}
+.rng-track{position:relative;height:4px;background:#E6EBF0;border-radius:2px;margin-bottom:5px}
+.rng-span{position:absolute;top:0;height:4px;background:var(--azul);border-radius:2px;min-width:4px}
+.rng-dot{position:absolute;top:-3px;width:3px;height:10px;background:var(--azul);border-radius:1.5px}
+.rng-lb{font-size:9px;color:var(--suave);text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+tr.tot .rng-track{background:rgba(21,85,137,.16)}
+
+/* ===================== GRÁFICOS ===================== */
+.chart{position:relative;width:100%}
+.h300{height:300px} .h340{height:340px} .h380{height:380px} .h420{height:420px} .h460{height:460px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:940px){.grid2{grid-template-columns:1fr}}
+
+/* ===================== BARRAS APILADAS ===================== */
+.stk-row{display:grid;grid-template-columns:168px 1fr 72px;gap:14px;align-items:center;margin-bottom:7px}
+.stk-bar{display:flex;height:27px;border-radius:5px;overflow:hidden;background:#EFF2F5}
+.stk-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;
+  min-width:0;overflow:hidden;font-variant-numeric:tabular-nums;transition:.15s}
+.stk-row:hover .stk-seg{filter:brightness(1.06)}
+.stk-val{font-size:13.5px;font-weight:800;color:var(--azul);text-align:right;font-variant-numeric:tabular-nums}
+.stk-row.total{margin-top:14px;padding-top:14px;border-top:1.5px solid var(--linea)}
+.stk-row.total .stk-val{font-size:16px;color:var(--azul-osc)}
+.leg{display:flex;gap:20px;flex-wrap:wrap;margin-top:16px;padding-top:15px;border-top:1px solid var(--linea-suave)}
+.leg span{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:600;color:var(--suave)}
+.leg i{width:11px;height:11px;border-radius:3px;display:block}
+
+/* ===================== INSIGHTS ===================== */
+.ins{background:linear-gradient(135deg,#EAF2FB 0%,#D9E8F7 100%);border-left:4px solid var(--naranja);
+  border-radius:0 12px 12px 0;padding:24px 28px;margin-bottom:20px}
+.ins .card-hd{border-bottom-color:rgba(21,85,137,.12);margin-bottom:18px}
+.ins h2{color:var(--naranja)}
+.ins .card-tt svg{stroke:var(--naranja)}
+.ins ul{list-style:none}
+.ins li{padding-left:20px;position:relative;margin-bottom:13px;font-size:12.5px;line-height:1.68;color:#37485A}
+.ins li:last-child{margin-bottom:0}
+.ins li:before{content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:50%;
+  background:var(--azul);box-shadow:0 0 0 3px rgba(31,109,177,.14)}
+.ins b{color:var(--azul-osc);font-weight:700}
+.alerta{background:#FDF6EF;border:1px solid #F2DEC7;border-radius:9px;padding:13px 16px;font-size:11.5px;
+  color:#8A5520;margin-bottom:18px;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.alerta svg{width:15px;height:15px;stroke:#C87A2A;fill:none;stroke-width:2;flex:none;margin-top:1px}
+.alerta b{font-weight:700}
+
+/* ===================== DIAGNÓSTICO ===================== */
+#diag{display:none;background:#FDF6EF;border:1px solid #F2DEC7;border-radius:12px;padding:20px 22px;margin:20px 0}
+#diag h3{color:#BE5D11;margin-bottom:9px;font-size:13px}
+#diag p,#diag li{font-size:12px;color:#7A4F1E;line-height:1.62}
+#diag ol{margin:10px 0 13px 19px}
+#diag li{margin-bottom:5px}
+#diag code{background:#fff;border:1px solid #EBD9C4;border-radius:4px;padding:1.5px 6px;font-size:11px}
+.pega{display:flex;gap:9px;margin-top:11px;flex-wrap:wrap}
+.pega input{flex:1;min-width:270px;font-family:inherit;font-size:12px;border:1.5px solid #EBD9C4;
+  border-radius:7px;padding:8px 11px}
+.pega input:focus{outline:none;border-color:var(--naranja)}
+
+/* ===================== SEMÁFORO ===================== */
+.rob{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700}
+.rob i{width:8px;height:8px;border-radius:50%;display:block}
+.rob.alta i{background:var(--verde);box-shadow:0 0 0 2.5px rgba(140,198,63,.22)}
+.rob.media i{background:var(--naranja);box-shadow:0 0 0 2.5px rgba(232,119,34,.18)}
+.rob.baja i{background:#C9D0D6;box-shadow:0 0 0 2.5px rgba(201,208,214,.28)}
+.rob.alta{color:#5A8720} .rob.media{color:#BE5D11} .rob.baja{color:var(--suave)}
+
+/* ===================== METODOLOGÍA / FOOTER ===================== */
+.met{font-size:12px;line-height:1.78;color:var(--suave)}
+.met p{margin-bottom:12px}
+.met p:last-child{margin-bottom:0}
+.met b{color:var(--tinta);font-weight:700}
+footer{background:var(--gris);color:#fff;padding:24px 0;font-size:11px;line-height:1.7}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+footer .logo{height:34px;opacity:.9}
+.op{opacity:.7}
+@media print{
+  .ctrl,nav.tabs,#diag{display:none!important}
+  .panel{display:block!important;page-break-after:always}
+  .card{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hdr">
+    <div>
+      <div class="eyebrow">Benchmark de costos · Producción primaria</div>
+      <h1>Costo de Producción Porcina LATAM</h1>
+      <div class="sub">Análisis comparativo por país y estructura de costos · USD por kilogramo de cerdo vivo</div>
+    </div>
+    <div><img class="logo" id="logoHdr" alt="333"><div class="logo-cap">CORPORATE</div></div>
+  </div>
+</header>
+
+<div class="ctrl">
+  <div class="wrap ctrl-in">
+    <label for="fAnio">Campaña</label>
+    <select id="fAnio"></select>
+    <label for="fSist">Sistema</label>
+    <select id="fSist"></select>
+    <button class="btn btn-primary" id="btnRec">
+      <svg viewBox="0 0 24 24"><path d="M21 2v6h-6M3 12a9 9 0 0115-6.7L21 8M3 22v-6h6M21 12a9 9 0 01-15 6.7L3 16"/></svg>
+      Actualizar datos</button>
+    <div class="estado" id="estado"><span class="dot load"></span><span id="estadoTxt">Cargando…</span></div>
+  </div>
+</div>
+
+<nav class="tabs">
+  <div class="wrap tabs-in">
+    <button class="tab on" data-p="p1">Benchmark LATAM</button>
+    <button class="tab" data-p="p2">Drivers del costo</button>
+    <button class="tab" data-p="p3">Muestra y metodología</button>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div id="diag"></div>
+
+  <!-- ============ PANEL 1 · BENCHMARK ============ -->
+  <section class="panel on" id="p1">
+    <div class="kpis" id="kpis"></div>
+
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-tt">
+          <svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-4 3 3 5-6"/></svg>
+          <h2>Benchmark por país</h2></div>
+        <span class="card-note">Valor absoluto USD/kg y participación sobre el costo total</span>
+      </div>
+      <div class="tbl-wrap"><table id="tPais"></table></div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-tt">
+          <svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="8" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="17" rx="1"/></svg>
+          <h2>Costo total por país</h2></div>
+        <span class="card-note">USD por kg de cerdo vivo · ordenado de menor a mayor</span>
+      </div>
+      <div class="chart h460"><canvas id="cRank"></canvas></div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-tt">
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="5" rx="1.5"/><rect x="3" y="14" width="12" height="5" rx="1.5"/></svg>
+          <h2>Estructura de costos</h2></div>
+        <span class="card-note">Participación porcentual de cada componente sobre el costo total</span>
+      </div>
+      <div id="stack"></div>
+      <div class="leg">
+        <span><i style="background:#1F6DB1"></i>Alimentación / Nutrición</span>
+        <span><i style="background:#E87722"></i>Sanidad y variables operativos</span>
+        <span><i style="background:#53565A"></i>Mano de obra</span>
+        <span><i style="background:#A9C4DE"></i>Fijos y financieros</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-tt">
+          <svg viewBox="0 0 24 24"><path d="M12 3c-1.5 3-4 4.5-4 8a4 4 0 008 0c0-3.5-2.5-5-4-8zM12 21v-6"/></svg>
+          <h2>Costo de alimentación en valor absoluto</h2></div>
+        <span class="card-note">USD/kg destinados a nutrición · el componente que más diferencia a los países</span>
+      </div>
+      <div class="chart h420"><canvas id="cAlim"></canvas></div>
+    </div>
+
+    <div class="ins">
+      <div class="card-hd">
+        <div class="card-tt">
+          <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7V17h8v-2.3A7 7 0 0012 2z"/></svg>
+          <h2>Lectura estratégica</h2></div>
+      </div>
+      <ul id="insights"></ul>
+    </div>
+  </section>
+
+  <!-- ============ PANEL 2 · DRIVERS ============ -->
+  <section class="panel" id="p2">
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-tt">
+          <svg viewBox="0 0 24 24"><circle cx="6" cy="18" r="2"/><circle cx="11" cy="12" r="2"/><circle cx="16" cy="14" r="2"/><circle cx="20" cy="6" r="2"/></svg>
+          <h2>¿Qué explica realmente la diferencia de costos?</h2></div>
+        <span class="card-note">Correlación de cada variable con el costo total</span>
+      </div>
+      <div class="grid2">
+        <div class="chart h380"><canvas id="cScatter"></canvas></div>
+        <div id="corrBox"></div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-tt">
+            <svg viewBox="0 0 24 24"><path d="M3 20h18M6 20V10M12 20V4M18 20v-7"/></svg>
+            <h2>Por tamaño de operación</h2></div>
+        </div>
+        <div class="tbl-wrap"><table id="tTam"></table></div>
+        <div class="alerta" style="margin:18px 0 0" id="notaEscala"></div>
+      </div>
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-tt">
+            <svg viewBox="0 0 24 24"><path d="M12 2v20M2 7h20M2 17h20"/></svg>
+            <h2>Por origen del alimento</h2></div>
+        </div>
+        <div class="tbl-wrap"><table id="tOrig"></table></div>
+        <div class="alerta" style="margin:18px 0 0" id="notaOrigen"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-tt">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+          <h2>Tamaño × origen del alimento</h2></div>
+        <span class="card-note">Costo medio USD/kg en cada cruce · las celdas vacías no tienen respuestas</span>
+      </div>
+      <div class="tbl-wrap"><table id="tCruce"></table></div>
+    </div>
+  </section>
+
+  <!-- ============ PANEL 3 · MUESTRA Y METODOLOGÍA ============ -->
+  <section class="panel" id="p3">
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-tt">
+          <svg viewBox="0 0 24 24"><circle cx="7" cy="8" r="1.6"/><circle cx="12" cy="15" r="1.6"/><circle cx="17" cy="6" r="1.6"/><circle cx="15" cy="19" r="1.6"/><path d="M3 21V3"/></svg>
+          <h2>Dispersión de respuestas por país</h2></div>
+        <span class="card-note">Cada punto es una respuesta individual · el rombo es la media del país</span>
+      </div>
+      <div class="alerta">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        <span>Este gráfico es el complemento honesto del promedio: en países con pocas respuestas la media no representa una realidad nacional. Observe la amplitud real de cada país antes de concluir.</span>
+      </div>
+      <div class="chart h460"><canvas id="cDisp"></canvas></div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-tt">
+          <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.9"/></svg>
+          <h2>Robustez de la muestra por país</h2></div>
+        <span class="card-note">Número de respuestas válidas y nivel de representatividad</span>
+      </div>
+      <div class="tbl-wrap"><table id="tMuestra"></table></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-tt">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 4"/></svg>
+            <h2>Composición de la muestra</h2></div>
+        </div>
+        <div class="chart h340"><canvas id="cSist"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-tt">
+            <svg viewBox="0 0 24 24"><path d="M3 20h18M6 20v-6M10 20v-11M14 20v-8M18 20v-13"/></svg>
+            <h2>Distribución de costos reportados</h2></div>
+        </div>
+        <div class="chart h340"><canvas id="cHist"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-tt">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+          <h2>Metodología</h2></div>
+      </div>
+      <div class="met" id="metodologia"></div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <b>333 Latinoamérica</b> · Benchmark de Costos de Producción Porcina<br>
+      <span class="op" id="footNota"></span>
+    </div>
+    <div><img class="logo" id="logoFoot" alt="333"></div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+/* ==========================================================================
+   BENCHMARK DE COSTOS DE PRODUCCIÓN PORCINA · 333 LATAM
+   Tablero de BI conectado a la encuesta de 333 LATAM (Google Sheets).
+   --------------------------------------------------------------------------
+   CONFIGURACIÓN — si la hoja cambia, edite solo este bloque.
+   ========================================================================== */
+
+const SHEET_ID = '1EQdxVtNrazJqpEqDhUdy56XzjROfqe_Gsm-9iEEtFsg';
+const GID = '0';
+
+/* URL de «Publicar en la web» (Archivo → Compartir → Publicar en la web → CSV).
+   Solo es necesaria si el acceso por enlace deja de funcionar. */
+const URL_PUBLICADA = '';
+
+const FUENTES = [
+  URL_PUBLICADA,
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`,
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}`
+].filter(Boolean);
+
+
+/* Logo corporativo 333 (versión blanca) incrustado en base64 */
+const LOGO_333 = 'data:image/png;base64,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';
+
+/* Respaldo embebido: solo se usa si ninguna fuente en vivo responde */
+const CSV_RESPALDO = `"Submission ID","Submission time","País","Tamaño de la operación (número de cerdas)","Sistema de producción","¿Fabrica su propio alimento balanceado o lo compra terminado?","¿Cuál es su costo total de producción aproximado, en dólares estadounidenses (USD), por kilogramo de cerdo vivo?","Alimentación / Nutrición (%)","Sanidad y costos variables operativos: veterinario, medicamentos, energía (%)","Mano de obra (%)","Costos fijos y financieros: depreciación, infraestructura, intereses, administración (%)","¿Autoriza que los datos agregados de su país y rango de tamaño de operación (sin identificación individual) se incluyan en el reporte público del benchmark?","Suma porcentajes"
+"9e5d6284","2026-08-03 0:33:29","Colombia","300 a 2,000","Ciclo completo","Alimento comprado","1,9","65","10","10","15","Sí","100"
+"f081c9f5","2026-08-03 11:54:35","Argentina","Más de 10,000","Ciclo completo","Alimento propio","1,25","65","10","15","10","Sí","100"
+"44dcf08e","2026-08-03 12:25:55","Colombia","2,000 a 10,000","Ciclo completo","Alimento comprado","2,4","68","8","9","15","Sí","100"
+"f8f6dc0c","2026-08-03 12:26:16","Ecuador","300 a 2,000","Ciclo completo","Mixto","2,05","65","15","10","10","Sí","100"
+"279da995","2026-08-03 12:33:02","Colombia","Menos de 300","Ciclo completo","Alimento comprado","2,11","65","15","9","11","Sí","100"
+"84e2ffc0","2026-08-03 12:50:36","Argentina","300 a 2,000","Ciclo completo","Alimento propio","1,4","70","12","9","9","Sí","100"
+"ae8fe79d","2026-08-03 13:03:30","Chile","2,000 a 10,000","Ciclo completo","Alimento propio","1,5","55","10","20","15","Sí","100"
+"095faff7","2026-08-03 13:05:12","Chile","300 a 2,000","Ciclo completo","Alimento propio","1,45","71","14","14","1","Sí","100"
+"3a8e9e25","2026-08-03 13:52:03","Colombia","300 a 2,000","Ciclo completo","Alimento propio","2,05","70,59","9,26","11,51","8,64","Sí","100"
+"7c19ccf4","2026-08-03 14:38:42","Costa Rica","2,000 a 10,000","Ciclo completo","Alimento comprado","2","78","12","7","3","Sí","100"
+"ea85d6b7","2026-08-03 14:58:59","Colombia","300 a 2,000","Ciclo completo","Mixto","2,05","74","10","10","6","Sí","100"
+"d9bf5c81","2026-08-03 21:35:18","Colombia","300 a 2,000","Ciclo completo","Alimento propio","2,54","76","14","8","2","Sí","100"
+"49bc8073","2026-08-03 22:32:47","Chile","300 a 2,000","Ciclo completo","Alimento propio","1,3","69","7","19","5","Sí","100"
+"801c7a0a","2026-08-03 23:59:22","México","2,000 a 10,000","Ciclo completo","Mixto","1,7","70","15","10","5","Sí","100"
+"33c1ed85","2026-08-04 0:09:21","Colombia","300 a 2,000","Ciclo completo","Alimento propio","1,9","80","5","10","5","Sí","100"
+"14f48bec","2026-08-04 2:36:48","Perú","300 a 2,000","Ciclo completo","Mixto","1,77","72,8","6,8","8,2","12,2","Sí","100"
+"2eeeac93","2026-08-04 20:21:08","México","300 a 2,000","Ciclo completo","Alimento propio","1,75","65","10","10","15","Sí","100"
+"339862a5","2026-08-05 23:47:37","Colombia","2,000 a 10,000","Ciclo completo","Alimento comprado","2,25","65","10","8","17","Sí","100"
+"0e78ace3","2026-08-07 15:18:56","Colombia","300 a 2,000","Ciclo completo","Alimento propio","2","68","15","6","11","Sí","100"
+"30794949","2026-08-07 19:27:16","México","300 a 2,000","Ciclo completo","Mixto","1,95","67","12","7","14","Sí","100"
+"c3085cbf","2026-08-10 11:27:26","Chile","300 a 2,000","Ciclo completo","Alimento comprado","1,42","65","10","8","17","Sí","100"
+"a3fc0c10","2026-08-10 12:23:00","Argentina","Menos de 300","Ciclo completo","Mixto","1,35","65","15","8","12","Sí","100"
+"47dc5fc2","2026-08-10 15:24:24","Perú","Menos de 300","Ciclo completo","Mixto","2,22","75","8","3","14","Sí","100"
+"dfcc3072","2026-08-10 16:01:06","Colombia","Menos de 300","Solo engorda/finalización","Mixto","1,98","45","3","2","50","Sí","100"
+"f11c9245","2026-08-10 16:48:34","Colombia","300 a 2,000","Ciclo completo","Alimento propio","1,928","64,87","12,554","14,27","8,306","Sí","100"
+"f7a5f2d1","2026-08-11 18:45:20","Colombia","300 a 2,000","Ciclo completo","Mixto","2,11","65","15","7","13","Sí","100"
+"1117e288","2026-08-11 21:06:27","Argentina","2,000 a 10,000","Ciclo completo","Alimento propio","1,3","62","12","13","13","Sí","100"
+"825d5d20","2026-08-12 21:36:06","Colombia","300 a 2,000","Ciclo completo","Alimento propio","2","70","10","10","10","Sí","100"`;
+
+/* ---------- códigos ISO para banderas ---------- */
+const ISO = {'Argentina':'ar','Chile':'cl','México':'mx','Mexico':'mx','Perú':'pe','Peru':'pe',
+  'Costa Rica':'cr','Ecuador':'ec','Colombia':'co','Brasil':'br','Brazil':'br','Uruguay':'uy',
+  'Paraguay':'py','Bolivia':'bo','Panamá':'pa','Panama':'pa','Guatemala':'gt','Honduras':'hn',
+  'República Dominicana':'do','Republica Dominicana':'do','Venezuela':'ve','España':'es','Spain':'es',
+  'Nicaragua':'ni','El Salvador':'sv','Cuba':'cu','Portugal':'pt','Estados Unidos':'us','Italia':'it'};
+
+const ORDEN_TAM  = ['Menos de 300','300 a 2,000','2,000 a 10,000','Más de 10,000'];
+const ORDEN_ORIG = ['Alimento propio','Mixto','Alimento comprado'];
+const C = {azul:'#1F6DB1',azulOsc:'#155589',naranja:'#E87722',gris:'#53565A',
+           azulMedio:'#A9C4DE',azulClaro:'#D1E3F6',verde:'#8CC63F',suave:'#8B929B',linea:'#EFF3F6'};
+const FUENTE = "'Montserrat', sans-serif";
+
+let CRUDO=[], DATOS=[], charts={}, esRespaldo=false, sello=null, diagnostico=[];
+
+/* ---------- utilidades ---------- */
+const fmt = (n,d=2) => n==null||isNaN(n) ? '—' : n.toLocaleString('es-CO',{minimumFractionDigits:d,maximumFractionDigits:d});
+const usd = (n,d=2) => n==null||isNaN(n) ? '—' : '$'+fmt(n,d);
+const pct = (n,d=1) => n==null||isNaN(n) ? '—' : fmt(n,d)+'%';
+const num = t => { if(t==null) return NaN; const v=parseFloat(String(t).trim().replace(/\s/g,'').replace(',','.')); return isNaN(v)?NaN:v; };
+const mean = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : NaN;
+const sd = a => { if(a.length<2) return NaN; const m=mean(a); return Math.sqrt(a.reduce((s,x)=>s+(x-m)**2,0)/(a.length-1)); };
+function quant(a,q){ if(!a.length) return NaN; const s=[...a].sort((x,y)=>x-y), p=(s.length-1)*q, lo=Math.floor(p), hi=Math.ceil(p);
+  return lo===hi ? s[lo] : s[lo]+(s[hi]-s[lo])*(p-lo); }
+function corr(x,y){ const n=x.length; if(n<3) return NaN; const mx=mean(x),my=mean(y);
+  let a=0,b=0,c=0; for(let i=0;i<n;i++){const dx=x[i]-mx,dy=y[i]-my;a+=dx*dy;b+=dx*dx;c+=dy*dy;} return a/Math.sqrt(b*c); }
+const esc = s => String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+/* ---------- banderas ---------- */
+const BANDERAS = {};
+const urlBandera = (p,w) => { const i=ISO[p]; return i ? `https://flagcdn.com/w${w}/${i}.png` : null; };
+function bandera(pais){
+  const u = urlBandera(pais,40);
+  return u ? `<img src="${u}" alt="${esc(pais)}" loading="lazy"
+    onerror="this.outerHTML='<b style=\\'font-size:9px;color:#8B929B\\'>${esc(pais).slice(0,3).toUpperCase()}</b>'">` : '';
+}
+function precargarBanderas(paises){
+  return Promise.all(paises.map(p=>{
+    const iso = ISO[p]; if(!iso || BANDERAS[iso]) return Promise.resolve();
+    return new Promise(res=>{
+      const img = new Image();
+      img.crossOrigin='anonymous';
+      img.onload = ()=>{ BANDERAS[iso]=img; res(); };
+      img.onerror = ()=>res();
+      setTimeout(res,3500);                       // no bloquear el render si el CDN tarda
+      img.src = urlBandera(p,80);
+    });
+  }));
+}
+
+/* ==========================================================================
+   PLUGINS DE EJE CON BANDERA
+   El espacio se RESERVA con afterFit sobre la escala; sin esto el eje colapsa
+   y las banderas quedan aplastadas o encimadas con la leyenda.
+   ========================================================================== */
+const ALTO_EJE_X = 72;
+
+/* El eje Y se dimensiona según el nombre de país más largo, para que la muestra
+   pueda crecer (p. ej. «República Dominicana») sin que el texto se recorte. */
+function anchoEjeY(paises){
+  const c = document.createElement('canvas').getContext('2d');
+  c.font = '700 12px '+FUENTE;
+  const maxTxt = Math.max(0, ...paises.map(p=>c.measureText(p.k).width));
+  return Math.max(124, Math.ceil(maxTxt) + 24 + 9 + 16);   // texto + bandera + separación + margen
+}
+
+const ejeBanderaX = paises => ({
+  id:'ejeBanderaX',
+  afterDraw(ch){
+    const x = ch.scales.x; if(!x) return;
+    const ctx = ch.ctx;
+    const banda = (x.right - x.left) / Math.max(paises.length,1);
+    paises.forEach((p,i)=>{
+      const cx = x.getPixelForValue(i);
+      if(cx==null || isNaN(cx) || cx < x.left-1 || cx > x.right+1) return;
+      let y = x.top + 9;
+      ctx.save();
+      const img = BANDERAS[ISO[p.k]];
+      if(img && img.naturalWidth){
+        const w=26, h=Math.round(26*img.naturalHeight/img.naturalWidth);
+        ctx.shadowColor='rgba(0,0,0,.18)'; ctx.shadowBlur=2.5; ctx.shadowOffsetY=.5;
+        ctx.drawImage(img, Math.round(cx-w/2), y, w, h);
+        ctx.shadowBlur=0; ctx.shadowOffsetY=0;
+        y += h+7;
+      }
+      ctx.textAlign='center'; ctx.textBaseline='top';
+      /* si no cabe el nombre completo en su banda, se abrevia al código de país */
+      ctx.font='700 11.5px '+FUENTE;
+      let nombre = p.k;
+      if(ctx.measureText(nombre).width > banda-8)
+        nombre = (ISO[p.k] || p.k.slice(0,3)).toUpperCase();
+      ctx.fillStyle='#3A424B';
+      ctx.fillText(nombre, cx, y);
+      ctx.fillStyle=C.suave; ctx.font='600 9.5px '+FUENTE;
+      ctx.fillText('n = '+p.n, cx, y+14);
+      ctx.restore();
+    });
+  }
+});
+
+const ejeBanderaY = paises => ({
+  id:'ejeBanderaY',
+  afterDraw(ch){
+    const y = ch.scales.y; if(!y) return;
+    const ctx = ch.ctx, der = y.right - 12;
+    paises.forEach((p,i)=>{
+      const cy = y.getPixelForValue(i);
+      if(cy==null || isNaN(cy)) return;
+      ctx.save();
+      ctx.textAlign='right'; ctx.textBaseline='middle';
+      ctx.fillStyle='#3A424B'; ctx.font='700 12px '+FUENTE;
+      ctx.fillText(p.k, der, cy-5);
+      ctx.fillStyle=C.suave; ctx.font='600 9.5px '+FUENTE;
+      ctx.fillText('n = '+p.n, der, cy+8);
+      const img = BANDERAS[ISO[p.k]];
+      if(img && img.naturalWidth){
+        ctx.font='700 12px '+FUENTE;
+        const w=24, h=Math.round(24*img.naturalHeight/img.naturalWidth);
+        const anchoTxt = ctx.measureText(p.k).width;
+        ctx.shadowColor='rgba(0,0,0,.18)'; ctx.shadowBlur=2.5;
+        ctx.drawImage(img, der-anchoTxt-w-9, cy-h/2, w, h);
+      }
+      ctx.restore();
+    });
+  }
+});
+
+/* valor sobre cada barra vertical */
+const etiquetaBarra = {
+  id:'etiquetaBarra',
+  afterDatasetsDraw(ch){
+    if(ch.config.type!=='bar') return;
+    const met = ch.getDatasetMeta(0); if(!met) return;
+    const ctx = ch.ctx;
+    met.data.forEach((el,i)=>{
+      const v = ch.data.datasets[0].data[i];
+      if(v==null||isNaN(v)) return;
+      ctx.save();
+      ctx.fillStyle=C.azulOsc; ctx.font='800 12.5px '+FUENTE;
+      ctx.textAlign='center'; ctx.textBaseline='bottom';
+      ctx.fillText('$'+fmt(v,2), el.x, el.y-8);
+      ctx.restore();
+    });
+  }
+};
+
+/* ---------- parser CSV ---------- */
+function parseCSV(txt){
+  const filas=[]; let f=[],c='',q=false;
+  for(let i=0;i<txt.length;i++){
+    const ch=txt[i];
+    if(q){ if(ch==='"'){ if(txt[i+1]==='"'){c+='"';i++;} else q=false; } else c+=ch; }
+    else if(ch==='"') q=true;
+    else if(ch===','){ f.push(c); c=''; }
+    else if(ch==='\n'){ f.push(c); filas.push(f); f=[]; c=''; }
+    else if(ch!=='\r') c+=ch;
+  }
+  if(c!==''||f.length){ f.push(c); filas.push(f); }
+  return filas.filter(r=>r.some(x=>x.trim()!==''));
+}
+
+/* ---------- normalización ---------- */
+function normalizar(txt){
+  const filas = parseCSV(txt);
+  if(filas.length<2) return [];
+  const H = filas[0].map(h=>h.toLowerCase());
+  const buscar = (...ks) => { for(const k of ks){ const i=H.findIndex(h=>h.includes(k)); if(i>=0) return i; } return -1; };
+  const ix = {
+    ts:    buscar('submission time','marca temporal','timestamp','fecha','hora','submitted','date'),
+    pais:  buscar('país','pais','country'),
+    tam:   buscar('tamaño','tamano','cerdas'),
+    sist:  buscar('sistema'),
+    orig:  buscar('fabrica su propio','alimento balanceado','origen'),
+    costo: buscar('costo total de producción','costo total','por kilogramo'),
+    alim:  buscar('alimentación / nutrición','alimentación','alimentacion'),
+    san:   buscar('sanidad'),
+    mo:    buscar('mano de obra'),
+    fij:   buscar('costos fijos','fijos y financieros'),
+    cons:  buscar('autoriza')
+  };
+  const out=[];
+  for(let i=1;i<filas.length;i++){
+    const r = filas[i];
+    const g = k => ix[k]>=0 ? (r[ix[k]]||'').trim() : '';
+    const costo = num(g('costo'));
+    const pais  = g('pais');
+    if(!pais || isNaN(costo) || costo<=0) continue;                 // fila incompleta
+    if(ix.cons>=0 && !/^s[ií]/i.test(g('cons'))) continue;          // sin consentimiento → excluida
+
+    let anio = parseInt((g('ts').match(/(20\d{2})/)||[])[1]);
+    if(!anio){
+      for(const c of r){ const mm=String(c||'').match(/\b(20\d{2})\b/);
+        if(mm && /[\/\-:]/.test(c)){ anio=parseInt(mm[1]); break; } }
+    }
+    if(!anio) anio = new Date().getFullYear();
+
+    const o = { anio, pais, tam:g('tam')||'No indicado', sist:g('sist')||'No indicado',
+      orig:g('orig')||'No indicado', costo,
+      alim:num(g('alim')), san:num(g('san')), mo:num(g('mo')), fij:num(g('fij')) };
+    const s = o.alim+o.san+o.mo+o.fij;
+    o.completo = !isNaN(s) && Math.abs(s-100) < 1.5;
+    o.cAlim = o.completo ? o.alim/100*o.costo : NaN;
+    out.push(o);
+  }
+  return out;
+}
+
+/* ---------- agregación ---------- */
+function agrupar(rows, key, orden){
+  const m = new Map();
+  rows.forEach(r => { if(!m.has(r[key])) m.set(r[key],[]); m.get(r[key]).push(r); });
+  let arr = [...m.entries()].map(([k,v]) => {
+    const cs=v.map(r=>r.costo), comp=v.filter(r=>r.completo);
+    return { k, n:v.length, rows:v, costo:mean(cs), min:Math.min(...cs), max:Math.max(...cs), sd:sd(cs),
+      alim:mean(comp.map(r=>r.alim)), san:mean(comp.map(r=>r.san)),
+      mo:mean(comp.map(r=>r.mo)), fij:mean(comp.map(r=>r.fij)), cAlim:mean(comp.map(r=>r.cAlim)) };
+  });
+  if(orden) arr.sort((a,b)=>orden.indexOf(a.k)-orden.indexOf(b.k));
+  else arr.sort((a,b)=>a.costo-b.costo);
+  return arr;
+}
+
+/* ==========================================================================
+   CARGA DE DATOS — cascada de fuentes con diagnóstico
+   ========================================================================== */
+async function intentar(url){
+  const ctl = new AbortController();
+  const tmo = setTimeout(()=>ctl.abort(), 12000);
+  try{
+    const r = await fetch(url + (url.includes('?')?'&':'?') + '_=' + Date.now(),
+                          {cache:'no-store', signal:ctl.signal, redirect:'follow'});
+    clearTimeout(tmo);
+    if(!r.ok) throw new Error('respuesta HTTP '+r.status);
+    const t = await r.text();
+    if(/<!DOCTYPE|<html/i.test(t.slice(0,200))) throw new Error('la hoja devolvió una página de inicio de sesión (no es pública)');
+    const d = normalizar(t);
+    if(!d.length) throw new Error('el archivo se leyó pero no contiene filas válidas');
+    return d;
+  }catch(e){
+    clearTimeout(tmo);
+    let m = e.message||String(e);
+    if(e.name==='AbortError') m='tiempo de espera agotado (12 s)';
+    else if(/Failed to fetch|NetworkError|Load failed/i.test(m)) m='el navegador bloqueó la petición (CORS) o no hay conexión';
+    throw new Error(m);
+  }
+}
+
+async function cargar(urlManual){
+  const btn=document.getElementById('btnRec'), dot=document.querySelector('#estado .dot'), txt=document.getElementById('estadoTxt');
+  btn.disabled=true; dot.className='dot load'; txt.textContent='Consultando la hoja…';
+  diagnostico=[];
+  const fuentes = urlManual ? [urlManual, ...FUENTES] : FUENTES;
+
+  for(const url of fuentes){
+    try{
+      const d = await intentar(url);
+      CRUDO=d; esRespaldo=false; sello=new Date();
+      dot.className='dot ok';
+      txt.textContent = `Datos en vivo · ${CRUDO.length} respuestas · ${sello.toLocaleString('es-CO',{dateStyle:'short',timeStyle:'short'})}`;
+      document.getElementById('diag').style.display='none';
+      btn.disabled=false; poblarFiltros(); await render(); return;
+    }catch(e){ diagnostico.push({url, error:e.message}); }
+  }
+  CRUDO = normalizar(CSV_RESPALDO); esRespaldo=true; sello=null;
+  dot.className='dot warn';
+  txt.textContent = `Datos de respaldo (${CRUDO.length} resp.)`;
+  mostrarDiagnostico();
+  btn.disabled=false; poblarFiltros(); await render();
+}
+
+function mostrarDiagnostico(){
+  const d = document.getElementById('diag');
+  d.style.display='block';
+  d.innerHTML = `
+    <h3>No fue posible leer la hoja en vivo — se muestran los datos de respaldo</h3>
+    <p>El tablero funciona con normalidad, pero con la copia de datos incrustada al momento de generarlo.
+       Si abrió este archivo con doble clic desde su computador, el navegador bloquea las peticiones a internet
+       por seguridad: publique el tablero en una URL (Netlify, intranet) para restablecer la conexión en vivo.</p>
+    <p>Si el tablero ya está publicado, es probable que la hoja haya dejado de ser accesible. Puede publicarla así:</p>
+    <ol>
+      <li>Abra la hoja en Google Sheets.</li>
+      <li><code>Archivo</code> → <code>Compartir</code> → <code>Publicar en la web</code>.</li>
+      <li>Elija la hoja de respuestas y el formato <code>Valores separados por comas (.csv)</code>.</li>
+      <li>Pulse <code>Publicar</code>, copie la URL y péguela aquí:</li>
+    </ol>
+    <div class="pega">
+      <input id="urlManual" placeholder="https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?gid=0&single=true&output=csv">
+      <button class="btn btn-primary" id="btnProbar">Probar conexión</button>
+    </div>
+    <p style="margin-top:13px;font-size:11px;opacity:.85"><b>Detalle técnico:</b> ${
+      diagnostico.map(x=>`<br>· <code>${esc(x.url.split('?')[0].slice(-46))}</code> → ${esc(x.error)}`).join('')
+    }</p>`;
+  document.getElementById('btnProbar').addEventListener('click',()=>{
+    const u=document.getElementById('urlManual').value.trim(); if(u) cargar(u);
+  });
+}
+
+/* ---------- filtros ---------- */
+function poblarFiltros(){
+  const selA=document.getElementById('fAnio'), selS=document.getElementById('fSist');
+  const prevA=selA.value, prevS=selS.value;
+  const anios=[...new Set(CRUDO.map(r=>r.anio))].sort((a,b)=>b-a);
+  selA.innerHTML = anios.map(a=>`<option value="${a}">${a}</option>`).join('')
+                 + (anios.length>1?`<option value="todos">Todas las campañas</option>`:'');
+  selA.value = (anios.includes(+prevA)||prevA==='todos') ? prevA : anios[0];
+
+  const sist=[...new Set(CRUDO.map(r=>r.sist))].sort();
+  selS.innerHTML = `<option value="Ciclo completo">Solo ciclo completo</option>`
+                 + sist.filter(s=>s!=='Ciclo completo').map(s=>`<option value="${esc(s)}">Solo ${esc(s).toLowerCase()}</option>`).join('')
+                 + `<option value="todos">Todos los sistemas</option>`;
+  selS.value = (prevS && [...selS.options].some(o=>o.value===prevS)) ? prevS : 'Ciclo completo';
+}
+function filtrar(){
+  const a=document.getElementById('fAnio').value, s=document.getElementById('fSist').value;
+  return CRUDO.filter(r => (a==='todos'||r.anio===+a) && (s==='todos'||r.sist===s));
+}
+
+/* ==========================================================================
+   RENDER
+   ========================================================================== */
+async function render(){
+  DATOS = filtrar();
+  if(!DATOS.length){
+    document.getElementById('kpis').innerHTML =
+      '<div class="kpi"><div class="kpi-top"><div class="kpi-lb">Sin datos</div></div><div class="kpi-ft">No hay respuestas para el filtro seleccionado.</div></div>';
+    return;
+  }
+  const paises = agrupar(DATOS,'pais');
+  await precargarBanderas(paises.map(p=>p.k));
+  renderKPIs(paises);
+  renderTablaPais(paises);
+  renderRank(paises);
+  renderStack(paises);
+  renderAlim(paises);
+  renderInsights(paises);
+  renderDrivers();
+  renderDispersion(paises);
+  renderMuestra(paises);
+  renderMetodologia();
+}
+
+/* ---------- KPIs ---------- */
+const IC = {
+  dolar:'<path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',
+  rango:'<path d="M8 7l-5 5 5 5M16 7l5 5-5 5M3 12h18"/>',
+  medalla:'<circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-2.5L17 22l-1.5-8"/>',
+  diana:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/>',
+  grano:'<path d="M12 3c-1.5 3-4 4.5-4 8a4 4 0 008 0c0-3.5-2.5-5-4-8zM12 21v-6"/>',
+  onda:'<path d="M2 12h4l3-8 4 16 3-8h6"/>',
+  base:'<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>'
+};
+function renderKPIs(paises){
+  const cs=DATOS.map(r=>r.costo), comp=DATOS.filter(r=>r.completo);
+  const m=mean(cs), p25=quant(cs,.25), mn=Math.min(...cs), mx=Math.max(...cs);
+  const cv=sd(cs)/m*100, brecha=(mx/mn-1)*100, ahorro=m-p25;
+  const K=[
+    ['Costo medio LATAM', IC.dolar, `${usd(m)}<span class="u">/kg</span>`, `Mediana ${usd(quant(cs,.5))}/kg`, false],
+    ['Rango observado', IC.rango, `${usd(mn)}<span class="u">–</span>${usd(mx)}`, `Brecha de ${fmt(brecha,0)}% entre extremos`, false],
+    ['Cuartil más eficiente', IC.medalla, `${usd(p25)}<span class="u">/kg</span>`, 'El 25% más competitivo produce por debajo', false],
+    ['Brecha de oportunidad', IC.diana, `${usd(ahorro)}<span class="u">/kg</span>`, `Distancia del promedio al P25 (${fmt(ahorro/m*100,0)}%)`, true],
+    ['Peso alimentación', IC.grano, `${pct(mean(comp.map(r=>r.alim)))}`, `${usd(mean(comp.map(r=>r.cAlim)))}/kg del costo total`, false],
+    ['Desviación estándar', IC.onda, `±${usd(sd(cs))}`, `Coeficiente de variación ${fmt(cv,1)}%`, false],
+    ['Base muestral', IC.base, `${DATOS.length}`, `${paises.length} países · campaña ${document.getElementById('fAnio').value}`, false]
+  ];
+  document.getElementById('kpis').innerHTML = K.map(([l,ic,v,f,dest])=>
+    `<div class="kpi ${dest?'destaca':''}">
+       <div class="kpi-top"><div class="kpi-lb">${l}</div>
+         <div class="kpi-ic"><svg viewBox="0 0 24 24">${ic}</svg></div></div>
+       <div class="kpi-v">${v}</div><div class="kpi-ft">${f}</div></div>`).join('');
+}
+
+/* ---------- tabla por país ---------- */
+function renderTablaPais(paises){
+  const comp=DATOS.filter(r=>r.completo), cs=DATOS.map(r=>r.costo), m=mean(cs);
+  const gMin=Math.min(...cs), gMax=Math.max(...cs), amp=gMax-gMin||1;
+  const pos = v => Math.max(0,Math.min(100,(v-gMin)/amp*100));
+
+  const barraRango = p => {
+    if(p.n===1) return `<div class="rng"><div class="rng-track"><div class="rng-dot" style="left:calc(${pos(p.costo)}% - 1.5px)"></div></div>
+      <div class="rng-lb">dato único</div></div>`;
+    const a=pos(p.min), b=pos(p.max);
+    return `<div class="rng"><div class="rng-track"><div class="rng-span" style="left:${a}%;width:${Math.max(b-a,2)}%"></div></div>
+      <div class="rng-lb">${fmt(p.min,2)} – ${fmt(p.max,2)}</div></div>`;
+  };
+  const cel = (p,k,esTot) => { const v=p[k]; const cls = esTot ? '' : 'grp';
+    if(isNaN(v)) return `<td>—</td><td class="${cls}">—</td>`;
+    return `<td>${usd(v/100*p.costo)}</td><td class="${cls}">${pct(v)}</td>`; };
+
+  const tot = { k:'MEDIA LATAM', n:DATOS.length, costo:m, min:gMin, max:gMax,
+    alim:mean(comp.map(r=>r.alim)), san:mean(comp.map(r=>r.san)),
+    mo:mean(comp.map(r=>r.mo)), fij:mean(comp.map(r=>r.fij)) };
+
+  const fila = p => {
+    const esTot = p.k==='MEDIA LATAM';
+    const d = esTot ? null : (p.costo/m-1)*100;
+    const ident = esTot
+      ? `<div class="pais"><span class="med-dot"></span><div><div class="pais-n" style="color:${C.azulOsc};letter-spacing:.4px">MEDIA LATAM</div><div class="n-badge">n = ${p.n} respuestas</div></div></div>`
+      : `<div class="pais">${bandera(p.k)}<div><div class="pais-n">${esc(p.k)}</div><div class="n-badge">n = ${p.n}</div></div></div>`;
+    return `<tr class="${esTot?'tot':''}">
+      <td class="l">${ident}</td>
+      <td class="big">${usd(p.costo)}</td>
+      <td>${esTot?'<span class="chip neu">base</span>':`<span class="chip ${d<0?'neg':'pos'}">${d>0?'+':'−'}${fmt(Math.abs(d),1)}%</span>`}</td>
+      <td>${barraRango(p)}</td>
+      ${cel(p,'alim',esTot)}${cel(p,'san',esTot)}${cel(p,'mo',esTot)}${cel(p,'fij',esTot)}</tr>`;
+  };
+
+  document.getElementById('tPais').innerHTML = `
+    <thead>
+      <tr><th colspan="4"></th>
+        <th class="sec" colspan="2">Alimentación</th><th class="sec" colspan="2">Sanidad y var.</th>
+        <th class="sec" colspan="2">Mano de obra</th><th class="sec" colspan="2">Fijos y financ.</th></tr>
+      <tr><th class="l">País</th><th>Costo total<br>USD/kg</th><th>vs. media<br>LATAM</th><th>Rango<br>observado</th>
+        <th>USD</th><th class="grp">%</th><th>USD</th><th class="grp">%</th>
+        <th>USD</th><th class="grp">%</th><th>USD</th><th class="grp">%</th></tr>
+    </thead><tbody>${paises.map(fila).join('')}${fila(tot)}</tbody>`;
+}
+
+/* ---------- ranking ---------- */
+function renderRank(paises){
+  const m = mean(DATOS.map(r=>r.costo));
+  const color = v => v < m*0.92 ? C.verde : v > m*1.05 ? C.naranja : C.azul;
+  charts.rank?.destroy();
+  charts.rank = new Chart(document.getElementById('cRank'), {
+    type:'bar',
+    data:{ labels:paises.map(p=>p.k), datasets:[{ data:paises.map(p=>p.costo),
+      backgroundColor:paises.map(p=>color(p.costo)), borderRadius:6, barPercentage:.62, maxBarThickness:82 }]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      layout:{padding:{top:30,right:14}},
+      plugins:{ legend:{display:false},
+        tooltip:{ backgroundColor:'#155589', padding:11, cornerRadius:8, titleFont:{family:FUENTE,size:12.5,weight:'700'},
+          bodyFont:{family:FUENTE,size:11.5}, displayColors:false,
+          callbacks:{ title:c=>paises[c[0].dataIndex].k,
+            label:c=>`Costo medio: ${usd(c.parsed.y)}/kg`,
+            afterLabel:c=>{ const p=paises[c.dataIndex];
+              return [`Respuestas: ${p.n}`, p.n>1?`Rango: ${usd(p.min)} – ${usd(p.max)}`:'Dato único (no representativo)',
+                      `vs. media LATAM: ${((p.costo/m-1)*100).toFixed(1)}%`]; } } } },
+      scales:{ y:{ beginAtZero:true, grid:{color:C.linea,drawTicks:false}, border:{display:false},
+                   ticks:{callback:v=>'$'+fmt(v,2),font:{family:FUENTE,size:11},color:C.suave,padding:8},
+                   title:{display:true,text:'USD / kg de cerdo vivo',font:{family:FUENTE,size:10.5,weight:'600'},color:C.suave} },
+               x:{ grid:{display:false}, ticks:{display:false}, border:{color:'#E8EDF2'},
+                   afterFit(s){ s.height = ALTO_EJE_X; } } } },
+    plugins:[ etiquetaBarra, ejeBanderaX(paises), { id:'lineaMedia', afterDatasetsDraw(ch){
+      const {ctx,chartArea:{left,right},scales:{y}}=ch, yy=y.getPixelForValue(m);
+      ctx.save();
+      ctx.strokeStyle=C.naranja; ctx.lineWidth=1.6; ctx.setLineDash([7,5]);
+      ctx.beginPath(); ctx.moveTo(left,yy); ctx.lineTo(right,yy); ctx.stroke(); ctx.setLineDash([]);
+      const et=`Media LATAM ${usd(m)}`;
+      ctx.font='700 10.5px '+FUENTE;
+      const w=ctx.measureText(et).width+16, h=19, bx=right-w, by=yy-h-5;
+      ctx.fillStyle=C.naranja;
+      ctx.beginPath();
+      if(ctx.roundRect) ctx.roundRect(bx,by,w,h,9.5); else ctx.rect(bx,by,w,h);
+      ctx.fill();
+      ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(et,bx+w/2,by+h/2+.5);
+      ctx.restore(); }} ]
+  });
+}
+
+/* ---------- estructura apilada ---------- */
+function renderStack(paises){
+  const comp = DATOS.filter(r=>r.completo);
+  const tot = { k:'MEDIA LATAM', costo:mean(DATOS.map(r=>r.costo)),
+    alim:mean(comp.map(r=>r.alim)), san:mean(comp.map(r=>r.san)),
+    mo:mean(comp.map(r=>r.mo)), fij:mean(comp.map(r=>r.fij)) };
+  const cols=[['alim',C.azul],['san',C.naranja],['mo',C.gris],['fij',C.azulMedio]];
+  const fila = p => {
+    const segs = cols.map(([k,col])=>{
+      const v=p[k]; if(isNaN(v)||v<=0) return '';
+      return `<div class="stk-seg" style="background:${col};width:${v}%" title="${fmt(v,1)}%">${v>=7?fmt(v,1):''}</div>`;
+    }).join('');
+    const esTot = p.k==='MEDIA LATAM';
+    const ident = esTot
+      ? `<span class="med-dot"></span><span class="pais-n" style="color:${C.azulOsc};letter-spacing:.4px">MEDIA LATAM</span>`
+      : `${bandera(p.k)}<span class="pais-n">${esc(p.k)}</span>`;
+    return `<div class="stk-row${esTot?' total':''}">
+      <div class="pais">${ident}</div><div class="stk-bar">${segs}</div><div class="stk-val">${usd(p.costo)}</div></div>`;
+  };
+  document.getElementById('stack').innerHTML = paises.map(fila).join('') + fila(tot);
+}
+
+/* ---------- costo de alimentación absoluto ---------- */
+function renderAlim(paises){
+  const p = paises.filter(x=>!isNaN(x.cAlim)).sort((a,b)=>a.cAlim-b.cAlim);
+  charts.alim?.destroy();
+  charts.alim = new Chart(document.getElementById('cAlim'), {
+    type:'bar',
+    data:{ labels:p.map(x=>x.k), datasets:[
+      { label:'Costo de alimentación', data:p.map(x=>x.cAlim), backgroundColor:C.azul, borderRadius:{topRight:0,bottomRight:0}, stack:'s' },
+      { label:'Resto del costo', data:p.map(x=>x.costo-x.cAlim), backgroundColor:C.azulClaro, borderRadius:5, stack:'s' }]},
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      layout:{padding:{right:16}},
+      plugins:{ legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',boxWidth:8,
+                  font:{family:FUENTE,size:11,weight:'600'},color:C.suave,padding:16}},
+        tooltip:{ backgroundColor:'#155589', padding:11, cornerRadius:8, titleFont:{family:FUENTE,size:12.5,weight:'700'},
+          bodyFont:{family:FUENTE,size:11.5}, footerFont:{family:FUENTE,size:11},
+          callbacks:{ title:c=>p[c[0].dataIndex].k,
+            label:c=>`${c.dataset.label}: ${usd(c.parsed.x)}/kg`,
+            footer:c=>[`Costo total: ${usd(p[c[0].dataIndex].costo)}/kg`,
+                       `Alimentación: ${pct(p[c[0].dataIndex].alim)} del total`] } } },
+      scales:{ x:{ stacked:true, grid:{color:C.linea,drawTicks:false}, border:{display:false},
+                   ticks:{callback:v=>'$'+fmt(v,2),font:{family:FUENTE,size:11},color:C.suave,padding:6} },
+               y:{ stacked:true, grid:{display:false}, ticks:{display:false}, border:{display:false},
+                   afterFit(s){ s.width = anchoEjeY(p); } } } },
+    plugins:[ ejeBanderaY(p) ]
+  });
+}
+
+/* ---------- insights automáticos ---------- */
+function renderInsights(paises){
+  const cs=DATOS.map(r=>r.costo), comp=DATOS.filter(r=>r.completo), m=mean(cs);
+  const mn=Math.min(...cs), mx=Math.max(...cs);
+  const pMin=paises[0], pMax=paises[paises.length-1];
+  const rAbs=corr(comp.map(r=>r.cAlim),comp.map(r=>r.costo));
+  const rPct=corr(comp.map(r=>r.alim), comp.map(r=>r.costo));
+  const gO=agrupar(DATOS,'orig',ORDEN_ORIG);
+  const propio=gO.find(g=>/propio/i.test(g.k)), comprado=gO.find(g=>/comprado/i.test(g.k));
+  const gT=agrupar(DATOS,'tam',ORDEN_TAM).filter(g=>g.n>=2);
+  const li=[];
+
+  li.push(`<b>La alimentación concentra ${pct(mean(comp.map(r=>r.alim)))} del costo</b>, equivalente a ${usd(mean(comp.map(r=>r.cAlim)))} de cada ${usd(m)} producidos. Ningún programa de eficiencia que no ataque primero la nutrición puede mover la aguja de forma material.`);
+
+  if(!isNaN(rAbs)&&!isNaN(rPct))
+    li.push(`<b>Lo que separa a los países no es cuánto pesa el alimento, sino cuánto cuesta.</b> El costo de alimentación en dólares correlaciona con el costo total en r = ${fmt(rAbs,2)}, mientras que su participación porcentual apenas alcanza r = ${fmt(rPct,2)}. La palanca está en el precio y la conversión del alimento, no en su peso relativo.`);
+
+  if(propio&&comprado&&propio.n>=3&&comprado.n>=3){
+    const d=comprado.costo-propio.costo;
+    li.push(`<b>Fabricar alimento propio se asocia a ${usd(Math.abs(d))}/kg ${d>0?'menos':'más'} de costo</b> (${usd(propio.costo)} vs ${usd(comprado.costo)}, ${fmt(Math.abs(d/comprado.costo*100),0)}%). Advertencia: los países más competitivos de la muestra son también los que más fabrican en planta propia, de modo que el efecto está parcialmente confundido con el país.`);
+  }
+
+  li.push(`<b>Brecha de ${fmt((mx/mn-1)*100,0)}% entre el extremo más competitivo y el más alto</b> (${usd(mn)} en ${pMin.k} vs ${usd(mx)} en ${pMax.k}). La dispersión dentro de la región supera ampliamente la variación de los precios de mercado.`);
+
+  if(gT.length>=2){
+    const rango=Math.max(...gT.map(g=>g.costo))-Math.min(...gT.map(g=>g.costo));
+    li.push(rango<0.12
+      ? `<b>El efecto escala no aparece en esta muestra.</b> Entre los rangos de tamaño con base suficiente, la diferencia de costo medio es de apenas ${usd(rango)}/kg. El tamaño por sí solo no está explicando la competitividad: la geografía y el manejo del alimento pesan mucho más.`
+      : `<b>Se observa un efecto escala de ${usd(rango)}/kg</b> entre los rangos de tamaño con base suficiente de respuestas.`);
+  }
+
+  const disp=paises.filter(p=>p.n>=3).sort((a,b)=>b.sd-a.sd)[0];
+  if(disp) li.push(`<b>${disp.k} presenta la mayor dispersión interna</b> (${usd(disp.min)} – ${usd(disp.max)}, σ ${usd(disp.sd)}), señal de que dentro de un mismo país conviven modelos productivos con estructuras de costo muy distintas.`);
+
+  document.getElementById('insights').innerHTML = li.map(x=>`<li>${x}</li>`).join('');
+}
+
+/* ---------- drivers ---------- */
+function renderDrivers(){
+  const comp = DATOS.filter(r=>r.completo);
+
+  charts.sc?.destroy();
+  charts.sc = new Chart(document.getElementById('cScatter'), {
+    type:'scatter',
+    data:{ datasets:[{ data:comp.map(r=>({x:r.cAlim,y:r.costo,pais:r.pais,orig:r.orig})),
+      backgroundColor:'rgba(31,109,177,.5)', borderColor:C.azul, borderWidth:1.4, pointRadius:6.5, pointHoverRadius:9.5 }]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        title:{display:true,text:'Costo de alimentación (USD/kg) frente al costo total',
+               font:{family:FUENTE,size:11,weight:'600'},color:C.suave,padding:{bottom:16}},
+        tooltip:{ backgroundColor:'#155589', padding:11, cornerRadius:8, displayColors:false,
+          titleFont:{family:FUENTE,size:12.5,weight:'700'}, bodyFont:{family:FUENTE,size:11.5},
+          callbacks:{ title:c=>c[0].raw.pais,
+            label:c=>[`Alimentación: ${usd(c.parsed.x)}/kg`,`Costo total: ${usd(c.parsed.y)}/kg`,`Origen: ${c.raw.orig}`] } } },
+      scales:{ x:{ title:{display:true,text:'Costo de alimentación USD/kg',font:{family:FUENTE,size:10.5,weight:'600'},color:C.suave},
+                   ticks:{callback:v=>'$'+fmt(v,2),font:{family:FUENTE,size:10.5},color:C.suave}, grid:{color:C.linea}, border:{display:false} },
+               y:{ title:{display:true,text:'Costo total USD/kg',font:{family:FUENTE,size:10.5,weight:'600'},color:C.suave},
+                   ticks:{callback:v=>'$'+fmt(v,2),font:{family:FUENTE,size:10.5},color:C.suave}, grid:{color:C.linea}, border:{display:false} } } }
+  });
+
+  const V=[['Costo de alimentación (USD/kg)','cAlim'],['Alimentación (%)','alim'],
+           ['Sanidad y variables (%)','san'],['Mano de obra (%)','mo'],['Fijos y financieros (%)','fij']];
+  const y=comp.map(r=>r.costo);
+  const fuerza = r => { const a=Math.abs(r); return a>=.7?['Muy fuerte',C.azul]:a>=.4?['Moderada',C.naranja]:['Débil','#B4BAC1']; };
+  document.getElementById('corrBox').innerHTML =
+    `<h3>Correlación con el costo total</h3>
+     <p style="font-size:11px;color:${C.suave};margin-bottom:18px;font-weight:500">Coeficiente de Pearson sobre ${comp.length} respuestas con estructura completa.</p>` +
+    V.map(([lb,k])=>{
+      const r=corr(comp.map(x=>x[k]),y); if(isNaN(r)) return '';
+      const [et,col]=fuerza(r);
+      return `<div style="margin-bottom:13px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;margin-bottom:6px;gap:10px">
+          <span style="font-weight:600">${lb}</span>
+          <span style="font-weight:800;color:${col};font-variant-numeric:tabular-nums;white-space:nowrap">r = ${fmt(r,2)}
+            <span style="font-weight:600;font-size:9.5px;opacity:.85">${et}</span></span></div>
+        <div style="height:7px;background:#EFF2F5;border-radius:4px;position:relative;overflow:hidden">
+          <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:#CFD5DA"></div>
+          <div style="position:absolute;top:0;bottom:0;background:${col};border-radius:4px;${r>=0?`left:50%;width:${Math.abs(r)*50}%`:`right:50%;width:${Math.abs(r)*50}%`}"></div>
+        </div></div>`;
+    }).join('') +
+    `<div class="alerta" style="margin-top:18px;margin-bottom:0">
+       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+       <span>Correlación no implica causalidad. La mano de obra suele mostrar signo negativo por un efecto de composición: donde el costo total es bajo, cualquier componente fijo pesa más en porcentaje.</span></div>`;
+
+  const m=mean(DATOS.map(r=>r.costo));
+  const tblCorte = (arr,titulo) => `<thead><tr><th class="l">${titulo}</th><th>n</th><th>Costo medio</th><th>vs. media</th></tr></thead><tbody>` +
+    arr.map(g=>{ const d=(g.costo/m-1)*100;
+      return `<tr><td class="l" style="font-weight:600">${esc(g.k)}</td><td class="n-badge">${g.n}</td>
+        <td class="big" style="font-size:14.5px">${usd(g.costo)}</td>
+        <td>${g.n>=2?`<span class="chip ${d<0?'neg':'pos'}">${d>0?'+':'−'}${fmt(Math.abs(d),1)}%</span>`:'<span class="chip neu">n = 1</span>'}</td></tr>`;
+    }).join('')+'</tbody>';
+
+  const gT=agrupar(DATOS,'tam',ORDEN_TAM), gO=agrupar(DATOS,'orig',ORDEN_ORIG);
+  document.getElementById('tTam').innerHTML  = tblCorte(gT,'Rango (n° de cerdas)');
+  document.getElementById('tOrig').innerHTML = tblCorte(gO,'Origen del alimento');
+
+  const ico = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>';
+  const sol=gT.filter(g=>g.n>=2);
+  const rgT = sol.length>=2 ? Math.max(...sol.map(g=>g.costo))-Math.min(...sol.map(g=>g.costo)) : NaN;
+  document.getElementById('notaEscala').innerHTML = ico + (isNaN(rgT)
+    ? '<span>Base insuficiente para leer el efecto escala.</span>'
+    : `<span><b>Lectura:</b> entre los rangos con al menos 2 respuestas la diferencia es de ${usd(rgT)}/kg. ${rgT<0.12?'El efecto escala no es visible en esta muestra.':'Se observa un gradiente por tamaño.'} Los rangos con n = 1 son observaciones individuales y no deben leerse como tendencia.</span>`);
+
+  const pr=gO.find(g=>/propio/i.test(g.k)), cp=gO.find(g=>/comprado/i.test(g.k));
+  document.getElementById('notaOrigen').innerHTML = ico + ((pr&&cp&&pr.n>=3&&cp.n>=3)
+    ? `<span><b>Brecha propio vs. comprado: ${usd(Math.abs(cp.costo-pr.costo))}/kg.</b> Interprete con cautela: los países de menor costo de la muestra concentran la fabricación propia, por lo que el efecto está confundido con el país de origen.</span>`
+    : '<span>Base insuficiente para aislar el efecto del origen del alimento.</span>');
+
+  const cruce={};
+  DATOS.forEach(r=>{ cruce[r.tam]=cruce[r.tam]||{}; (cruce[r.tam][r.orig]=cruce[r.tam][r.orig]||[]).push(r.costo); });
+  const tams=ORDEN_TAM.filter(t=>cruce[t]), origs=ORDEN_ORIG.filter(o=>DATOS.some(r=>r.orig===o));
+  document.getElementById('tCruce').innerHTML =
+    `<thead><tr><th class="l">Tamaño \\ Origen</th>${origs.map(o=>`<th>${esc(o)}</th>`).join('')}</tr></thead><tbody>` +
+    tams.map(t=>`<tr><td class="l" style="font-weight:600">${esc(t)}</td>` + origs.map(o=>{
+      const v=cruce[t][o];
+      return v ? `<td><span class="big" style="font-size:13.5px">${usd(mean(v))}</span> <span class="n-badge">n = ${v.length}</span></td>`
+               : '<td class="n-badge">—</td>';
+    }).join('')+'</tr>').join('') + '</tbody>';
+}
+
+/* ---------- dispersión ---------- */
+function renderDispersion(paises){
+  const pts=[], medias=[];
+  paises.forEach((p,i)=>{
+    p.rows.forEach((r,j)=>{
+      const jit = p.rows.length>1 ? (j/(p.rows.length-1)-.5)*0.36 : 0;
+      pts.push({x:i+jit,y:r.costo,pais:p.k,tam:r.tam,orig:r.orig});
+    });
+    medias.push({x:i,y:p.costo,pais:p.k,n:p.n});
+  });
+  charts.disp?.destroy();
+  charts.disp = new Chart(document.getElementById('cDisp'), {
+    type:'scatter',
+    data:{ datasets:[
+      { label:'Respuesta individual', data:pts, backgroundColor:'rgba(31,109,177,.48)', borderColor:C.azul,
+        borderWidth:1.3, pointRadius:6.5, pointHoverRadius:9.5 },
+      { label:'Media del país', data:medias, backgroundColor:C.naranja, borderColor:'#fff', borderWidth:1.5,
+        pointStyle:'rectRot', pointRadius:11, pointHoverRadius:13.5 }]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      layout:{padding:{top:4,right:14}},
+      plugins:{
+        /* leyenda ARRIBA: abajo va el eje con banderas y se encimarían */
+        legend:{position:'top',align:'end',labels:{usePointStyle:true,boxWidth:9,
+          font:{family:FUENTE,size:11,weight:'600'},color:C.suave,padding:18}},
+        tooltip:{ backgroundColor:'#155589', padding:11, cornerRadius:8, displayColors:false,
+          titleFont:{family:FUENTE,size:12.5,weight:'700'}, bodyFont:{family:FUENTE,size:11.5},
+          callbacks:{ title:c=>c[0].raw.pais,
+            label:c=> c.datasetIndex===1 ? `Media del país: ${usd(c.parsed.y)}/kg (n = ${c.raw.n})`
+              : [`Costo: ${usd(c.parsed.y)}/kg`,`Tamaño: ${c.raw.tam}`,`Alimento: ${c.raw.orig}`] } } },
+      scales:{ y:{ title:{display:true,text:'USD / kg de cerdo vivo',font:{family:FUENTE,size:10.5,weight:'600'},color:C.suave},
+                   ticks:{callback:v=>'$'+fmt(v,2),font:{family:FUENTE,size:11},color:C.suave,padding:8},
+                   grid:{color:C.linea,drawTicks:false}, border:{display:false} },
+               x:{ min:-.6, max:paises.length-.4, grid:{display:false}, ticks:{display:false},
+                   border:{color:'#E8EDF2'}, afterFit(s){ s.height = ALTO_EJE_X; } } } },
+    plugins:[ ejeBanderaX(paises) ]
+  });
+}
+
+/* ---------- muestra ---------- */
+function renderMuestra(paises){
+  const rob = n => n>=8 ? ['alta','Alta'] : n>=3 ? ['media','Media'] : ['baja','Indicativa'];
+  document.getElementById('tMuestra').innerHTML =
+    `<thead><tr><th class="l">País</th><th>Respuestas</th><th>% de la muestra</th><th>Rango observado</th><th>Desv. estándar</th><th class="l">Representatividad</th></tr></thead><tbody>` +
+    [...paises].sort((a,b)=>b.n-a.n).map(p=>{ const [c,l]=rob(p.n);
+      return `<tr><td class="l"><div class="pais">${bandera(p.k)}<span class="pais-n">${esc(p.k)}</span></div></td>
+        <td class="big" style="font-size:14.5px">${p.n}</td><td>${pct(p.n/DATOS.length*100)}</td>
+        <td>${p.n>1?`${usd(p.min)} – ${usd(p.max)}`:'—'}</td><td>${p.n>1?'±'+usd(p.sd):'—'}</td>
+        <td class="l"><span class="rob ${c}"><i></i>${l}</span></td></tr>`;
+    }).join('') +
+    `<tr class="tot"><td class="l"><div class="pais"><span class="med-dot"></span><span class="pais-n" style="color:${C.azulOsc};letter-spacing:.4px">TOTAL</span></div></td>
+      <td class="big">${DATOS.length}</td><td>100,0%</td>
+      <td>${usd(Math.min(...DATOS.map(r=>r.costo)))} – ${usd(Math.max(...DATOS.map(r=>r.costo)))}</td>
+      <td>±${usd(sd(DATOS.map(r=>r.costo)))}</td><td class="l">—</td></tr></tbody>`;
+
+  const anioSel = document.getElementById('fAnio').value;
+  const baseSist = CRUDO.filter(r => anioSel==='todos' || r.anio===+anioSel);
+  const gS = agrupar(baseSist,'sist');
+  charts.sist?.destroy();
+  charts.sist = new Chart(document.getElementById('cSist'), {
+    type:'doughnut',
+    data:{ labels:gS.map(g=>g.k), datasets:[{ data:gS.map(g=>g.n),
+      backgroundColor:[C.azul,C.naranja,C.gris,C.azulMedio], borderWidth:3, borderColor:'#fff', hoverOffset:6 }]},
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'62%',
+      layout:{padding:{top:4,bottom:4}},
+      plugins:{ legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',boxWidth:8,
+                  font:{family:FUENTE,size:10.5,weight:'600'},color:C.suave,padding:13}},
+        title:{display:true,text:'Por sistema de producción',font:{family:FUENTE,size:11,weight:'600'},color:C.suave,padding:{bottom:10}},
+        tooltip:{ backgroundColor:'#155589', padding:10, cornerRadius:8, titleFont:{family:FUENTE,size:12,weight:'700'},
+          bodyFont:{family:FUENTE,size:11.5},
+          callbacks:{label:c=>` ${c.parsed} respuesta${c.parsed===1?'':'s'} (${pct(c.parsed/baseSist.length*100)})`}} } }
+  });
+
+  const cs=DATOS.map(r=>r.costo), lo=Math.floor(Math.min(...cs)*10)/10, hi=Math.ceil(Math.max(...cs)*10)/10;
+  const paso=0.2, bins=[];
+  for(let x=lo;x<hi-1e-9;x+=paso){ const a=+x.toFixed(2), b=+(x+paso).toFixed(2);
+    bins.push({lb:`$${fmt(a,2)}–${fmt(b,2)}`, n:cs.filter(v=>v>=a&&v<(b>=hi?b+1e-9:b)).length}); }
+  charts.hist?.destroy();
+  charts.hist = new Chart(document.getElementById('cHist'), {
+    type:'bar',
+    data:{ labels:bins.map(b=>b.lb), datasets:[{ data:bins.map(b=>b.n), backgroundColor:C.azul, borderRadius:5, maxBarThickness:54 }]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        title:{display:true,text:'Respuestas por rango de costo (USD/kg)',font:{family:FUENTE,size:11,weight:'600'},color:C.suave,padding:{bottom:10}},
+        tooltip:{ backgroundColor:'#155589', padding:10, cornerRadius:8, displayColors:false,
+          titleFont:{family:FUENTE,size:12,weight:'700'}, bodyFont:{family:FUENTE,size:11.5},
+          callbacks:{label:c=>`${c.parsed.y} respuesta${c.parsed.y===1?'':'s'}`}} },
+      scales:{ y:{beginAtZero:true,ticks:{precision:0,font:{family:FUENTE,size:11},color:C.suave,padding:6},
+                  grid:{color:C.linea,drawTicks:false},border:{display:false}},
+               x:{grid:{display:false},border:{color:'#E8EDF2'},
+                  ticks:{font:{family:FUENTE,size:9.5},color:C.suave,maxRotation:45,minRotation:0}} } }
+  });
+}
+
+/* ---------- metodología ---------- */
+function renderMetodologia(){
+  const anio=document.getElementById('fAnio').value, sist=document.getElementById('fSist').value;
+  const excl = CRUDO.length - DATOS.length;
+  const fuente = esRespaldo
+    ? `<b style="color:#BE5D11">Datos de respaldo.</b> No fue posible leer la hoja en vivo. Se muestran los datos incrustados al generar este tablero. Consulte el panel naranja en la parte superior para restablecer la conexión.`
+    : `<b style="color:#5A8720">Conexión en vivo activa.</b> Los datos se leen directamente de la hoja de cálculo de la encuesta cada vez que se abre o se actualiza este tablero. Última lectura: ${sello?sello.toLocaleString('es-CO',{dateStyle:'full',timeStyle:'short'}):'—'}.`;
+
+  document.getElementById('metodologia').innerHTML = `
+    <p>${fuente}</p>
+    <p><b>Origen.</b> Encuesta directa a productores del sector porcino iberoamericano, administrada por 333 Latinoamérica. Los costos son autorreportados en USD por kilogramo de cerdo vivo; las participaciones porcentuales de cada componente son declaradas por el respondiente y suman 100%. Los valores en USD por componente se derivan aplicando el porcentaje declarado sobre el costo total reportado.</p>
+    <p><b>Criterios de inclusión.</b> Solo se incorporan respuestas que autorizaron expresamente el uso de sus datos agregados en el reporte público del benchmark. Se descartan registros sin país o sin costo total válido. La vista actual está filtrada a la campaña <b>${anio}</b>${sist!=='todos'?` y al sistema <b>${esc(sist)}</b>`:''}: ${DATOS.length} de ${CRUDO.length} respuestas válidas${excl>0?` (${excl} excluidas por los filtros activos)`:''}.</p>
+    <p><b>Campañas.</b> Cada respuesta se etiqueta automáticamente por año a partir de su fecha de envío. El tablero muestra por defecto la campaña más reciente; cuando exista más de un año de datos, el selector permitirá alternar entre campañas para monitorear la variación interanual.</p>
+    <p><b>Estructura de costos.</b> Los promedios de participación porcentual se calculan solo sobre respuestas cuya estructura declarada suma 100% ± 1,5 puntos. Las medias por país son aritméticas simples, sin ponderar por volumen de producción: cada respuesta pesa igual.</p>
+    <p><b>Limitaciones.</b> Los países con una o dos respuestas corresponden a observaciones individuales y <b>no constituyen una media representativa nacional</b>. Las diferencias entre cortes (tamaño, origen del alimento) pueden estar confundidas con el país de origen, dado que la composición de la muestra no está balanceada. Muestra en ampliación continua: los resultados se actualizan a medida que ingresan nuevas respuestas.</p>`;
+
+  document.getElementById('footNota').innerHTML = esRespaldo
+    ? 'Mostrando datos de respaldo · pulse «Actualizar datos» para reintentar la conexión'
+    : `Datos actualizados en vivo desde la encuesta · ${sello?sello.toLocaleDateString('es-CO',{dateStyle:'long'}):''}`;
+}
+
+/* ---------- eventos ---------- */
+document.getElementById('logoHdr').src = LOGO_333;
+document.getElementById('logoFoot').src = LOGO_333;
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  document.getElementById(b.dataset.p).classList.add('on');
+  Object.values(charts).forEach(c=>{ try{c.resize();}catch(e){} });
+}));
+document.getElementById('fAnio').addEventListener('change',render);
+document.getElementById('fSist').addEventListener('change',render);
+document.getElementById('btnRec').addEventListener('click',()=>cargar());
+
+cargar();
+
+</script>
+</body>
+</html>
