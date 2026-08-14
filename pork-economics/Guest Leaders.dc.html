@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=League+Spartan:wght@700;900&display=swap" rel="stylesheet">
+  <script src="./auth.js"></script>
+  <style>
+    :root {
+      --azul: #1F6DB1;
+      --azul-claro: #D1E3F6;
+      --naranja: #E87722;
+      --gris: #53565A;
+      --bg: #f4f8fd;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--gris); min-height: 100vh; padding: 36px 24px 60px; }
+    .page { max-width: 1200px; margin: 0 auto; }
+
+    /* HEADER */
+    .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--azul); text-decoration: none; margin-bottom: 20px; padding: 6px 12px; background: white; border-radius: 6px; box-shadow: 0 1px 6px rgba(31,109,177,.1); transition: all .2s; }
+    .back-link:hover { background: var(--azul); color: white; }
+    .header { text-align: center; margin-bottom: 44px; }
+    .brand-row { display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 14px; }
+    .brand-logo { height: 60px; display: block; }
+    .brand-divider { width: 2px; height: 50px; background: linear-gradient(to bottom, transparent, var(--azul), transparent); }
+    .brand-pork { font-family: 'Montserrat', sans-serif; font-size: 42px; font-weight: 700; color: var(--azul); letter-spacing: -1.5px; line-height: 1; }
+    .section-label { font-size: 22px; font-weight: 600; color: var(--gris); letter-spacing: .5px; margin-top: 4px; }
+    .header-accent { width: 72px; height: 3px; background: var(--naranja); margin: 12px auto 0; border-radius: 2px; }
+
+    /* GRID */
+    .leaders-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+    /* CARD */
+    .leader-card {
+      background: white; border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(31,109,177,.09);
+      padding: 28px 24px 24px; text-align: center;
+      display: flex; flex-direction: column;
+      transition: box-shadow .25s, transform .25s;
+      cursor: default;
+    }
+    .leader-card.card-active {
+      box-shadow: 0 0 0 3px var(--azul), 0 8px 28px rgba(31,109,177,.18);
+      transform: translateY(-3px);
+    }
+    .photo-ring {
+      width: 120px; height: 120px; border-radius: 50%;
+      margin: 0 auto 16px; border: 3px solid var(--azul);
+      box-shadow: 0 3px 12px rgba(31,109,177,.16);
+      overflow: hidden; background: var(--azul-claro); flex-shrink: 0;
+    }
+    .photo-ring img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .leader-name { font-size: 17px; font-weight: 700; color: var(--azul); margin-bottom: 4px; line-height: 1.2; }
+    .leader-pos { font-size: 12px; font-weight: 600; color: var(--naranja); margin-bottom: 6px; line-height: 1.3; }
+    .leader-country { font-size: 12px; color: var(--gris); margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .flag-img { width: 24px; height: 17px; object-fit: cover; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,.18); display: none; }
+    .article-title { font-size: 12px; font-weight: 700; color: var(--azul); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 3px; line-height: 1.3; }
+    .article-date { font-size: 11px; font-weight: 500; color: var(--naranja); margin-bottom: 8px; }
+    .preview-box { font-size: 13px; line-height: 1.65; color: var(--gris); margin-bottom: 16px; text-align: left; background: #f5f7fa; padding: 12px 14px; border-radius: 7px; border-left: 3px solid var(--azul); font-style: italic; flex: 1; }
+    .card-actions { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+
+    .btn-play { background: var(--naranja); border: none; color: white; padding: 11px 16px; border-radius: 7px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Montserrat', sans-serif; transition: all .22s; }
+    .btn-play:hover { background: #cc6a1c; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(232,119,34,.28); }
+    .btn-read { background: white; border: 2px solid var(--azul); color: var(--azul); padding: 9px 16px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: all .22s; }
+    .btn-read:hover, .btn-read.active { background: var(--azul); color: white; }
+
+    /* AUDIO MINI PLAYER */
+    .audio-player { display: none; background: #eef4fc; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+    .audio-row1 { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+    .btn-replay { background: none; border: none; cursor: pointer; color: var(--azul); font-size: 17px; padding: 0; line-height: 1; flex-shrink: 0; }
+    .btn-pp { background: var(--naranja); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .progress-wrap { flex: 1; background: #c8ddf0; border-radius: 3px; height: 5px; cursor: pointer; position: relative; }
+    .progress-bar { background: var(--naranja); height: 5px; border-radius: 3px; width: 0%; }
+    .audio-times { display: flex; justify-content: space-between; font-size: 10px; color: var(--gris); margin-top: 3px; }
+    .speed-row { display: flex; align-items: center; gap: 4px; justify-content: center; }
+    .speed-lbl { font-size: 10px; color: var(--gris); font-weight: 600; }
+    .speed-btn { background: #d8eaf8; color: var(--azul); border: none; border-radius: 3px; padding: 2px 6px; font-size: 10px; font-weight: 700; cursor: pointer; font-family: 'Montserrat', sans-serif; }
+    .speed-btn.active { background: var(--azul); color: white; }
+
+    /* ACCORDION EXPANSION PANEL */
+    @keyframes expandDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .expansion-panel {
+      grid-column: 1 / -1;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 0 0 3px var(--azul), 0 8px 32px rgba(31,109,177,.14);
+      padding: 36px;
+      animation: expandDown .28s ease forwards;
+      position: relative;
+    }
+    .exp-inner { display: flex; gap: 36px; align-items: flex-start; }
+    .exp-sidebar { flex-shrink: 0; width: 160px; text-align: center; }
+    .exp-photo { width: 130px; height: 130px; border-radius: 50%; border: 3px solid var(--azul); overflow: hidden; margin: 0 auto 12px; box-shadow: 0 3px 12px rgba(31,109,177,.18); }
+    .exp-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .exp-name { font-size: 15px; font-weight: 700; color: var(--azul); margin-bottom: 4px; line-height: 1.2; }
+    .exp-pos { font-size: 11px; color: var(--naranja); font-weight: 600; line-height: 1.3; }
+    .exp-body { flex: 1; }
+    .exp-close {
+      position: absolute; top: 16px; right: 16px;
+      background: var(--azul-claro); border: none; color: var(--azul);
+      width: 34px; height: 34px; border-radius: 50%;
+      cursor: pointer; font-size: 16px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .exp-close:hover { background: var(--azul); color: white; }
+    .article-text { font-size: 15px; line-height: 1.85; color: var(--gris); }
+    .article-text p { margin-bottom: 16px; }
+    .article-text strong { color: var(--azul); }
+    .article-quote { background: var(--azul-claro); border-left: 4px solid var(--naranja); padding: 16px 18px; margin: 20px 0; border-radius: 6px; font-style: italic; color: var(--azul); font-weight: 600; font-size: 14px; line-height: 1.7; }
+
+    /* COMMENTS inside expansion */
+    .comments-wrap { margin-top: 28px; padding-top: 20px; border-top: 1px solid #e8e8e8; }
+    .comments-wrap h4 { font-size: 14px; font-weight: 700; color: var(--azul); margin-bottom: 12px; }
+    .comment-form { display: flex; gap: 8px; margin-bottom: 14px; }
+    .c-input { flex: 1; padding: 10px 12px; border: 1.5px solid #ddd; border-radius: 6px; font-family: 'Montserrat', sans-serif; font-size: 13px; outline: none; transition: border-color .2s; }
+    .c-input:focus { border-color: var(--azul); }
+    .c-btn { background: var(--azul); color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; font-family: 'Montserrat', sans-serif; transition: background .2s; }
+    .c-btn:hover { background: var(--naranja); }
+    .c-item { background: #f9f9f9; padding: 10px 12px; border-radius: 6px; border-left: 3px solid var(--naranja); margin-bottom: 8px; }
+    .c-meta { font-size: 11px; color: #999; margin-bottom: 4px; }
+    .c-meta strong { color: var(--azul); }
+    .c-text { font-size: 13px; color: var(--gris); }
+    .c-empty { color: #ccc; font-size: 13px; text-align: center; padding: 14px 0; }
+
+    @media (max-width: 900px) {
+      .leaders-grid { grid-template-columns: repeat(2, 1fr); }
+      .exp-inner { flex-direction: column; }
+      .exp-sidebar { width: 100%; display: flex; align-items: center; gap: 16px; text-align: left; }
+      .exp-photo { width: 80px; height: 80px; flex-shrink: 0; margin: 0; }
+    }
+    @media (max-width: 580px) {
+      .leaders-grid { grid-template-columns: 1fr; }
+      .brand-pork { font-size: 28px; }
+    }
+  </style>
+</helmet>
+
+<div class="page">
+  <a class="back-link" id="back-btn" href="">← Volver al Boletín</a>
+  <div class="header">
+    <div class="brand-row">
+      <img class="brand-logo" id="logo-img" alt="333®">
+      <div class="brand-divider"></div>
+      <div class="brand-pork">Pork Economics</div>
+    </div>
+    <div class="section-label">Guest Leaders</div>
+    <div class="header-accent"></div>
+  </div>
+
+  <div class="leaders-grid" id="leaders-grid"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: &quot;100%&quot;, &quot;height&quot;: &quot;900px&quot;}}">
+class Component extends DCLogic {
+  state = {
+    comments: {},
+    leaders: [
+      {
+        id: 1,
+        name: "Estefanía Loaiza",
+        position: "Directora Ejecutiva de ASPE",
+        country: "Ecuador",
+        flagCode: "ec",
+        imagePath: "leaders/estefania.jpeg",
+        audioUrl: "leaders/audio_estefania.mp4",
+        articleDate: "Junio 2026",
+        articleTitle: "La soberanía que no exporta",
+        preview: "La soberanía alimentaria no se mide por cuánto protegemos un mercado de la competencia internacional, sino por la fortaleza real de nuestra cadena productiva.",
+        fullArticle: `<p><strong>LA SOBERANÍA QUE NO EXPORTA</strong></p>
+<p>Maíz ecuatoriano: una fortaleza que debe sostenerse con equilibrio y competitividad.</p>
+<p>Detrás de cada quintal de maíz ecuatoriano hay familias rurales, generaciones dedicadas al trabajo en el campo y una historia productiva que merece ser reconocida y protegida. Como sector, valoramos profundamente el esfuerzo del productor nacional de maíz, con quien compartimos una misma cadena agroalimentaria, un mismo territorio y el desafío común de fortalecer la producción del país.</p>
+<p>Desde esa mirada, no se trata de desconocer la importancia de contar con materia prima nacional ni de restar valor al aporte social y económico que representa el maíz para miles de familias ecuatorianas. Por el contrario, partimos del reconocimiento de esa realidad para plantear, con respeto y responsabilidad, una reflexión que el sector viene sosteniendo desde hace varios años: ¿a qué costo, y por cuánto tiempo más, podemos mantener una política que respondió a un momento específico de nuestra historia agrícola?</p>
+<p>Contar con materia prima propia debe ser una fortaleza para el país, siempre que su disponibilidad, calidad y precio permitan a toda la cadena mantenerse competitiva. Sin embargo, cuando el costo de esa materia prima empieza a limitar la capacidad de producir alimentos accesibles, competir en igualdad de condiciones y proyectarnos hacia nuevos mercados, aquello que debería ser una ventaja termina convirtiéndose, sin que nadie lo busque, en una restricción para el desarrollo productivo nacional.</p>
+<p><strong>Una política que nació para un momento y se quedó sin revisión</strong></p>
+<p>Desde 2015, la industria balanceadora y porcícola compra el maíz nacional a un precio mínimo de sustentación fijado por el Gobierno, hoy en una banda oficial entre 17,35 y 19,50 dólares por quintal. Es una política que, en su momento, buscó dar certeza al productor de maíz, un objetivo legítimo y comprensible. Pero once años después, esa certeza para uno de los actores de la cadena se ha traducido en un sobrecosto de entre 30% y 40% en la producción de carne de cerdo para el resto de la cadena, según estimaciones del propio sector. La importación, además, solo se habilita si productores y Gobierno reconocen formalmente un déficit, y exclusivamente en una ventana de tres meses, de diciembre a febrero.</p>
+<p>No desconocemos la intención con la que esta medida fue concebida ni el contexto que en su momento justificó su implementación. Sin embargo, consideramos necesario revisar, con respeto y responsabilidad, si una herramienta creada para responder a una realidad específica puede seguir aplicándose indefinidamente sin mecanismos claros de evaluación, sin metas concretas de mejora productiva y sin una ruta progresiva que permita avanzar hacia un mercado más competitivo y sostenible para toda la cadena.</p>
+<p><strong>Un costo que, al final, llega a la mesa de todos</strong></p>
+<p>Cuando el maíz cuesta más, ese costo no se queda en la granja. Se traslada, paso a paso, hasta el precio que paga el consumidor por su proteína animal. Y cuando ese precio sube, las familias con presupuestos más ajustados no dejan de comer: ajustan qué comen, y la proteína animal suele ser de lo primero que se reduce.</p>
+<p>Esto importa especialmente en un país donde, según el Instituto Nacional de Estadística y Censos, el 19,3% de los niños menores de 2 años vive con desnutrición crónica infantil, una cifra que sube a 23,1% entre los menores de 5 años.</p>
+<p><strong>Una cadena que ha crecido y que mira hacia afuera</strong></p>
+<p>La porcicultura ecuatoriana no llega a esta conversación con las manos vacías. Hablamos de cerca de 166.000 productores, el 95% de ellos pequeños productores familiares para quienes los cerdos de traspatio son parte de su sustento. El sector genera alrededor de 600 millones de dólares en ventas anuales, representa el 8% del PIB agropecuario y sostiene 200.000 empleos directos y más de 500.000 indirectos, con un crecimiento anual cercano al 6% gracias a la inversión en genética, nutrición animal y tecnificación.</p>
+<p>Es, en otras palabras, un sector que ha hecho su tarea. Y por eso mismo nos preguntamos qué tan lejos podríamos llegar si esa misma energía, la que hoy se destina a sostener la viabilidad frente al costo de la materia prima, se concentrara en lo que verdaderamente nos abriría las puertas de otros mercados.</p>
+<p><strong>Lo que de verdad nos abre las puertas de la exportación: el estatus sanitario</strong></p>
+<p>Aquí está, quizás, el punto más importante de esta reflexión. Exportar carne de cerdo no depende solo de tener costos competitivos: depende, antes que nada, de un estatus sanitario sólido y reconocido internacionalmente. Vigilancia epidemiológica robusta, programas de erradicación de enfermedades como la Peste Porcina Clásica, trazabilidad de origen a destino, certificaciones de bioseguridad en granja y plantas de faenamiento que cumplan estándares de los mercados de destino: ese es el verdadero pasaporte para exportar.</p>
+<p>Hoy, buena parte de la energía técnica y financiera del sector se destina a negociar, año a año, la sobrevivencia frente al precio de la materia prima. Es un esfuerzo legítimo, pero también es un esfuerzo que nos resta capacidad para invertir en lo que realmente nos posicionaría como exportadores: protocolos sanitarios, certificaciones y la construcción de la confianza internacional que ningún precio de venta puede comprar por sí solo. Una política de maíz más predecible no es un fin en sí mismo; es la condición que nos permitiría redirigir nuestros esfuerzos hacia donde está el verdadero futuro exportador del sector.</p>
+<div class="article-quote">"Sentimos orgullo de nuestra tierra y de quienes la trabajan. Pero el orgullo no debería costarnos la competitividad, ni distraernos del verdadero camino hacia la exportación: nuestro estatus sanitario."<br><br>— Estefanía Loaiza, Directora Ejecutiva de ASPE</div>
+<p><strong>El orgullo y la competitividad pueden ir de la mano</strong></p>
+<p>La soberanía alimentaria no se mide por cuánto protegemos un mercado de la competencia internacional, sino por la fortaleza real de nuestra cadena productiva: su capacidad de alimentar bien a su propia gente y, cuando las condiciones lo permitan, de mirar también hacia afuera. Tener maíz propio es motivo de orgullo. Que ese orgullo no se convierta, sin proponérnoslo, en la razón por la que nuestra carne de cerdo nunca llegó a cruzar una frontera.</p>
+<p>Ecuador tiene tierra, agua, gente y vocación productiva, tanto en el campo del maíz como en la porcicultura. Once años después de iniciada esta política, no proponemos eliminarla de un día para otro: proponemos sentarnos a evaluarla, con los mismos datos y el mismo respeto con el que hoy compartimos esta reflexión.</p>`
+      },
+      {
+        id: 2,
+        name: "Mario Garro Zamora",
+        position: "Presidente Grupo Zamora",
+        country: "Costa Rica",
+        flagCode: "cr",
+        imagePath: "leaders/mario_garro.jpg",
+        audioUrl: "leaders/audio_mario.mp4",
+        articleDate: "Octubre 2025",
+        articleTitle: "Lo único que tenemos por cierto es la incertidumbre",
+        preview: "Como solo tenemos por cierto la incertidumbre, solo va a suceder lo que estemos dispuestos a hacer nosotros por nosotros mismos.",
+        fullArticle: `<p><strong>LO ÚNICO QUE TENEMOS POR CIERTO ES LA INCERTIDUMBRE</strong></p>
+<p>Hagamos un breve recorrido:</p>
+<p>Las impredecibles decisiones de la administración Trump en materia de aranceles y las consecuencias que vendrán en términos de comercio mundial. ¿Y entonces… ahora cuáles son las reglas? China se saca de la manga aranceles a la carne de cerdo de la UE como represalia al impuesto a los vehículos eléctricos argumentando prácticas antidumping. Como consecuencia está la industria porcina española con un signo de pregunta del tamaño de la Basílica de la Sagrada Familia, y, ¿por qué nosotros nos pegamos la rifa, si ni números habíamos comprado?</p>
+<p>¿Cuánto durará en llegar la PPA a España? ¿Y cuánto al Continente Americano? ¿Será que llegará? Lo más seguro que quien sabe… Rusia en media guerra hace su transición de importador de carne de cerdo a meterse como jugador a exportar con un potencial enorme para crecer, con granos, fertilizantes, agua, sin exceso de regulaciones y con recursos energéticos a costos ridículamente bajos. ¿Se meterán los rusos en el top 3 de los exportadores porcinos en el corto plazo?</p>
+<p>¿Será China en el mediano plazo autosuficiente para abastecer su mercado doméstico? Nada más y nada menos que mayor al 50% del consumo mundial. ¿Tendrá éxito en su apuesta por criar animales en ambientes controlados y aparentemente muy eficientes en edificios de muchos pisos? ¡Qué susto!</p>
+<p>¿Seguirán las exitosas empresas españolas de shopping y consolidando alianzas con potenciales jugadores de América Latina en el próximo quinquenio?</p>
+<p>En este momento de la historia de nuestra industria mundial, caminamos con una generosa cantidad de interrogantes que hacen reverencia a aquella célebre frase del que en este negocio <em>"el que más sabe, no sabe nada y el más tullido es trapecista"</em>. Perderá el que subestime alguna posibilidad.</p>
+<p><strong>Latinoamérica en el centro de la escena</strong></p>
+<p>Centrando la mirada en nuestra amada Latam, admiramos por muchos años la pujante industria porcina chilena, en donde un solo jugador, por su tamaño, ha movido la aguja, con políticas públicas que estuvieron muy bien alineadas y comprometidas en impulsar el sector alimentario y particularmente el pecuario, logrando convertir a Chile en un importante proveedor de alimentos para el mundo. Además, hoy miramos el impresionante despertar de los mexicanos, los argentinos, los colombianos y ni que hablar de la potencia en que se han convertido los admirables brasileños que a donde vuelva su mirada hace temblar por sus impresionantes bajos costos de producción y su imponente capacidad de economía de escala.</p>
+<p>Pienso que las compañías españolas ya han tomado posición y sí continuarán cruzando el charco consolidando un enorme y fuerte bloque que posicionará a <strong>"Iberoamérica alimentando al mundo"</strong>.</p>
+<p>Hace más de 500 años, los españoles llegaron a nuestras tierras trayendo a estas latitudes tesoros de incalculable valor, como la educación, el idioma, la cultura y hasta los primeros cerdos que tocaron suelo americano. Muy probablemente no fue gratis, pero nos dejaron la FE, algo que ni con todo el oro del mundo podríamos pagar.</p>
+<p>Si fuera a suceder como estoy intuyendo, que los españoles continuarán acercándose cada día más a Latinoamérica, hay algo que sí debemos estar atentos. Hace más de 5 siglos no sabíamos que no solo cosas buenas traerían a nuestro continente, sino que también otras no deseables como las enfermedades con las que no contábamos en aquella época. Entonces, hoy en día, ¿qué cosas no ocupamos que traiga al continente la muy admirable industria porcina española?</p>
+<p>No ocupamos que traigan en sus carabelas el <em>"exceso"</em> de regulaciones que han permitido que les impongan y que algunas (no pocas) rayan por mucho la irracionalidad. Ese paquete de excesos de regulaciones puede quedarse del otro lado del charco y estoy convencido de que no pasará nada de este lado. Porque ya los países latinoamericanos hemos venido implementando regulaciones que quizás, lo que haga falta sea homologarlas, pero nuevamente, sin caer en excesos que hagan imposible la actividad.</p>
+<p>Pero la porcicultura Latinoamérica somos más que los países pujantes que miramos con tanta admiración, también está compuesta por países con enormes oportunidades que vamos detrás, haciendo la tarea de ser cada día más eficientes, convenciéndonos que la bioseguridad no es negociable, venimos entendiendo que el bienestar animal, buenas prácticas pecuarias y una buena interpretación de la información confiable en tiempo real no es un juego.</p>
+<p>En mis más de 30 años de aprendiz en la industria porcina, me he convencido que el comercio internacional de carne de cerdo es y será siempre de oportunidad y hay que estar siempre preparados en posición para tomarlas cuando llegan y mientras duren. Pero también tengo la certeza que el intercambio comercial es en un altísimo porcentaje un mercado de excedentes, donde el más grande balancea sus excedentes en la mayoría de veces a precios por debajo del verdadero costo.</p>
+<p>¿Podemos hacer algo respecto a esta realidad que destruye tanto valor? Estoy seguro que sí, y personalmente me gasto los zapatos todos los días procurando aprovechar el pujante crecimiento del consumo per cápita de carne de cerdo de nuestros pueblos. Lo más parecido "a un seguro de vida" está en la destreza comercial, es ofrecer innovación en la oferta de cortes principalmente en nuestros mercados domésticos y estar atentos a descubrir mercados de exportación que valoren la diferenciación y la innovación. En el ADN de los latinos tenemos muy acentuado la creatividad, valor que podemos y debemos hacer valer. Nuestra creatividad es impresionantemente respetada en el mundo y no puede faltar en la ecuación de éxito en nuestras estrategias.</p>
+<div class="article-quote">"Como solo tenemos por cierto la incertidumbre, solo va a suceder lo que estemos dispuestos a hacer nosotros por nosotros mismos."<br><br>— Mario Garro Zamora, Presidente Grupo Zamora</div>
+<p>Gracias a las redes sociales, Latinoamérica está marcando tendencia con nuestras formas tradicionales de consumir carne de cerdo. Contamos con cientos de platillos como para antojar al planeta, como la espectacular <em>"pupusa salvadoreña"</em>, el ahora conocido mundialmente <em>"pan con chicharrón peruano"</em> y la imposible de comparar, <em>"la panceta crocante colombiana"</em> que tiene literal a todo el mundo arrodillado a sus pies al mejor estilo de Shakira y Karol G.</p>
+<p>Como solo tenemos por cierto la incertidumbre, solo va a suceder lo que estemos dispuestos a hacer nosotros por nosotros mismos.</p>`
+      },
+      {
+        id: 3,
+        name: "Iván Espinosa",
+        position: "Presidente Ejecutivo de OPORMEX",
+        country: "México",
+        flagCode: "mx",
+        imagePath: "leaders/ivan_espinosa.jpeg",
+        audioUrl: "leaders/audio_ivan.mp4",
+        articleDate: "Marzo 2025",
+        articleTitle: "Entre política, aranceles y definiciones",
+        preview: "Latinoamérica es la región del mundo que se sigue consolidando para sobresalir en la producción de proteína animal. Tenemos tierra, agua, personas y vocación.",
+        fullArticle: `<p><strong>ENTRE POLÍTICA, ARANCELES Y DEFINICIONES</strong></p>
+<p>Estamos viviendo momentos de turbulencia a nivel global. La llegada de la nueva administración de Estados Unidos de Norteamérica ha traído consigo la convicción de escribir una nueva página en términos geopolíticos y de cómo se relacionará comercialmente ese país con todas las regiones del mundo.</p>
+<p>En los primeros meses de este 2025, hemos escuchado la palabra aranceles utilizarse como palanca de negociación (¿o presión?), basada en el uso de la fuerza, de la manera que ha generado tal nivel de incertidumbre que los mercados, sobre todo los americanos, han respondido con colapsos a la baja, al traducirse todo esto en afectaciones de las cadenas de suministro para distintas industrias.</p>
+<p>Para nuestro sector, Estados Unidos es el mayor exportador de carne de cerdo, como país, del mundo, y Latinoamérica ha sido un destino muy importante para este producto, donde gobiernos de la región han visto en la importación de esta proteína, la oportunidad de traer a sus pueblos alimento accesible y que contribuya directa o indirectamente al control de la inflación, al fungir como válvula de alivio ante las presiones de su producción doméstica.</p>
+<p>El entorno nos invita a la reflexión. ¿Realmente las decisiones que hemos tomado han sido las correctas? ¿Qué hemos dejado en el camino? ¿Cómo hemos abonado para materializar el concepto de "Soberanía Alimentaria" que promueve la FAO?</p>
+<p>Nuestra región es grande en oportunidades por las condiciones con las que contamos, y los sectores productivos de cada país deberíamos de ser capaces de interactuar con nuestros gobiernos para así poder establecer estrategias de cómo lograrlo.</p>
+<p>Con profesionalismo y objetividad, las organizaciones de productores deberán ser las herramientas que nos permitan acceder a estos espacios de diálogo, donde construyamos juntos el andamiaje necesario para generar un entorno adecuado y cuyas principales líneas de acción podríamos mencionar y describir grosso modo a continuación:</p>
+<p>• Trabajar de manera colaborativa en diferentes áreas como lo son las <strong>políticas públicas y las regulaciones</strong> que consideren leyes y normas que promuevan el desarrollo de la porcicultura con énfasis en sostenibilidad y el bienestar animal basado en ciencia, resaltando la importancia que tiene en la economía de las regiones rurales donde se realiza y la aportación en la generación de empleos directos e indirectos.</p>
+<p>• El <strong>compromiso profundo en materia de salud</strong>, con el objetivo claro de mejorar las condiciones productivas y competitivas de nuestras granjas.</p>
+<p>• La <strong>defensa de la reputación de nuestro sector</strong> ante la sociedad, con una comunicación asertiva que permita transparentar lo que hacemos y nos otorgue una licencia social, para así poder exaltar el resultado de nuestro trabajo en campañas de promoción al consumo de la carne de los cerdos que producimos.</p>
+<p>• <strong>Incentivar el desarrollo de habilidades empresariales</strong>, sumando a las nuevas generaciones a consolidar una visión de cadena, que nos permita interactuar con los diferentes eslabones que participan en llevar carne de cerdo a la mesa de nuestras familias.</p>
+<p>• También, será fundamental el contar con <strong>fuentes de información de calidad</strong> que nos permita actuar de manera estratégica en la toma de decisiones.</p>
+<div class="article-quote">"Latinoamérica es la región del mundo que se sigue consolidando para sobresalir en la producción de proteína animal. Tenemos tierra, agua, personas y vocación. Aprovechemos el momento para hacer una pausa y revisar el camino recorrido."<br><br>— Iván Espinosa, Presidente Ejecutivo de OPORMEX</div>`
+      },
+      {
+        id: 4,
+        name: "Luis Diego Rojas",
+        position: "Gerente en Agropecuaria Los Sagitarios & Presidente CAPORC",
+        country: "Costa Rica",
+        flagCode: "cr",
+        imagePath: "leaders/luis_diego.jpeg",
+        audioUrl: "leaders/audio_luis_diego.mp4",
+        articleDate: "Septiembre 2024",
+        articleTitle: "¿Somos los camiones de Coca-Cola del sector porcino?",
+        preview: "El momento de hablar es hoy, pero el momento de accionar es para ayer. Nuestros camiones también pueden transportar felicidad.",
+        fullArticle: `<p><strong>¿SOMOS LOS CAMIONES DE COCA-COLA DEL SECTOR PORCINO?</strong></p>
+<p>El año pasado participé de un foro donde intercambiamos opiniones y experiencias sobre las gremiales latinoamericanas. El último de los temas fue la amenaza del veganismo y la falta de comunicación del sector porcino. Cuando llegó el turno de las preguntas del público, la primera persona en levantar su mano y dar su opinión fue nada más y nada menos que la Dra. Laura Batista. Sus palabras fueron las siguientes: <em>"Llevo años asistiendo a eventos y escuchando que debemos empezar a hacer algo al respecto, ¿Será que por fin se hará algo o vamos a seguir en lo mismo?"</em> Debo decir que eso llegó a lo más profundo de mi corazón por 2 razones. La primera siendo que yo vengo del mundo del marketing y la comunicación y segundo que venía de alguien tan respetado en nuestra industria como la Dra. Batista y con toda la razón respaldándola.</p>
+<p>La población de América Latina y El Caribe ronda los 662 millones de personas de los cuales según la OMS un 8% es vegetariano, por ahí de los 53 millones de personas. Ahora yo me pregunto, como si son muchísimos menos que el resto, ¿tienen una voz más poderosa? La respuesta es tan sencilla como la convicción que sienten por su ideología. ¿Será que nosotros no estamos así de convencidos? ¿Será que nos da vergüenza decir que consumimos proteína de origen animal? ¿Será que realmente no estamos contribuyendo positivamente a la sociedad y al medio ambiente?</p>
+<p>Hay algo que ellos hacen muy bien y que nosotros debemos de ver como lo adaptamos a nuestra industria. Sus mensajes y story-telling son emocionales y no necesariamente racionales. Nosotros en la industria somos extremadamente racionales, sobre todo por la necesidad de generar información para tomar decisiones productivas en nuestras granjas. Somos buenísimos compartiendo datos, pero no tan buenos encontrando las conexiones emocionales. Algunos dirán que hay que dejar la emoción o sentimentalismo de lado en nuestra industria, pero yo le digo a esas personas que seguramente están detrás de las emociones equivocadas.</p>
+<div class="article-quote">"Siempre expongo lo que para mí es el mejor ejemplo: ¿Qué piensan las personas cuando van detrás de un camión con cerdos? ¡Yo creo que nos llegó nuestra oportunidad de ser como el camión de Coca-Cola, nuestros camiones también pueden transportar felicidad! Ese camión con cerdos transporta trabajo honesto, dedicación, bienestar animal, profesionalismo, responsabilidad ambiental y muchos valores más que todos los de la industria conocemos, pero no se lo hemos gritado al mundo. El momento de hablar es hoy, pero el momento de accionar es para ayer."<br><br>— Luis Diego Rojas, Presidente CAPORC</div>
+<p>Como costarricense, como productor orgulloso y como presidente de CAPORC me tomo el atrevimiento de invitarlos a seguir construyendo la comunicación de nuestro sector en el marco del 333 Experience Congress que se llevará a cabo este año en mi hermoso país, Costa Rica. Somos el país del <strong>PURA VIDA</strong> y estamos muy emocionados de recibirlos y mostrarles a qué nos referimos. ¡Los espero!</p>`
+      },
+      {
+        id: 5,
+        name: "Carlos Alberto Maya",
+        position: "Porcicultor y Consultor Empresarial",
+        country: "Colombia",
+        flagCode: "co",
+        imagePath: "leaders/carlos_maya.jpeg",
+        audioUrl: "leaders/audio_carlos.mp4",
+        articleDate: "Mayo 2024",
+        articleTitle: "Es el momento de mejorar, no de crecer",
+        preview: "Es el momento de mejorar, no de crecer. Un mercado con exceso de oferta y costos altos se vuelve ruinoso.",
+        fullArticle: `<p><strong>ES EL MOMENTO DE MEJORAR, NO DE CRECER</strong></p>
+<p>Un año de optimismo rodea la porcicultura latinoamericana. Si bien no faltan las dificultades por la inestabilidad política en los países de la región, hay razones para pensar que este año será bastante positivo para nuestra porcicultura.</p>
+<p>Por el lado de la demanda, el vaivén postpandemia hacia la estabilización de las economías parece atenuarse. Aunque la economía no muestra una fortaleza especial, por ahora no hay signos de recesión. La expectativa general frente al consumo interno de carne de cerdo en los países de Latinoamérica es positiva. Se esperan leves incrementos en el consumo de carne de cerdo.</p>
+<p>Con una demanda entre estable y positiva, la motivación del optimismo para este año se presenta por el lado de los costos de producción. Las grandes cosechas mundiales, menos retos logísticos que en años pasados (empezando por el Canal de Panamá), y disponibilidad de inventarios de maíz y torta de soya, han permitido disminuciones sustanciales en los principales insumos para la alimentación balanceada de la porcicultura de la región. Para muchos, son momentos de resultados muy positivos o por lo menos de recuperación.</p>
+<p>Generalmente, cuando los resultados son positivos, la reacción de los porcicultores ha sido crecer. Creciendo "sin medida ni clemencia", lo único que se logrará es que en 18 a 20 meses el mercado estará saturado desde la oferta, posiblemente sin las mieles de los precios bajos de los insumos. Un mercado con exceso de oferta y costos altos se vuelve ruinoso. Por esta razón, la reflexión es un llamado a mejorar, más que crecer.</p>
+<div class="article-quote">"Un mercado con exceso de oferta y costos altos se vuelve ruinoso. Por esta razón, la reflexión es un llamado a mejorar, más que crecer."<br><br>— Carlos Maya</div>
+<p>Es momento de aprovechar este escenario favorable para organizarnos mejor. Desde lo individual mejorar en productividad, en la comercialización, y la planeación a futuro. Podremos pensar en lo importante y no solo en lo urgente y revisar qué nos afecta la rentabilidad y proyectar mejor nuestras empresas. Por otra parte, como conjunto, podemos debemos mejorar en nuestra representación y gestión gremial, y fortalecer nuestras campañas de fomento al consumo y nuestras estrategias para la consolidación de mercados más fuertes. Así nos preparamos mejor para, ahora sí, continuar con crecimientos viables, razonables, y sostenibles.</p>`
+      },
+      {
+        id: 6,
+        name: "Claudio Freixes",
+        position: "Director General de Kekén (Grupo Porcícola Mexicano)",
+        country: "Chile / México",
+        flagCode: "cl",
+        flagCode2: "mx",
+        imagePath: "leaders/claudio_freixes.webp",
+        audioUrl: "leaders/audio_claudio.mp4",
+        articleDate: "Enero 2024",
+        articleTitle: "Lo que nos hace resistentes ante las crisis",
+        preview: "Luego de 40 años en la profesión, no recuerdo haber sufrido una crisis de esta magnitud. Pero está claro que mejores tiempos están por venir.",
+        fullArticle: `<p><strong>LO QUE NOS HACE RESISTENTES ANTE LAS CRISIS</strong></p>
+<p>Luego de 40 años en la profesión, no recuerdo haber sufrido una crisis de esta magnitud. No quiero recordarles los factores propios de la pandemia y de sus derivados como la baja de consumo y las elevadas tasas de interés de la mayoría de los bancos centrales del mundo y otros hechos que agravaron la crisis, como las guerras, los problemas logísticos, los cambios políticos aun en curso, los problemas sanitarios pandémicos con especial énfasis en FPA, PED entre otros.</p>
+<p>Sin embargo, hay un tema que todos conocemos y que estoy seguro que la mayoría no dimensiona en su totalidad. China, con el 50% de la producción mundial de carne de cerdo, en su intento de controlar la FPA redujo su producción en un porcentaje importante, cuyo déficit fue suplido, en parte, por el resto del mundo, con un procesamiento de la carne muy básico y a un alto precio. Esto hipertrofió la producción del resto del mundo.</p>
+<p>Es una realidad que a raíz de la crisis generada por la FPA, China cambió su estrategia de producción, pues reemplazó su alta dependencia de la producción ineficiente de traspatio por una basada en grandes complejos autosuficientes, donde conviven, planta de alimento, producción y rastro. Hoy, con el gigante asiático ya supliendo sus necesidades internas, se genera sobreoferta de carne de cerdo en el mundo y los precios no reaccionan.</p>
+<p>La rentabilidad está volviendo a nuestras empresas gracias a la baja de los precios de los granos por las buenas cosechas, principalmente de Estados Unidos, Brasil, y el bajo consumo mundial. Pero la pregunta es, ¿Por qué con una crisis como la que hemos sufrido, no hay reducción de la producción como en otros tiempos?</p>
+<p>Hasta hace algunas semanas, solo Europa había reducido su producción en forma relevante, Estados Unidos se mantenía, en tanto que, Brasil y China inexplicablemente amenazaban con seguir aumentando. Esta paradoja tiene una explicación.</p>
+<div class="article-quote">"La producción estadounidense se basa en grandes empresas integradas, bien organizadas y con bajos costos de producción al igual que Brasil, lo cual las hace muy resistentes."<br><br>— Claudio Freixes, Director General de Kekén</div>
+<p>Pero no es el caso de China, que ha invertido grandes cantidades de dinero en su transformación y está sujeta a la compra de enormes cantidades de maíz y soya, lo cual ha generado grandes pérdidas a las empresas (recordemos que en China, el gobierno apalancó la construcción de los grandes complejos de producción y hoy está financiando las pérdidas de producción por los bajos precios internos).</p>
+<p>En Kekén nos preguntábamos ¿hasta cuándo resistirán?</p>
+<p><strong>¡Esta semana las cosas han cambiado!</strong> Brasil, que amenazaba con volver a crecer, disminuirá su producción, y lo más importante, China reducirá un 3% sus reproductoras con respecto al 2024 (de enero a noviembre redujo 2 millones de hembras, de octubre a noviembre 0,5 millones). En la última estimación del USDA, la producción mundial pasa de +1% a -1% liderado por China. Esto no significa que la crisis haya pasado, pero está claro que <strong>mejores tiempos están por venir</strong>.</p>`
+      }
+    ]
+  };
+
+  _audio = null;
+  _audioSpeeds = {}; // velocidad independiente por líder
+  _activeAudioId = null;
+  _expandedId = null;
+  _panelLeaderId = null;
+
+  fmtTime = (s) => {
+    if (!s || isNaN(s)) return '0:00';
+    return Math.floor(s/60) + ':' + String(Math.floor(s%60)).padStart(2,'0');
+  };
+
+  getBase = () => document.baseURI.split('?')[0].replace(/[^\/]+$/, '');
+
+  renderCards = () => {
+    const grid = document.getElementById('leaders-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const base = this.getBase();
+
+    this.state.leaders.forEach((leader, idx) => {
+      const card = document.createElement('div');
+      card.className = 'leader-card';
+      card.dataset.id = leader.id;
+      card.dataset.idx = idx;
+
+      let flagsHtml = `<img class="flag-img" id="flag1-${leader.id}" alt="${leader.country}">`;
+      if (leader.flagCode2) flagsHtml += `<img class="flag-img" id="flag2-${leader.id}" alt="">`;
+
+      card.innerHTML = `
+        <div class="photo-ring"><img id="photo-${leader.id}" src="" alt="${leader.name}"></div>
+        <div class="leader-name">${leader.name}</div>
+        <div class="leader-pos">${leader.position}</div>
+        <div class="leader-country">${flagsHtml}<span>${leader.country}</span></div>
+        <div class="article-title">${leader.articleTitle}</div>
+        <div class="article-date">${leader.articleDate || ''}</div>
+        <div class="preview-box">${leader.preview}</div>
+        <div class="card-actions">
+          <button class="btn-play" id="btnplay-${leader.id}">&#9654; Escuchar artículo</button>
+          <div class="audio-player" id="audioplayer-${leader.id}" title="Cerrar reproductor">
+            <div class="audio-row1">
+              <button class="btn-replay" id="btnreplay-${leader.id}">&#8635;</button>
+              <button class="btn-pp" id="btnpp-${leader.id}">&#9654;</button>
+              <div style="flex:1;">
+                <div class="progress-wrap" id="progwrap-${leader.id}"><div class="progress-bar" id="progbar-${leader.id}"></div></div>
+                <div class="audio-times"><span id="acur-${leader.id}">0:00</span><span id="adur-${leader.id}">--:--</span></div>
+              </div>
+            </div>
+            <div class="speed-row">
+              <span class="speed-lbl">Velocidad:</span>
+              <button class="speed-btn active" data-lid="${leader.id}" data-speed="1">1×</button>
+              <button class="speed-btn" data-lid="${leader.id}" data-speed="1.5">1.5×</button>
+              <button class="speed-btn" data-lid="${leader.id}" data-speed="2">2×</button>
+              <button class="speed-btn" data-lid="${leader.id}" data-speed="2.5">2.5×</button>
+            </div>
+          </div>
+          <button class="btn-read" id="btnread-${leader.id}">Ver artículo completo &#8594;</button>
+        </div>`;
+
+      grid.appendChild(card);
+
+      // Load images
+      const photoEl = document.getElementById(`photo-${leader.id}`);
+      if (photoEl) photoEl.src = base + leader.imagePath;
+      const f1 = document.getElementById(`flag1-${leader.id}`);
+      if (f1 && leader.flagCode) { f1.src = `https://flagcdn.com/32x24/${leader.flagCode}.png`; f1.style.display = 'inline-block'; }
+      if (leader.flagCode2) {
+        const f2 = document.getElementById(`flag2-${leader.id}`);
+        if (f2) { f2.src = `https://flagcdn.com/32x24/${leader.flagCode2}.png`; f2.style.display = 'inline-block'; }
+      }
+
+      // Click on audio player bg → close player and return to button
+      document.getElementById(`audioplayer-${leader.id}`).onclick = (e) => {
+        // Only close if clicking the background, not inner controls
+        if (e.target === e.currentTarget) {
+          if (this._audio && this._activeAudioId === leader.id) {
+            this._audio.pause(); this._audio.src = ''; this._audio = null;
+            this._activeAudioId = null;
+          }
+          const playerEl = document.getElementById(`audioplayer-${leader.id}`);
+          const btnEl = document.getElementById(`btnplay-${leader.id}`);
+          if (playerEl) playerEl.style.display = 'none';
+          if (btnEl) btnEl.style.display = 'flex';
+        }
+      };
+
+      // Audio events
+      document.getElementById(`btnplay-${leader.id}`).onclick = () => this.startAudio(leader);
+      document.getElementById(`btnpp-${leader.id}`).onclick = () => {
+        if (!this._audio || this._activeAudioId !== leader.id) return;
+        if (this._audio.paused) { this._audio.play(); } else { this._audio.pause(); }
+      };
+      document.getElementById(`btnreplay-${leader.id}`).onclick = () => {
+        if (!this._audio || this._activeAudioId !== leader.id) return;
+        this._audio.currentTime = 0; this._audio.play();
+      };
+      document.getElementById(`progwrap-${leader.id}`).onclick = (e) => {
+        if (!this._audio || !this._audio.duration || this._activeAudioId !== leader.id) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        this._audio.currentTime = ((e.clientX - rect.left) / rect.width) * this._audio.duration;
+      };
+      card.querySelectorAll('.speed-btn').forEach(btn => {
+        btn.onclick = () => {
+          if (this._activeAudioId !== leader.id) return;
+          const sp = parseFloat(btn.dataset.speed);
+          this._audioSpeeds[leader.id] = sp;
+          if (this._audio && this._activeAudioId === leader.id) this._audio.playbackRate = sp;
+          card.querySelectorAll('.speed-btn').forEach(b => b.classList.toggle('active', b === btn));
+        };
+      });
+
+      // Expand
+      document.getElementById(`btnread-${leader.id}`).onclick = () => {
+        // Block expansion of other articles while audio is playing
+        if (this._audio && !this._audio.paused && this._activeAudioId !== leader.id) {
+          const btn = document.getElementById(`btnread-${leader.id}`);
+          if (btn) {
+            btn.style.animation = 'none';
+            btn.textContent = 'Solo puedes ver el artículo en reproducción';
+            btn.style.borderColor = 'var(--naranja)';
+            btn.style.color = 'var(--naranja)';
+            setTimeout(() => {
+              btn.textContent = 'Ver artículo completo →';
+              btn.style.borderColor = '';
+              btn.style.color = '';
+            }, 2000);
+          }
+          return;
+        }
+        this.toggleExpansion(leader, idx);
+      };
+    });
+  };
+
+  toggleExpansion = (leader, idx) => {
+    const grid = document.getElementById('leaders-grid');
+
+    // If same leader: close
+    if (this._expandedId === leader.id) {
+      this.closeExpansion();
+      return;
+    }
+
+    // Remove existing panel
+    const existing = document.getElementById('expansion-panel');
+    if (existing) existing.remove();
+
+    this._expandedId = leader.id;
+    this._panelLeaderId = leader.id;
+
+    // Determine row (0-indexed, 3 cols)
+    const row = Math.floor(idx / 3);
+    const base = this.getBase();
+
+    // Build panel
+    const panel = document.createElement('div');
+    panel.className = 'expansion-panel';
+    panel.id = 'expansion-panel';
+
+    const comments = this.state.comments[leader.id] || [];
+    panel.innerHTML = `
+      <button class="exp-close" id="exp-close-btn">&#10005;</button>
+      <div class="exp-inner">
+        <div class="exp-sidebar">
+          <div class="exp-photo"><img src="${base + leader.imagePath}" alt="${leader.name}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div class="exp-name">${leader.name}</div>
+          <div class="exp-pos">${leader.position}</div>
+        </div>
+        <div class="exp-body">
+          <div class="article-text">${leader.fullArticle}</div>
+          <div class="comments-wrap">
+            <h4>Comentarios (<span id="exp-comment-count">${comments.length}</span>)</h4>
+            <div class="comment-form">
+              <input type="text" id="exp-comment-input" class="c-input" placeholder="Escribe tu comentario...">
+              <button class="c-btn" id="exp-comment-btn">Enviar</button>
+            </div>
+            <div id="exp-comments-list"></div>
+          </div>
+        </div>
+      </div>`;
+
+    // Insert after last card of the row
+    const cards = Array.from(grid.querySelectorAll('.leader-card'));
+    const lastInRow = cards[Math.min((row + 1) * 3 - 1, cards.length - 1)];
+    lastInRow.after(panel);
+
+    // Highlight active card, de-highlight others
+    cards.forEach(c => {
+      c.classList.toggle('card-active', parseInt(c.dataset.id) === leader.id);
+      const btn = c.querySelector('.btn-read');
+      if (btn) btn.classList.toggle('active', parseInt(c.dataset.id) === leader.id);
+    });
+
+    // Scroll panel into view
+    const panelTop = panel.getBoundingClientRect().top + window.pageYOffset - 24;
+    window.scrollTo({ top: panelTop, behavior: 'smooth' });
+
+    // Close btn
+    document.getElementById('exp-close-btn').onclick = this.closeExpansion;
+
+    // Comments
+    this.renderExpComments(leader.id);
+    document.getElementById('exp-comment-btn').onclick = () => {
+      const input = document.getElementById('exp-comment-input');
+      if (!input || !input.value.trim()) return;
+      const newComment = { id: Date.now(), text: input.value.trim(), timestamp: new Date().toLocaleString('es-ES') };
+      this.setState({
+        comments: { ...this.state.comments, [leader.id]: [...(this.state.comments[leader.id] || []), newComment] }
+      }, () => { input.value = ''; this.renderExpComments(leader.id); });
+    };
+    document.getElementById('exp-comment-input').onkeydown = (e) => {
+      if (e.key === 'Enter') document.getElementById('exp-comment-btn').click();
+    };
+  };
+
+  renderExpComments = (leaderId) => {
+    const comments = this.state.comments[leaderId] || [];
+    const countEl = document.getElementById('exp-comment-count');
+    const listEl = document.getElementById('exp-comments-list');
+    if (countEl) countEl.textContent = comments.length;
+    if (!listEl) return;
+    if (comments.length === 0) {
+      listEl.innerHTML = '<div class="c-empty">Sé el primero en comentar</div>';
+    } else {
+      listEl.innerHTML = comments.map(c => `
+        <div class="c-item">
+          <div class="c-meta"><strong>Lector</strong> · ${c.timestamp}</div>
+          <div class="c-text">${c.text}</div>
+        </div>`).join('');
+    }
+  };
+
+  closeExpansion = () => {
+    const panel = document.getElementById('expansion-panel');
+    if (panel) panel.remove();
+    this._expandedId = null;
+    const grid = document.getElementById('leaders-grid');
+    if (grid) {
+      grid.querySelectorAll('.leader-card').forEach(c => {
+        c.classList.remove('card-active');
+        const btn = c.querySelector('.btn-read');
+        if (btn) btn.classList.remove('active');
+      });
+    }
+  };
+
+  startAudio = (leader) => {
+    if (!leader.audioUrl) { alert('El archivo de audio se agregará próximamente.'); return; }
+    if (this._activeAudioId && this._activeAudioId !== leader.id) {
+      const prev = document.getElementById(`audioplayer-${this._activeAudioId}`);
+      const prevBtn = document.getElementById(`btnplay-${this._activeAudioId}`);
+      if (prev) prev.style.display = 'none';
+      if (prevBtn) prevBtn.style.display = 'flex';
+      if (this._audio) { this._audio.pause(); this._audio.src = ''; this._audio = null; }
+    }
+    const base = this.getBase();
+    const audio = new Audio(base + leader.audioUrl);
+    this._audio = audio;
+    this._activeAudioId = leader.id;
+    // Each leader keeps its own speed; default 1x if not set
+    const speed = this._audioSpeeds[leader.id] || 1;
+    audio.playbackRate = speed;
+    audio.addEventListener('loadedmetadata', () => { const el = document.getElementById(`adur-${leader.id}`); if (el) el.textContent = this.fmtTime(audio.duration); });
+    audio.addEventListener('timeupdate', () => {
+      const bar = document.getElementById(`progbar-${leader.id}`);
+      const cur = document.getElementById(`acur-${leader.id}`);
+      if (bar && audio.duration) bar.style.width = (audio.currentTime / audio.duration * 100) + '%';
+      if (cur) cur.textContent = this.fmtTime(audio.currentTime);
+    });
+    audio.addEventListener('ended', () => { const bar = document.getElementById(`progbar-${leader.id}`); if (bar) bar.style.width = '0%'; this.updatePPBtn(leader.id); });
+    audio.addEventListener('play', () => this.updatePPBtn(leader.id));
+    audio.addEventListener('pause', () => this.updatePPBtn(leader.id));
+    audio.play();
+    const playerEl = document.getElementById(`audioplayer-${leader.id}`);
+    const btnEl = document.getElementById(`btnplay-${leader.id}`);
+    if (playerEl) playerEl.style.display = 'block';
+    if (btnEl) btnEl.style.display = 'none';
+    this.updatePPBtn(leader.id);
+  };
+
+  updatePPBtn = (lid) => {
+    const btn = document.getElementById(`btnpp-${lid}`);
+    if (!btn) return;
+    btn.innerHTML = (this._audio && !this._audio.paused) ? '&#9646;&#9646;' : '&#9654;';
+  };
+
+  componentDidMount() {
+    if (!window.PEAuth || !window.PEAuth.check()) return;
+    const base = this.getBase();
+    const logoEl = document.getElementById('logo-img');
+    if (logoEl) logoEl.src = base + 'logo333.png';
+    const backBtn = document.getElementById('back-btn');
+    if (backBtn) backBtn.href = window.PEAuth.appendToken(base + 'Inicio.dc.html');
+    this.renderCards();
+  }
+
+  renderVals() { return {}; }
+}
+
+</script>
+</body>
+</html>

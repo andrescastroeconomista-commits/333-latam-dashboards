@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="ext-resource-dependency" content="logo333.png" data-resource-id="logo" />
+  <meta name="ext-resource-dependency" content="pdfs/edicion_06.pdf" data-resource-id="pdf06" />
+  <meta name="ext-resource-dependency" content="pdfs/edicion_05.pdf" data-resource-id="pdf05" />
+  <meta name="ext-resource-dependency" content="pdfs/edicion_04.pdf" data-resource-id="pdf04" />
+  <meta name="ext-resource-dependency" content="pdfs/edicion_03.pdf" data-resource-id="pdf03" />
+  <meta name="ext-resource-dependency" content="pdfs/edicion_02.pdf" data-resource-id="pdf02" />
+  <meta name="ext-resource-dependency" content="pdfs/edicion_01.pdf" data-resource-id="pdf01" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=League+Spartan:wght@700;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="./auth.js"></script>
+  <style>
+    :root { --azul:#1F6DB1; --azul-claro:#D1E3F6; --naranja:#E87722; --gris:#53565A; --bg:#f4f8fd; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Montserrat',sans-serif; background:var(--bg); color:var(--gris); min-height:100vh; padding:40px 24px 70px; }
+    .page { max-width:1200px; margin:0 auto; }
+
+    /* HEADER */
+    .header { text-align:center; margin-bottom:52px; }
+    .brand-row { display:flex; align-items:center; justify-content:center; gap:22px; }
+    .brand-logo { height:84px; display:block; }
+    .brand-divider { width:2px; height:64px; background:linear-gradient(to bottom,transparent,var(--azul),transparent); }
+    .brand-pork { font-family:'Montserrat',sans-serif; font-size:56px; font-weight:700; color:var(--azul); letter-spacing:-2px; line-height:1; }
+
+    /* LAYOUT */
+    .main-layout { display:flex; gap:36px; align-items:flex-start; }
+
+    /* SIDEBAR */
+    .sidebar { width:276px; flex-shrink:0; }
+    .sidebar-heading { font-size:18px; font-weight:700; color:var(--azul); margin-bottom:6px; line-height:1.3; }
+    .sidebar-accent { width:40px; height:3px; background:var(--naranja); border-radius:2px; margin-bottom:18px; }
+    .section-item { background:white; border-radius:10px; padding:16px 16px 16px 18px; margin-bottom:12px; box-shadow:0 2px 10px rgba(31,109,177,.07); border-left:4px solid transparent; transition:box-shadow .2s,transform .2s; }
+    .section-item.available { border-left-color:var(--azul); }
+    .section-item.available:hover { box-shadow:0 4px 18px rgba(31,109,177,.14); transform:translateX(3px); cursor:pointer; }
+    .section-item.soon { border-left-color:#ddd; opacity:.7; }
+    .si-name { font-size:13px; font-weight:700; color:var(--azul); margin-bottom:4px; }
+    .si-desc { font-size:11px; color:var(--gris); line-height:1.5; margin-bottom:10px; }
+    .si-btn { display:inline-block; font-size:11px; font-weight:700; color:white; background:var(--azul); padding:6px 13px; border-radius:5px; text-decoration:none; font-family:'Montserrat',sans-serif; transition:background .2s; }
+    .si-btn:hover { background:var(--naranja); }
+    .si-badge { font-size:10px; font-weight:700; color:#b0b0b0; text-transform:uppercase; letter-spacing:.8px; }
+
+    /* EDITIONS */
+    .editions-area { flex:1; min-width:0; }
+    .editions-title { font-size:26px; font-weight:700; color:var(--azul); margin-bottom:4px; }
+    .editions-sub { font-size:13px; color:var(--gris); margin-bottom:22px; }
+
+    @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+    .shimmer { background:linear-gradient(90deg,#dce9f7 0%,#c4d8f0 50%,#dce9f7 100%); background-size:200% 100%; animation:shimmer 1.5s infinite; }
+
+    /* FEATURED */
+    .edition-featured { background:linear-gradient(135deg,var(--azul) 0%,#155898 100%); border-radius:14px; padding:26px 28px; margin-bottom:10px; display:flex; align-items:center; gap:28px; box-shadow:0 8px 30px rgba(31,109,177,.28); position:relative; overflow:hidden; }
+    .edition-featured::before { content:''; position:absolute; right:-40px; top:-40px; width:180px; height:180px; border-radius:50%; background:rgba(255,255,255,.06); }
+    .featured-badge { position:absolute; top:16px; right:16px; background:var(--naranja); color:white; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; padding:4px 11px; border-radius:20px; pointer-events:none; }
+    .featured-thumb { width:100px; height:142px; background:#c4d8f0; border-radius:5px; overflow:hidden; flex-shrink:0; box-shadow:0 6px 18px rgba(0,0,0,.25); position:relative; }
+    .featured-thumb canvas,.edition-thumb-wrap canvas { position:absolute; top:0; left:0; width:100%; height:100%; transition:opacity .4s; }
+    .featured-thumb .ph,.edition-thumb-wrap .ph { position:absolute; top:0; left:0; width:100%; height:100%; border-radius:3px; }
+    .featured-info { flex:1; }
+    .featured-num { font-size:13px; font-weight:600; color:rgba(255,255,255,.7); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+    .featured-date { font-size:26px; font-weight:700; color:white; line-height:1.2; font-family:'League Spartan',sans-serif; }
+    .featured-actions { display:flex; flex-direction:column; gap:10px; flex-shrink:0; position:relative; z-index:2; }
+    .btn-view-white { background:white; border:none; color:var(--azul); padding:10px 20px; border-radius:7px; font-size:13px; font-weight:700; cursor:pointer; font-family:'Montserrat',sans-serif; transition:all .2s; white-space:nowrap; }
+    .btn-view-white:hover { background:var(--azul-claro); }
+    .btn-download-white { display:inline-flex; align-items:center; gap:5px; background:transparent; border:2px solid rgba(255,255,255,.6); color:white; padding:8px 18px; border-radius:7px; font-size:12px; font-weight:700; text-decoration:none; font-family:'Montserrat',sans-serif; transition:all .2s; white-space:nowrap; justify-content:center; }
+    .btn-download-white:hover { background:rgba(255,255,255,.15); border-color:white; }
+
+    .archive-label { font-size:12px; font-weight:700; color:var(--gris); text-transform:uppercase; letter-spacing:1.2px; margin:22px 0 12px; }
+
+    /* EDITION ROW */
+    .edition-row { background:white; border-radius:11px; box-shadow:0 2px 10px rgba(31,109,177,.07); padding:16px 20px; margin-bottom:10px; display:flex; align-items:center; gap:18px; transition:box-shadow .2s,transform .2s; }
+    .edition-row:hover { box-shadow:0 4px 18px rgba(31,109,177,.13); transform:translateY(-2px); }
+    .edition-thumb-wrap { width:54px; height:76px; border-radius:3px; overflow:hidden; flex-shrink:0; background:#dce9f7; position:relative; box-shadow:0 2px 8px rgba(0,0,0,.12); }
+    .edition-info { flex:1; }
+    .edition-name { font-size:15px; font-weight:700; color:var(--azul); }
+    .edition-date { font-size:12px; color:var(--naranja); font-weight:600; margin-top:3px; }
+    .edition-actions { display:flex; gap:8px; flex-shrink:0; }
+    .btn-view { background:var(--azul); border:none; color:white; padding:8px 16px; border-radius:7px; font-size:12px; font-weight:700; cursor:pointer; font-family:'Montserrat',sans-serif; transition:all .2s; white-space:nowrap; }
+    .btn-view:hover { background:#155a96; }
+    .btn-download { display:inline-flex; align-items:center; gap:4px; background:white; border:2px solid var(--naranja); color:var(--naranja); padding:6px 14px; border-radius:7px; font-size:12px; font-weight:700; text-decoration:none; font-family:'Montserrat',sans-serif; transition:all .2s; white-space:nowrap; }
+    .btn-download:hover { background:var(--naranja); color:white; }
+
+    /* PDF MODAL */
+    .pdf-modal { display:none; position:fixed; inset:0; background:rgba(15,15,15,.96); z-index:1000; flex-direction:column; align-items:center; padding:16px 20px 20px; gap:14px; }
+    .pdf-topbar { width:100%; max-width:1100px; display:flex; align-items:center; gap:16px; flex-shrink:0; }
+    .pdf-modal-title { font-size:13px; font-weight:600; color:rgba(255,255,255,.65); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .pdf-page-info { font-size:12px; color:rgba(255,255,255,.55); font-weight:600; min-width:90px; text-align:center; }
+    .side-nav-btn { background:rgba(255,255,255,.1); border:none; width:52px; height:90px; border-radius:10px; cursor:pointer; font-size:32px; color:rgba(255,255,255,.75); display:flex; align-items:center; justify-content:center; transition:background .2s,color .2s; flex-shrink:0; margin:0 14px; }
+    .side-nav-btn:hover:not(:disabled) { background:var(--azul); color:white; }
+    .side-nav-btn:disabled { opacity:.12; cursor:not-allowed; }
+    .pdf-close-btn { background:rgba(255,255,255,.1); border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:14px; color:white; display:flex; align-items:center; justify-content:center; transition:background .2s; flex-shrink:0; }
+    .pdf-close-btn:hover { background:#cc3333; }
+
+    /* BOOK */
+    .book-wrap { flex:1; display:flex; align-items:center; justify-content:center; width:100%; overflow:hidden; }
+    .book { display:flex; align-items:stretch; box-shadow:0 24px 80px rgba(0,0,0,.7); position:relative; transition:transform .28s ease,opacity .28s ease; }
+    .page-side { background:white; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .page-L { box-shadow:inset -12px 0 32px rgba(0,0,0,.13); }
+    .page-R { box-shadow:inset 12px 0 32px rgba(0,0,0,.08); }
+    .page-side canvas { display:block; }
+    .book-spine { width:10px; flex-shrink:0; background:linear-gradient(to right,rgba(0,0,0,.32),rgba(0,0,0,.06),rgba(255,255,255,.12),rgba(0,0,0,.06),rgba(0,0,0,.2)); z-index:2; }
+
+    @media (max-width:860px) { .main-layout{flex-direction:column;} .sidebar{width:100%;} }
+    @media (max-width:560px) { .brand-pork{font-size:34px;} .brand-logo{height:56px;} .edition-featured{flex-wrap:wrap;} .featured-actions{width:100%;flex-direction:row;} }
+  </style>
+</helmet>
+
+<template id="__bundler_thumbnail" data-bg-color="#f4f8fd">
+  <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+    <rect width="120" height="80" fill="#f4f8fd"/>
+    <rect x="10" y="10" width="100" height="14" rx="3" fill="#1F6DB1"/>
+    <rect x="10" y="30" width="28" height="40" rx="3" fill="#D1E3F6"/>
+    <rect x="44" y="30" width="66" height="12" rx="2" fill="#1F6DB1" opacity=".7"/>
+    <rect x="44" y="46" width="66" height="8" rx="2" fill="#e8f0fa"/>
+    <rect x="44" y="58" width="66" height="8" rx="2" fill="#e8f0fa"/>
+    <text x="60" y="19" font-size="6" fill="white" text-anchor="middle" font-family="sans-serif" font-weight="bold">Pork Economics</text>
+  </svg>
+</template>
+
+<div class="page">
+  <div class="header">
+    <div class="brand-row">
+      <img class="brand-logo" id="logo-img" alt="333®">
+      <div class="brand-divider"></div>
+      <div class="brand-pork">Pork Economics</div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+    <aside class="sidebar">
+      <div class="sidebar-heading">Explora nuestras secciones</div>
+      <div class="sidebar-accent"></div>
+      <div id="sections-list"></div>
+    </aside>
+    <main class="editions-area">
+      <div class="editions-title">Ediciones</div>
+      <div class="editions-sub">Visualiza o descarga</div>
+      <div id="editions-featured"></div>
+      <div id="editions-list"></div>
+    </main>
+  </div>
+</div>
+
+<div class="pdf-modal" id="pdf-modal">
+  <div class="pdf-topbar">
+    <div class="pdf-modal-title" id="pdf-modal-title">Pork Economics</div>
+    <span class="pdf-page-info" id="pdf-page-info"></span>
+    <button class="pdf-close-btn" id="pdf-modal-close">✕</button>
+  </div>
+  <div class="book-wrap" id="book-wrap">
+    <button class="side-nav-btn" id="pdf-prev">&#8249;</button>
+    <div class="book" id="pdf-book">
+      <div class="page-side page-L" id="page-L"><canvas id="canvas-L"></canvas></div>
+      <div class="book-spine"></div>
+      <div class="page-side page-R" id="page-R"><canvas id="canvas-R"></canvas></div>
+    </div>
+    <button class="side-nav-btn" id="pdf-next">&#8250;</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    editions: [
+      { num: 6, date: "Junio 2026",      pdfPath: "pdfs/edicion_06.pdf" },
+      { num: 5, date: "Octubre 2025",    pdfPath: "pdfs/edicion_05.pdf" },
+      { num: 4, date: "Marzo 2025",      pdfPath: "pdfs/edicion_04.pdf" },
+      { num: 3, date: "Septiembre 2024", pdfPath: "pdfs/edicion_03.pdf" },
+      { num: 2, date: "Mayo 2024",       pdfPath: "pdfs/edicion_02.pdf" },
+      { num: 1, date: "Enero 2024",      pdfPath: "pdfs/edicion_01.pdf" },
+    ],
+    sections: [
+      { name: 'Key Variables',      url: '',                       available: false, desc: 'Indicadores clave del mercado porcino' },
+      { name: 'Guest Leaders',      url: 'Guest Leaders.dc.html', available: true,  desc: 'Artículos de líderes del sector porcino' },
+      { name: 'Swine Profile',      url: 'Swine Profile.dc.html',  available: true,  desc: 'Perfiles de la porcicultura de los países de Latinoamérica' },
+      { name: 'Swine Opinion Poll', url: 'Swine Opinion Poll.dc.html', available: false, desc: 'Encuestas de opinión y prospectiva' },
+    ]
+  };
+
+  // PDF viewer state
+  _pdfDoc    = null;
+  _spread    = 0;
+  _numSpreads = 0;
+  _natW      = 595;
+  _natH      = 842;
+
+  getBase    = () => document.baseURI.replace(/[^\/]*(\?.*)?$/, '');
+  getPdfUrl  = (path) => {
+    const id = 'pdf' + path.replace('pdfs/edicion_', '').replace('.pdf', '');
+    return (window.__resources && window.__resources[id]) || (this.getBase() + path);
+  };
+
+  /* ── SECTIONS ── */
+  renderSections = () => {
+    const c = document.getElementById('sections-list');
+    if (!c) return;
+    c.innerHTML = '';
+    this.state.sections.forEach(s => {
+      const el = document.createElement('div');
+      el.className = 'section-item ' + (s.available ? 'available' : 'soon');
+      el.innerHTML = `<div class="si-name">${s.name}</div>
+        <div class="si-desc">${s.desc}</div>
+        ${s.available
+          ? `<a class="si-btn" href="${window.PEAuth.appendToken(this.getBase() + s.url)}">Ir a sección →</a>`
+          : `<span class="si-badge">Próximamente</span>`}`;
+      c.appendChild(el);
+    });
+  };
+
+  /* ── THUMBNAIL ── */
+  loadThumb = async (canvasId, pdfUrl, containerW) => {
+    try {
+      if (typeof pdfjsLib === 'undefined') return;
+      const pdf  = await pdfjsLib.getDocument(pdfUrl).promise;
+      const page = await pdf.getPage(1);
+      const nv   = page.getViewport({ scale: 1 });
+      const sc   = containerW / nv.width;
+      const vp   = page.getViewport({ scale: sc });
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      canvas.width = vp.width; canvas.height = vp.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+      canvas.style.opacity = '1';
+      const ph = document.getElementById('ph-' + canvasId);
+      if (ph) ph.style.display = 'none';
+    } catch (e) { /* placeholder stays */ }
+  };
+
+  /* ── EDITIONS ── */
+  renderFeatured = () => {
+    const c = document.getElementById('editions-featured');
+    if (!c) return;
+    const ed = this.state.editions[0];
+    const url = this.getPdfUrl(ed.pdfPath);
+    const cid = 'thumb-f' + ed.num;
+    c.innerHTML = `
+      <div class="edition-featured">
+        <span class="featured-badge">Última edición</span>
+        <div class="featured-thumb">
+          <div class="ph shimmer" id="ph-${cid}"></div>
+          <canvas id="${cid}" style="opacity:0;"></canvas>
+        </div>
+        <div class="featured-info">
+          <div class="featured-num">Edición ${ed.num}</div>
+          <div class="featured-date">${ed.date}</div>
+        </div>
+        <div class="featured-actions">
+          <button class="btn-view-white" id="btn-feat-view">Ver PDF</button>
+          <button class="btn-download-white" id="btn-feat-dl">↓ Descargar</button>
+        </div>
+      </div>`;
+    // Use direct addEventListener — more reliable than onclick delegation
+    setTimeout(() => {
+      const vBtn = document.getElementById('btn-feat-view');
+      const dBtn = document.getElementById('btn-feat-dl');
+      if (vBtn) vBtn.addEventListener('click', () =>
+        this.openPdfModal(url, 'Edición ' + ed.num + ' · ' + ed.date));
+      if (dBtn) dBtn.addEventListener('click', () => {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Pork_Economics_Edicion_' + String(ed.num).padStart(2,'0') + '.pdf';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      });
+    }, 0);
+    this.loadThumb(cid, url, 100);
+  };
+
+  renderEditions = () => {
+    const c = document.getElementById('editions-list');
+    if (!c) return;
+    c.innerHTML = '';
+    const lbl = document.createElement('div');
+    lbl.className = 'archive-label';
+    lbl.textContent = 'Ediciones anteriores';
+    c.appendChild(lbl);
+    this.state.editions.slice(1).forEach(ed => {
+      const url = this.getPdfUrl(ed.pdfPath);
+      const cid = 'thumb-' + ed.num;
+      const row = document.createElement('div');
+      row.className = 'edition-row';
+      row.innerHTML = `
+        <div class="edition-thumb-wrap">
+          <div class="ph shimmer" id="ph-${cid}"></div>
+          <canvas id="${cid}" style="opacity:0;"></canvas>
+        </div>
+        <div class="edition-info">
+          <div class="edition-name">Edición ${ed.num}</div>
+          <div class="edition-date">${ed.date}</div>
+        </div>
+        <div class="edition-actions">
+          <button class="btn-view" id="btn-v-${ed.num}">Ver PDF</button>
+          <a class="btn-download" href="${url}" download="Pork_Economics_Edicion_${String(ed.num).padStart(2,'0')}.pdf">↓ Descargar</a>
+        </div>`;
+      document.createElement('div'); // flush
+      row.querySelector('#btn-v-' + ed.num).onclick = () =>
+        this.openPdfModal(url, 'Edición ' + ed.num + ' · ' + ed.date);
+      c.appendChild(row);
+      this.loadThumb(cid, url, 54);
+    });
+  };
+
+  /* ── PDF VIEWER (magazine 2-page spread) ── */
+  spreadPages = (spread) => {
+    if (!this._pdfDoc) return [null, null];
+    const n = this._pdfDoc.numPages;
+    const L = spread * 2 + 1;
+    const R = L + 1;
+    return [L <= n ? L : null, R <= n ? R : null];
+  };
+
+  calcSpreads = (n) => Math.ceil(n / 2);
+
+  pageScale = () => {
+    const wrap = document.getElementById('book-wrap');
+    if (!wrap) return 1;
+    const aw = wrap.clientWidth  - 60;
+    const ah = wrap.clientHeight - 30;
+    return Math.min(aw / (this._natW * 2 + 10), ah / this._natH, 2.2);
+  };
+
+  drawPage = async (canvasId, pageNum, scale) => {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const w = Math.round(this._natW * scale);
+    const h = Math.round(this._natH * scale);
+    canvas.width = w; canvas.height = h;
+    canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fafafa'; ctx.fillRect(0, 0, w, h);
+    if (!pageNum || !this._pdfDoc) return;
+    try {
+      const page = await this._pdfDoc.getPage(pageNum);
+      const vp   = page.getViewport({ scale });
+      await page.render({ canvasContext: ctx, viewport: vp }).promise;
+    } catch (e) { /* blank page */ }
+  };
+
+  renderSpread = async (spread, dir) => {
+    if (!this._pdfDoc) return;
+    this._spread = spread;
+    const [L, R] = this.spreadPages(spread);
+    const sc = this.pageScale();
+    const book = document.getElementById('pdf-book');
+
+    // Animate out
+    if (dir && book) {
+      book.style.transition = 'transform .22s ease, opacity .22s ease';
+      book.style.transform  = dir === 'next' ? 'translateX(-60px)' : 'translateX(60px)';
+      book.style.opacity    = '0';
+      await new Promise(r => setTimeout(r, 220));
+    }
+
+    await Promise.all([this.drawPage('canvas-L', L, sc), this.drawPage('canvas-R', R, sc)]);
+
+    // Update info
+    const pages = [L, R].filter(Boolean);
+    const info  = document.getElementById('pdf-page-info');
+    if (info) info.textContent = pages.length
+      ? 'Págs. ' + pages.join('–') + ' / ' + this._pdfDoc.numPages
+      : '';
+    document.getElementById('pdf-prev').disabled = spread <= 0;
+    document.getElementById('pdf-next').disabled = spread >= this._numSpreads - 1;
+
+    // Animate in
+    if (dir && book) {
+      book.style.transition = 'none';
+      book.style.transform  = dir === 'next' ? 'translateX(60px)' : 'translateX(-60px)';
+      book.style.opacity    = '0';
+      book.offsetHeight;
+      book.style.transition = 'transform .28s ease, opacity .28s ease';
+      book.style.transform  = 'translateX(0)';
+      book.style.opacity    = '1';
+    } else if (book) {
+      book.style.transition = 'none';
+      book.style.transform  = 'translateX(0)';
+      book.style.opacity    = '1';
+    }
+  };
+
+  openPdfModal = async (url, label) => {
+    const modal = document.getElementById('pdf-modal');
+    if (!modal) return;
+    document.getElementById('pdf-modal-title').textContent = 'Pork Economics — ' + (label || '');
+    document.getElementById('pdf-page-info').textContent = 'Cargando...';
+    document.getElementById('pdf-prev').disabled = true;
+    document.getElementById('pdf-next').disabled = true;
+    const book = document.getElementById('pdf-book');
+    if (book) { book.style.opacity = '0.3'; book.style.transition = 'none'; }
+    modal.style.display = 'flex';
+    try {
+      this._pdfDoc     = await pdfjsLib.getDocument(url).promise;
+      const p1         = await this._pdfDoc.getPage(1);
+      const nv         = p1.getViewport({ scale: 1 });
+      this._natW       = nv.width;
+      this._natH       = nv.height;
+      this._numSpreads = this.calcSpreads(this._pdfDoc.numPages);
+      await this.renderSpread(0, null);
+      if (book) { book.style.transition = 'opacity .3s'; book.style.opacity = '1'; }
+    } catch (e) {
+      const info = document.getElementById('pdf-page-info');
+      if (info) info.textContent = 'Error: ' + (e && e.message ? e.message : 'No se pudo cargar');
+      const wrap = document.getElementById('book-wrap');
+      if (wrap) wrap.innerHTML = '<div style="color:rgba(255,200,150,.9);font-size:14px;font-family:Montserrat,sans-serif;text-align:center;padding:40px;">No se pudo cargar el PDF.<br><br>Usa el botón <strong>Descargar</strong>.</div>';
+      if (book) book.style.opacity = '1';
+      console.error('PDF load error:', e);
+    }
+  };
+
+  closePdfModal = () => {
+    const modal = document.getElementById('pdf-modal');
+    if (modal) modal.style.display = 'none';
+    this._pdfDoc = null;
+  };
+
+  /* ── PAGE FLIP ANIMATION ── */
+  renderPageToCanvas = async (pageNum, scale) => {
+    const c = document.createElement('canvas');
+    const w = Math.round(this._natW * scale);
+    const h = Math.round(this._natH * scale);
+    c.width = w; c.height = h;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#fafafa'; ctx.fillRect(0, 0, w, h);
+    if (pageNum && this._pdfDoc) {
+      try {
+        const page = await this._pdfDoc.getPage(pageNum);
+        await page.render({ canvasContext: ctx, viewport: page.getViewport({ scale }) }).promise;
+      } catch(e) {}
+    }
+    return c;
+  };
+
+  flipToSpread = async (newSpread, dir) => {
+    if (!this._pdfDoc) return;
+    const sc = this.pageScale();
+    const [newL, newR] = this.spreadPages(newSpread);
+    const w = Math.round(this._natW * sc);
+    const h = Math.round(this._natH * sc);
+    const book = document.getElementById('pdf-book');
+
+    // Capture turning page
+    const turnCanvas = document.getElementById(dir === 'next' ? 'canvas-R' : 'canvas-L');
+    const frontUrl   = turnCanvas.toDataURL();
+
+    // Render back page (revealed after flip)
+    const backC   = await this.renderPageToCanvas(dir === 'next' ? newL : newR, sc);
+    const backUrl = backC.toDataURL();
+
+    // Render full new spread on main canvases (hidden beneath overlay)
+    await Promise.all([this.drawPage('canvas-L', newL, sc), this.drawPage('canvas-R', newR, sc)]);
+
+    // Position overlay over the turning page
+    const bookRect = book.getBoundingClientRect();
+    const sideRect = document.getElementById(dir === 'next' ? 'page-R' : 'page-L').getBoundingClientRect();
+    const oLeft    = sideRect.left - bookRect.left;
+
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `position:absolute;top:0;left:${oLeft}px;width:${w}px;height:${h}px;perspective:${w * 4}px;z-index:20;pointer-events:none;`;
+
+    const flipEl = document.createElement('div');
+    flipEl.style.cssText = [
+      'width:100%','height:100%',
+      'transform-style:preserve-3d',
+      `transform-origin:${dir === 'next' ? 'left' : 'right'} center`,
+      'transition:transform 0.7s cubic-bezier(0.45,0,0.55,1)',
+    ].join(';');
+
+    const mkFace = (url, faceRot) => {
+      const d = document.createElement('div');
+      d.style.cssText = `position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;${faceRot ? 'transform:' + faceRot + ';' : ''}overflow:hidden;`;
+      const img = document.createElement('img');
+      img.style.cssText = `width:${w}px;height:${h}px;display:block;`;
+      img.src = url;
+      d.appendChild(img);
+      return d;
+    };
+
+    // Front: current page (no extra transform)
+    // Back:  new page (pre-rotated so it faces away, revealed when parent reaches -180°)
+    const backRot = dir === 'next' ? 'rotateY(180deg)' : 'rotateY(-180deg)';
+    flipEl.appendChild(mkFace(frontUrl, null));
+    flipEl.appendChild(mkFace(backUrl, backRot));
+    overlay.appendChild(flipEl);
+    book.appendChild(overlay);
+
+    // Trigger the flip
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      flipEl.style.transform = dir === 'next' ? 'rotateY(-180deg)' : 'rotateY(180deg)';
+    }));
+
+    setTimeout(() => overlay.remove(), 800);
+
+    // Update state & nav
+    this._spread = newSpread;
+    const pages = [newL, newR].filter(Boolean);
+    const info  = document.getElementById('pdf-page-info');
+    if (info) info.textContent = pages.length ? 'Págs. ' + pages.join('–') + ' / ' + this._pdfDoc.numPages : '';
+    document.getElementById('pdf-prev').disabled = newSpread <= 0;
+    document.getElementById('pdf-next').disabled = newSpread >= this._numSpreads - 1;
+  };
+
+  /* ── LIFECYCLE ── */
+  componentDidMount() {
+    if (!window.PEAuth || !window.PEAuth.check()) return;
+
+    if (typeof pdfjsLib !== 'undefined')
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    const logo = document.getElementById('logo-img');
+    if (logo) logo.src = (window.__resources && window.__resources.logo) || (this.getBase() + 'logo333.png');
+
+    this.renderSections();
+    this.renderFeatured();
+    this.renderEditions();
+
+    // Modal controls
+    document.getElementById('pdf-modal-close').onclick = this.closePdfModal;
+    document.getElementById('pdf-modal').onclick = (e) => {
+      if (e.target.id === 'pdf-modal') this.closePdfModal();
+    };
+    document.getElementById('pdf-prev').onclick = () => {
+      if (this._pdfDoc && this._spread > 0)
+        this.flipToSpread(this._spread - 1, 'prev');
+    };
+    document.getElementById('pdf-next').onclick = () => {
+      if (this._pdfDoc && this._spread < this._numSpreads - 1)
+        this.flipToSpread(this._spread + 1, 'next');
+    };
+  }
+
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

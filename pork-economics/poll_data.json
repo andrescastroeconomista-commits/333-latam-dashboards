@@ -1,0 +1,368 @@
+{
+  "Q2-24": {
+    "n": 22,
+    "geopolitica": {
+      "Leve": 9,
+      "Alto": 9,
+      "Moderado": 4
+    },
+    "materiasPrimas": {
+      "El precio del alimento ha aumentado en mi país": 6,
+      "Sí, los precios del alimento han caído significativamente": 14,
+      "No, el precio del alimento se ha mantenido igual": 2
+    },
+    "margenes": {
+      "No obtuvimos ganancias": 2,
+      "Excelentes": 5,
+      "Buenos": 6,
+      "Aceptables": 6,
+      "Registramos pérdidas": 3
+    },
+    "importaciones": {
+      "Moderado": 10,
+      "Alto": 11,
+      "Bajo": 1
+    },
+    "paises": {
+      "CHILE": 1,
+      "ESPAÑA": 2,
+      "ARGENTINA": 3,
+      "COLOMBIA": 8,
+      "PERÚ": 4,
+      "MÉXICO": 2,
+      "COSTA RICA": 1,
+      "ECUADOR": 1
+    },
+    "prospPrecios": {
+      "Bajista": 6,
+      "Estable": 9,
+      "Alcista": 3,
+      "Esperamos volatilidad": 4
+    },
+    "prospProduccion": {
+      "Decrecerá": 3,
+      "Se mantendrá estable, ni crecerá ni decrecerá": 6,
+      "Crecerá pero a una tasa inferior a la de 2023": 7,
+      "Crecerá más que en 2023": 6
+    },
+    "prospImportRecord": {
+      "Seguirán aumentando": 13,
+      "Se mantendrán en los mismos niveles de 2023": 9
+    },
+    "prospMatPrimas": {
+      "Seguramente": 14,
+      "Probablemente, sin embargo, el enfoque de las exportaciones debería ser hacia otros mercados potenciales": 6,
+      "Quizá, pero en volúmenes muy inferiores a los de años anteriores": 2
+    }
+  },
+  "Q3-24": {
+    "n": 23,
+    "geopolitica": {
+      "No": 7,
+      "Sí": 16
+    },
+    "materiasPrimas": {
+      "Los precios de las materias primas y del alimento continúan descendiendo": 18,
+      "Los precios de las materias primas bajan, pero los del alimento continúan igual": 4,
+      "Los precios de las materias primas y del alimento han aumentado": 1
+    },
+    "margenes": {
+      "Buenos": 4,
+      "No obtuvimos ganancias": 2,
+      "Excelentes": 7,
+      "Aceptables": 10
+    },
+    "importaciones": {
+      "Sí, hay un incremento importante": 19,
+      "No, están en los mismos niveles del año pasado": 2,
+      "Las importaciones han descendido": 2
+    },
+    "paises": {
+      "CHILE": 2,
+      "MÉXICO": 4,
+      "ESPAÑA": 1,
+      "VENEZUELA": 1,
+      "COLOMBIA": 7,
+      "ECUADOR": 2,
+      "ARGENTINA": 3,
+      "PERÚ": 2,
+      "COSTA RICA": 1
+    },
+    "prospPrecios": {
+      "No, empezarán a recuperarse desde antes de que termine el semestre": 8,
+      "Sí, continuarán con su típico comportamiento estacional": 8,
+      "Los precios se han mantenido estables": 6,
+      "Los precios han aumentado en estos primeros meses": 1
+    },
+    "prospProduccion": {
+      "Será muy similar al consolidado en el primer semestre de 2023": 8,
+      "Crecerá respecto al primer semestre de 2023": 13,
+      "Disminuirá respecto al primer semestre de 2023": 2
+    },
+    "prospImportRecord": {
+      "Sí, nuevamente las importaciones marcarán un récord": 14,
+      "No, se mantendrán en los mismos niveles de 2023": 9
+    },
+    "prospMatPrimas": {
+      "Los precios continuarán a la baja por la mayor oferta que traería la nueva campaña": 5,
+      "Los precios se mantendrán estables": 12,
+      "Se espera gran volatilidad de los precios derivada de posibles eventos climáticos adversos y variaciones de la oferta": 6
+    }
+  },
+  "Q4-24": {
+    "n": 24,
+    "geopolitica": {
+      "No": 10,
+      "Sí": 14
+    },
+    "materiasPrimas": {
+      "Los precios de las materias primas y el alimento continúan descendiendo": 16,
+      "Los precios de las materias primas bajan, pero los del alimento continúan igual": 6,
+      "Los precios de las materias primas y el alimento han aumentado": 2
+    },
+    "margenes": {
+      "Buenos": 12,
+      "Excelentes": 5,
+      "Aceptables": 7
+    },
+    "importaciones": {
+      "Sí, hay un incremento importante": 12,
+      "Las importaciones han descendido": 3,
+      "No, están en los mismos niveles del año pasado": 9
+    },
+    "paises": {
+      "COLOMBIA": 8,
+      "PERÚ": 3,
+      "ARGENTINA": 2,
+      "ECUADOR": 2,
+      "MÉXICO": 3,
+      "COSTA RICA": 2,
+      "CHILE": 1,
+      "BOLIVIA": 1,
+      "ESPAÑA": 1,
+      "VENEZUELA": 1
+    },
+    "prospPrecios": {
+      "Repuntarán constantemente hasta diciembre gracias al aumento de la demanda": 12,
+      "Se mantendrán estables hasta fin de año": 8,
+      "Caerán por un exceso de oferta": 2,
+      "Seguirán débiles hasta finales de septiembre y repuntarán  a partir de octubre": 2
+    },
+    "prospProduccion": {
+      "Crecerá": 16,
+      "Será muy similar": 7,
+      "Disminuirá": 1
+    },
+    "prospImportRecord": {
+      "No, se mantendrán en los mismos niveles de 2023": 11,
+      "Sí, nuevamente las importaciones marcarán un récord": 10,
+      "Las importaciones disminuirán respecto a 2023": 3
+    },
+    "prospMatPrimas": {
+      "Los precios continuarán a la baja por la mayor oferta que traería la nueva campaña": 5,
+      "Los precios se mantendrán estables": 13,
+      "Se espera gran volatilidad de los precios derivada de posibles eventos climáticos adversos y variaciones de la oferta": 3,
+      "Los precios aumentarán debido a la menor oferta que se espera para la nueva campaña": 3
+    }
+  },
+  "Q1-25": {
+    "n": 31,
+    "geopolitica": {
+      "No": 11,
+      "Sí": 20
+    },
+    "materiasPrimas": {
+      "Los precios de las materias primas y el alimento han aumentado": 13,
+      "Los precios de las materias primas y el alimento continúan descendiendo": 8,
+      "Los precios de las materias primas bajan, pero los del alimento continúan igual": 10
+    },
+    "margenes": {
+      "Excelentes": 12,
+      "Buenos": 13,
+      "Aceptables": 6
+    },
+    "importaciones": {
+      "Sí, hay un incremento importante": 19,
+      "No, están en los mismos niveles del año pasado": 10,
+      "Las importaciones han descendido": 2
+    },
+    "paises": {
+      "COLOMBIA": 13,
+      "PERÚ": 2,
+      "ARGENTINA": 3,
+      "ECUADOR": 3,
+      "CHILE": 1,
+      "MÉXICO": 5,
+      "BOLIVIA": 1,
+      "COSTA RICA": 1,
+      "PARAGUAY": 1,
+      "VENEZUELA": 1
+    },
+    "prospPrecios": {
+      "Disminuirán hasta finales de abril y empezarán a repuntar a partir de mayo": 9,
+      "Disminuirán constantemente hasta junio debido a la típica debilidad de la demanda": 6,
+      "Se mantendrán estables durante todo el semestre": 14,
+      "La tendencia será alcista en todo el semestre debido a una fuerte demanda": 2
+    },
+    "prospProduccion": {
+      "Crecerá": 22,
+      "Disminuirá": 1,
+      "Será muy similar": 8
+    },
+    "prospImportRecord": {
+      "Sí, nuevamente las importaciones marcarán un récord": 18,
+      "No, se mantendrán en los mismos niveles de 2024": 11,
+      "Las importaciones disminuirán respecto a 2024": 2
+    },
+    "prospMatPrimas": {
+      "Los precios se mantendrán estables": 17,
+      "Se espera gran volatilidad de los precios derivada de posibles eventos climáticos adversos, guerra arancelaria y/o variaciones de la oferta": 9,
+      "Los precios disminuirán debido a una mayor oferta de maíz y soya": 2,
+      "Los precios aumentarán debido a una menor oferta de maíz y soya": 3
+    },
+    "geopoliticaEfecto": {
+      "Habrá una mayor presión de producto estadounidense en el mercado latinoamericano dados los excedentes generados como consecuencia de posibles retaliaciones de sus socios comerciales": 15,
+      "Llegará producto de otros países como México y Canadá": 1,
+      "Disminución de las exportaciones a USA y redireccionamiento a mercados sustitutos": 3,
+      "No esperamos que los flujos actuales se vean afectados": 7,
+      "recordemos que en EEUU las granjas suben y bajan su producción sin mayor problema, haciendo que si la oferta sube van a reducir vientres y si falta ocupan vientre de engorda": 1,
+      "Reducción de las importaciones provenientes de USA como medida de retaliación y sustitución de proveedores": 4
+    }
+  },
+  "Q2y3-25": {
+    "n": 31,
+    "geopolitica": {
+      "No": 11,
+      "Sí": 20
+    },
+    "materiasPrimas": {
+      "Los precios de las materias primas y el alimento han aumentado": 13,
+      "Los precios de las materias primas y el alimento continúan descendiendo": 8,
+      "Los precios de las materias primas bajan, pero los del alimento continúan igual": 10
+    },
+    "margenes": {
+      "Excelentes": 12,
+      "Buenos": 13,
+      "Aceptables": 6
+    },
+    "importaciones": {
+      "Sí, hay un incremento importante": 19,
+      "No, están en los mismos niveles del año pasado": 10,
+      "Las importaciones han descendido": 2
+    },
+    "paises": {
+      "COLOMBIA": 13,
+      "PERÚ": 2,
+      "ARGENTINA": 3,
+      "ECUADOR": 3,
+      "CHILE": 1,
+      "MÉXICO": 5,
+      "BOLIVIA": 1,
+      "COSTA RICA": 1,
+      "PARAGUAY": 1,
+      "VENEZUELA": 1
+    },
+    "prospPrecios": {
+      "Disminuirán hasta finales de abril y empezarán a repuntar a partir de mayo": 9,
+      "Disminuirán constantemente hasta junio debido a la típica debilidad de la demanda": 6,
+      "Se mantendrán estables durante todo el semestre": 14,
+      "La tendencia será alcista en todo el semestre debido a una fuerte demanda": 2
+    },
+    "prospProduccion": {
+      "Crecerá": 22,
+      "Disminuirá": 1,
+      "Será muy similar": 8
+    },
+    "prospImportRecord": {
+      "Sí, nuevamente las importaciones marcarán un récord": 18,
+      "No, se mantendrán en los mismos niveles de 2024": 11,
+      "Las importaciones disminuirán respecto a 2024": 2
+    },
+    "prospMatPrimas": {
+      "Los precios se mantendrán estables": 17,
+      "Se espera gran volatilidad de los precios derivada de posibles eventos climáticos adversos, guerra arancelaria y/o variaciones de la oferta": 9,
+      "Los precios disminuirán debido a una mayor oferta de maíz y soya": 2,
+      "Los precios aumentarán debido a una menor oferta de maíz y soya": 3
+    },
+    "geopoliticaEfecto": {
+      "Habrá una mayor presión de producto estadounidense en el mercado latinoamericano dados los excedentes generados como consecuencia de posibles retaliaciones de sus socios comerciales": 15,
+      "Llegará producto de otros países como México y Canadá": 1,
+      "Disminución de las exportaciones a USA y redireccionamiento a mercados sustitutos": 3,
+      "No esperamos que los flujos actuales se vean afectados": 7,
+      "recordemos que en EEUU las granjas suben y bajan su producción sin mayor problema, haciendo que si la oferta sube van a reducir vientres y si falta ocupan vientre de engorda": 1,
+      "Reducción de las importaciones provenientes de USA como medida de retaliación y sustitución de proveedores": 4
+    }
+  },
+  "H1-26": {
+    "n": 18,
+    "geopolitica": {
+      "Sí": 17,
+      "No": 1
+    },
+    "materiasPrimas": {
+      "Las materias primas y el alimento balanceado aumentaron, presionando los costos": 3,
+      "Las materias primas aumentaron pero el alimento balanceado se mantuvo estable": 5,
+      "Ambos descendieron, aliviando los costos de producción": 5,
+      "Las materias primas bajaron pero el alimento balanceado se mantuvo igual": 5
+    },
+    "margenes": {
+      "Aceptables": 9,
+      "Buenos": 5,
+      "No obtuvimos ganancias": 4
+    },
+    "importaciones": {
+      "No, están en los mismos niveles del año anterior": 6,
+      "Sí, hay un incremento importante": 10,
+      "Las importaciones han descendido": 2
+    },
+    "paises": {
+      "CHILE": 2,
+      "MÉXICO": 3,
+      "ARGENTINA": 2,
+      "COLOMBIA": 4,
+      "PERÚ": 2,
+      "VENEZUELA": 1,
+      "BOLIVIA": 1,
+      "PANAMÁ": 1,
+      "COSTA RICA": 2
+    },
+    "prospPrecios": {
+      "Disminuirán durante todo el segundo semestre por exceso de oferta": 5,
+      "La tendencia será alcista en todo el semestre": 5,
+      "Se mantendrán estables durante todo el semestre": 2,
+      "Disminuirán hasta agosto y repuntarán a partir de septiembre": 6
+    },
+    "prospProduccion": {
+      "Será muy similar": 9,
+      "Crecerá": 7,
+      "Disminuirá": 2
+    },
+    "prospImportRecord": {
+      "Las importaciones disminuirán": 4,
+      "Sí, marcarán un nuevo récord": 9,
+      "No, se mantendrán en niveles similares a 2025": 5
+    },
+    "prospMatPrimas": {
+      "Se espera gran volatilidad en los precios": 3,
+      "Disminuirán debido a una mayor oferta de maíz y soya": 4,
+      "Se mantendrán estables": 9,
+      "Es inestable, no entra soya de bolivia": 1,
+      "Aumentarán debido a una menor oferta de maíz y soya": 1
+    },
+    "geopoliticaEfecto": {
+      "Encarecimiento de fletes y materias primas por disrupciones en cadenas de suministro": 5,
+      "Es muy difícil de anticipar en este momento": 10,
+      "Depreciación cambiaria que presiona los costos de producción": 1,
+      "Redirección de excedentes cárnicos hacia LATAM por retaliaciones comerciales": 2
+    },
+    "evolucionPrecios": {
+      "Un cambio estructural — refleja transformaciones de fondo en los costos, la demanda o la competencia internacional": 7,
+      "Un fenómeno coyuntural — impulsado por eventos externos temporales (geopolítica, tipo de cambio, shocks de oferta)": 6,
+      "Precio del vacuno": 1,
+      "en particular en chile a bajado dado que brasil se posiciono como oferente a todo tipo de comercio": 1,
+      "Un factor estacional — variación propia de la época del año sin mayor implicación estructural": 1,
+      "Un comportamiento cíclico — parte del patrón recurrente de expansión y contracción típico del sector": 1,
+      "Manipulación por parte de los industriales": 1
+    }
+  }
+}

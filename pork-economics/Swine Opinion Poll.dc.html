@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=League+Spartan:wght@700;900&display=swap" rel="stylesheet">
+  <script src="./auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root{--az:#1F6DB1;--az2:#4A90D9;--az3:#74ACDF;--or:#E87722;--rd:#BD3D28;--yw:#F5A623;--gr:#53565A;--bg:#f4f8fd;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--gr);min-height:100vh;padding:40px 24px 80px;}
+    .page{max-width:1100px;margin:0 auto;}
+    .back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--az);text-decoration:none;margin-bottom:24px;padding:6px 12px;background:white;border-radius:6px;box-shadow:0 1px 6px rgba(31,109,177,.1);transition:all .2s;}
+    .back-link:hover{background:var(--az);color:white;}
+    .header{text-align:center;margin-bottom:40px;}
+    .brand-row{display:flex;align-items:center;justify-content:center;gap:22px;margin-bottom:18px;}
+    .brand-logo{height:72px;display:block;}
+    .brand-divider{width:2px;height:56px;background:linear-gradient(to bottom,transparent,var(--az),transparent);}
+    .brand-pork{font-family:'Montserrat',sans-serif;font-size:48px;font-weight:700;color:var(--az);letter-spacing:-2px;line-height:1;}
+    .section-title{font-size:26px;font-weight:800;color:var(--gr);letter-spacing:-.5px;}
+    .section-subtitle{font-size:13px;color:var(--gr);opacity:.65;margin-top:5px;}
+    .header-accent{width:56px;height:3px;background:var(--or);border-radius:2px;margin:12px auto 0;}
+
+    /* KPI ROW */
+    .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:44px;}
+    @media(max-width:700px){.kpi-row{grid-template-columns:repeat(2,1fr);}}
+    .kpi-card{background:white;border-radius:14px;padding:20px 16px;box-shadow:0 2px 14px rgba(31,109,177,.08);text-align:center;position:relative;overflow:hidden;}
+    .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--az);}
+    .kpi-card.accent::before{background:var(--or);}
+    .kpi-val{font-size:36px;font-weight:800;color:var(--az);line-height:1;font-family:'League Spartan',sans-serif;}
+    .kpi-card.accent .kpi-val{color:var(--or);}
+    .kpi-label{font-size:11px;font-weight:600;color:var(--gr);opacity:.7;margin-top:6px;line-height:1.4;text-transform:uppercase;letter-spacing:.3px;}
+    .kpi-trend{font-size:10px;font-weight:700;margin-top:4px;padding:2px 7px;border-radius:10px;display:inline-block;}
+    .kpi-trend.up{background:#e8f5e9;color:#2e7d32;}
+    .kpi-trend.down{background:#fce8d5;color:#c62828;}
+    .kpi-trend.neutral{background:#e8eef7;color:var(--az);}
+
+    /* SECTION BANNERS */
+    .section-banner{display:flex;align-items:center;gap:16px;margin-bottom:24px;margin-top:8px;}
+    .section-banner-line{flex:1;height:1px;background:linear-gradient(to right,var(--az),transparent);}
+    .section-banner-text{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:white;background:var(--az);padding:6px 18px;border-radius:20px;}
+    .section-banner.prosp .section-banner-text{background:var(--or);}
+    .section-banner.prosp .section-banner-line{background:linear-gradient(to right,var(--or),transparent);}
+
+    /* CHART GRID */
+    .charts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-bottom:36px;}
+    @media(max-width:720px){.charts-grid{grid-template-columns:1fr;}}
+
+    /* CHART CARDS */
+    .chart-card{background:white;border-radius:16px;box-shadow:0 3px 18px rgba(31,109,177,.07);padding:22px 20px 18px;display:flex;flex-direction:column;gap:10px;}
+    .chart-card.full{grid-column:1/-1;}
+    .chart-title{font-size:13px;font-weight:700;color:var(--az);letter-spacing:-.2px;line-height:1.3;}
+    .chart-question{font-size:11px;color:var(--gr);opacity:.6;line-height:1.4;font-style:italic;}
+    .chart-canvas-wrap{position:relative;height:220px;}
+    .chart-canvas-wrap canvas{width:100%!important;}
+    .insight-box{background:#f0f6ff;border-left:3px solid var(--az);border-radius:0 8px 8px 0;padding:10px 14px;font-size:11.5px;color:var(--gr);line-height:1.7;}
+    .insight-box strong{color:var(--az);}
+    .insight-box.warn{background:#fff6ed;border-left-color:var(--or);}
+    .insight-box.warn strong{color:var(--or);}
+
+    /* EDITIONS ROW */
+    .editions-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+    .ed-pill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:12px;background:var(--bg);color:var(--az);border:1px solid var(--az3);}
+    .ed-pill.latest{background:var(--az);color:white;border-color:var(--az);}
+
+    /* DONUT CARD */
+    .donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+    .donut-canvas-wrap{width:180px;height:180px;flex-shrink:0;position:relative;}
+    .donut-legend{flex:1;min-width:160px;}
+    .donut-legend-item{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:11.5px;}
+    .donut-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
+
+    /* PARTICIPATION */
+    .participation-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:32px;}
+    .part-chip{background:white;border-radius:8px;padding:8px 14px;box-shadow:0 2px 8px rgba(31,109,177,.07);font-size:12px;font-weight:600;color:var(--az);display:flex;align-items:center;gap:6px;}
+    .part-n{background:var(--az);color:white;border-radius:4px;padding:1px 6px;font-size:10px;}
+
+    /* FOOTER */
+    .footer-note{background:white;border-radius:12px;padding:16px 22px;font-size:11px;color:var(--gr);opacity:.8;line-height:1.7;box-shadow:0 2px 8px rgba(31,109,177,.05);text-align:center;margin-top:32px;}
+  </style>
+</helmet>
+
+<div class="page">
+  <a class="back-link" id="back-btn" href="">← Volver al Boletín</a>
+
+  <div class="header">
+    <div class="brand-row">
+      <img class="brand-logo" id="logo-img" alt="333®">
+      <div class="brand-divider"></div>
+      <div class="brand-pork">Pork Economics</div>
+    </div>
+    <div class="section-title">Swine Opinion Poll</div>
+    <div class="section-subtitle">Tablero de tendencias · 5 ediciones · Q1-2024 — H1-2026</div>
+    <div class="header-accent"></div>
+  </div>
+
+  <!-- EDICIONES -->
+  <div class="editions-row" style="justify-content:center;margin-bottom:32px;">
+    <div class="ed-pill">Ed. 1 · Q1-24 · n=22</div>
+    <div class="ed-pill">Ed. 2 · Q2-24 · n=23</div>
+    <div class="ed-pill">Ed. 3 · Q3-24 · n=24</div>
+    <div class="ed-pill">Ed. 4 · Q1-25 · n=31</div>
+    <div class="ed-pill latest">Ed. 5 · H1-26 · n=18</div>
+  </div>
+
+  <!-- KPIs ÚLTIMA EDICIÓN -->
+  <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gr);opacity:.5;text-align:center;margin-bottom:12px;">Resultados destacados — H1-2026 (última edición)</div>
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-val">18</div>
+      <div class="kpi-label">líderes participaron de 9 países</div>
+      <div class="kpi-trend neutral">Ed. 5</div>
+    </div>
+    <div class="kpi-card accent">
+      <div class="kpi-val">94%</div>
+      <div class="kpi-label">afectados por entorno geopolítico</div>
+      <div class="kpi-trend down">Máx. histórico</div>
+    </div>
+    <div class="kpi-card accent">
+      <div class="kpi-val">72%</div>
+      <div class="kpi-label">márgenes aceptables o sin ganancias</div>
+      <div class="kpi-trend down">↑ desde Q3-24 (29%)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val">56%</div>
+      <div class="kpi-label">perciben incremento de importaciones</div>
+      <div class="kpi-trend neutral">Presión sostenida</div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN COYUNTURA -->
+  <div class="section-banner">
+    <div class="section-banner-line"></div>
+    <div class="section-banner-text">Coyuntura</div>
+    <div class="section-banner-line" style="background:linear-gradient(to left,var(--az),transparent);"></div>
+  </div>
+
+  <div class="charts-grid">
+    <!-- 1. GEOPOLÍTICA -->
+    <div class="chart-card">
+      <div class="chart-title">Impacto geopolítico global en el sector</div>
+      <div class="chart-question">¿Considera usted que el entorno geopolítico global afectó el desarrollo de la porcicultura latinoamericana?</div>
+      <div class="chart-canvas-wrap"><canvas id="ch-geo"></canvas></div>
+      <div class="insight-box warn">
+        El impacto percibido nunca fue tan alto: <strong>94% en H1-26</strong>, marcando el máximo histórico de la serie. En Q3-24 el escepticismo había alcanzado su pico (42% decía No), tendencia que se revirtió radicalmente.
+      </div>
+    </div>
+
+    <!-- 2. MATERIAS PRIMAS -->
+    <div class="chart-card">
+      <div class="chart-title">Tendencia de materias primas y alimento balanceado</div>
+      <div class="chart-question">¿Cómo ha percibido la tendencia de los precios de las materias primas y el alimento balanceado?</div>
+      <div class="chart-canvas-wrap"><canvas id="ch-mp"></canvas></div>
+      <div class="insight-box">
+        Tras el alivio de Q2-24 a Q3-24 (cuando el 78–67% vio descensos), la presión volvió en Q1-25 (42% reportó aumentos). En H1-26 domina la <strong>incertidumbre mixta</strong>: solo el 28% experimentó un descenso en ambos insumos.
+      </div>
+    </div>
+
+    <!-- 3. MÁRGENES -->
+    <div class="chart-card">
+      <div class="chart-title">Márgenes de utilidad del negocio</div>
+      <div class="chart-question">¿Cómo calificaría los márgenes de utilidad de su negocio en el período?</div>
+      <div class="chart-canvas-wrap"><canvas id="ch-mg"></canvas></div>
+      <div class="insight-box warn">
+        H1-26 registra el desempeño más débil de la serie: <strong>ningún líder reportó márgenes excelentes</strong> y el 22% reconoció no haber obtenido ganancias. El contraste con Q1-25 (39% Excelentes) es marcado.
+      </div>
+    </div>
+
+    <!-- 4. IMPORTACIONES -->
+    <div class="chart-card">
+      <div class="chart-title">Flujo de importaciones de carne de cerdo</div>
+      <div class="chart-question">¿Ha percibido un mayor flujo de importaciones provenientes de EE.UU., Brasil y/o Chile?</div>
+      <div class="chart-canvas-wrap"><canvas id="ch-imp"></canvas></div>
+      <div class="insight-box">
+        La presión importadora es estructural: el pico fue Q2-24 con <strong>83% reportando incremento importante</strong>. Aunque moderó, el 56% en H1-26 continúa percibiendo flujos relevantes, sin señales de alivio definitivo.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN PROSPECTIVA -->
+  <div class="section-banner prosp">
+    <div class="section-banner-line" style="background:linear-gradient(to right,var(--or),transparent);"></div>
+    <div class="section-banner-text">Prospectiva</div>
+    <div class="section-banner-line" style="background:linear-gradient(to left,var(--or),transparent);"></div>
+  </div>
+
+  <div class="charts-grid">
+    <!-- 5. PRECIOS AL PRODUCTOR -->
+    <div class="chart-card">
+      <div class="chart-title">Expectativa de precios al productor</div>
+      <div class="chart-question">Respecto a los precios pagados al productor en el siguiente período, usted considera que...</div>
+      <div class="chart-canvas-wrap"><canvas id="ch-pp"></canvas></div>
+      <div class="insight-box warn">
+        El optimismo sobre precios se erosionó en cada edición. En H1-26, el <strong>61% proyecta presión bajista</strong> (ya sea temporal o todo el semestre), frente al 50% que en Q3-24 anticipaba un repunte sostenido.
+      </div>
+    </div>
+
+    <!-- 6. PRODUCCIÓN -->
+    <div class="chart-card">
+      <div class="chart-title">Perspectiva de producción porcina</div>
+      <div class="chart-question">Comparado con el período anterior, la producción de carne de cerdo en su país en el siguiente período...</div>
+      <div class="chart-canvas-wrap"><canvas id="ch-prod"></canvas></div>
+      <div class="insight-box">
+        El optimismo productivo que alcanzó su techo en Q1-25 (<strong>71% esperaba crecimiento</strong>) se enfrió en H1-26: solo el 39% proyecta crecimiento y el 50% espera estabilidad, una señal de madurez y cautela sectorial.
+      </div>
+    </div>
+
+    <!-- 7. RÉCORD IMPORTACIONES -->
+    <div class="chart-card">
+      <div class="chart-title">¿Se alcanzará un nuevo récord de importaciones?</div>
+      <div class="chart-question">¿Considera usted que en este período se alcanzará un récord de importaciones de carne de cerdo?</div>
+      <div class="chart-canvas-wrap"><canvas id="ch-rec"></canvas></div>
+      <div class="insight-box">
+        El 50% en H1-26 prevé nuevo récord, consistente con la tendencia de la serie. Pero destaca el <strong>22% que proyecta descenso</strong>, el más alto registrado, reflejando mayor incertidumbre sobre el comportamiento importador.
+      </div>
+    </div>
+
+    <!-- 8. DONUT EVOLUCIÓN PRECIOS -->
+    <div class="chart-card">
+      <div class="chart-title">¿Por qué evolucionaron los precios? · H1-26</div>
+      <div class="chart-question">La evolución de los precios al productor durante el primer semestre de 2026 responde principalmente a...</div>
+      <div class="donut-wrap">
+        <div class="donut-canvas-wrap"><canvas id="ch-donut"></canvas></div>
+        <div class="donut-legend" id="donut-legend"></div>
+      </div>
+      <div class="insight-box warn">
+        El sector está dividido: el <strong>39% apunta a un cambio estructural</strong> (de fondo) frente al 33% que lo atribuye a factores coyunturales. Un debate crítico para las decisiones de inversión.
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Los resultados y análisis presentados son netamente informativos y reflejan la opinión de diferentes actores y líderes del mercado porcino, quienes colaboran con esta encuesta de manera anónima.<br>
+    <strong>Ediciones:</strong> Ed.1 Q1-2024 (n=22) · Ed.2 Q2-2024 (n=23) · Ed.3 Q3-2024 (n=24) · Ed.4 Q1-2025 (n=31) · Ed.5 H1-2026 (n=18)
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  getBase = () => document.baseURI.replace(/[^\/]*(\?.*)?$/, '');
+
+  // ── DATA ─────────────────────────────────────────────────────
+  EDITIONS = ['Q1-24','Q2-24','Q3-24','Q1-25','H1-26'];
+  N = [22,23,24,31,18];
+
+  COLORS = {
+    az:  '#1F6DB1',
+    az2: '#4A90D9',
+    az3: '#74ACDF',
+    or:  '#E87722',
+    rd:  '#BD3D28',
+    yw:  '#F5A623',
+    gr:  '#ADB5BD',
+  };
+
+  makeChart(id, type, labels, datasets, opts={}) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const ctx = el.getContext('2d');
+    const defaults = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position:'bottom', labels:{ font:{family:'Montserrat',size:10}, boxWidth:10, padding:8 } },
+        tooltip: { callbacks:{ label: c => ` ${c.dataset.label}: ${c.raw}%` } },
+      },
+      scales: type === 'bar' ? {
+        x: { stacked:true, grid:{display:false}, ticks:{font:{family:'Montserrat',size:10},color:'#53565A'} },
+        y: { stacked:true, max:100, display:false },
+      } : undefined,
+    };
+    new Chart(ctx, { type, data:{ labels, datasets }, options:{ ...defaults, ...opts } });
+  }
+
+  componentDidMount() {
+    if (!window.PEAuth || !window.PEAuth.check()) return;
+    const base = this.getBase();
+    const logo = document.getElementById('logo-img');
+    if (logo) logo.src = base + 'logo333.png';
+    const back = document.getElementById('back-btn');
+    if (back) back.href = window.PEAuth.appendToken(base + 'Inicio.dc.html');
+
+    const E = this.EDITIONS;
+    const C = this.COLORS;
+
+    // 1. GEOPOLÍTICA — % Sí (o Alto+Moderado)
+    this.makeChart('ch-geo','bar', E, [
+      { label:'Afectó al sector (Sí)', data:[59,70,58,65,94], backgroundColor:[C.az,C.az,C.az,C.az,'#BD3D28'] },
+      { label:'No afectó (No)', data:[41,30,42,35,6], backgroundColor:'#e8eef7' },
+    ]);
+
+    // 2. MATERIAS PRIMAS
+    this.makeChart('ch-mp','bar', E, [
+      { label:'Han subido (presión)', data:[27,4,8,42,17], backgroundColor:C.or },
+      { label:'Mixto / estable', data:[9,17,25,32,56], backgroundColor:C.az3 },
+      { label:'Han bajado (alivio)', data:[64,78,67,26,28], backgroundColor:C.az },
+    ]);
+
+    // 3. MÁRGENES
+    this.makeChart('ch-mg','bar', E, [
+      { label:'Excelentes', data:[23,30,21,39,0], backgroundColor:C.az },
+      { label:'Buenos', data:[27,17,50,42,28], backgroundColor:C.az3 },
+      { label:'Aceptables', data:[27,44,29,19,50], backgroundColor:C.yw },
+      { label:'Sin ganancias / pérdidas', data:[23,9,0,0,22], backgroundColor:C.or },
+    ]);
+
+    // 4. IMPORTACIONES (Q2-24 onwards, 4 editions)
+    this.makeChart('ch-imp','bar', ['Q2-24','Q3-24','Q1-25','H1-26'], [
+      { label:'Incremento importante', data:[83,50,61,56], backgroundColor:C.or },
+      { label:'Mismo nivel', data:[9,38,32,33], backgroundColor:C.az3 },
+      { label:'Han descendido', data:[9,13,6,11], backgroundColor:C.az },
+    ]);
+
+    // 5. PROSPECTIVA PRECIOS
+    this.makeChart('ch-pp','bar', E, [
+      { label:'Alcista / recuperación', data:[14,39,50,6,28], backgroundColor:C.az },
+      { label:'Estable', data:[59,26,33,45,11], backgroundColor:C.az3 },
+      { label:'Bajista', data:[27,35,17,49,61], backgroundColor:C.or },
+    ]);
+
+    // 6. PRODUCCIÓN
+    this.makeChart('ch-prod','bar', E, [
+      { label:'Crecerá', data:[59,57,67,71,39], backgroundColor:C.az },
+      { label:'Será muy similar', data:[27,35,29,26,50], backgroundColor:C.az3 },
+      { label:'Disminuirá', data:[14,9,4,3,11], backgroundColor:C.or },
+    ]);
+
+    // 7. RÉCORD IMPORTACIONES
+    this.makeChart('ch-rec','bar', E, [
+      { label:'Sí, nuevo récord', data:[59,61,42,58,50], backgroundColor:C.or },
+      { label:'Niveles similares', data:[41,39,46,35,28], backgroundColor:C.az3 },
+      { label:'Disminuirán', data:[0,0,13,6,22], backgroundColor:C.az },
+    ]);
+
+    // 8. DONUT — Evolución precios H1-26
+    const donutLabels = ['Cambio estructural','Fenómeno coyuntural','Otros','Factor estacional','Comportamiento cíclico'];
+    const donutData   = [39,33,17,6,6];
+    const donutColors = [C.az,C.az3,C.or,C.yw,C.gr];
+    this.makeChart('ch-donut','doughnut', donutLabels, [
+      { data: donutData, backgroundColor: donutColors, borderWidth:2, borderColor:'white' },
+    ], {
+      plugins: {
+        legend: { display:false },
+        tooltip: { callbacks:{ label: c => ` ${c.label}: ${c.raw}%` } },
+      },
+      cutout:'65%',
+    });
+
+    // Donut legend
+    const leg = document.getElementById('donut-legend');
+    if (leg) {
+      leg.innerHTML = donutLabels.map((l,i) =>
+        `<div class="donut-legend-item">
+          <div class="donut-dot" style="background:${donutColors[i]}"></div>
+          <span style="font-size:11px;color:#53565A"><strong style="color:${donutColors[i]}">${donutData[i]}%</strong> ${l}</span>
+        </div>`
+      ).join('');
+    }
+  }
+
+  renderVals() { return {}; }
+}
+
+</script>
+</body>
+</html>
