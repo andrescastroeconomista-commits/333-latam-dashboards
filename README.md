@@ -67,11 +67,14 @@ Luego repite la vinculación de "Base directory" descrita arriba para cada sitio
 ## URLs oficiales (GitHub Pages)
 
 - Hub: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/hub/
-- Brújula PIB FMI: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/brujula-pib-fmi/
 - Panorama Porcino LATAM: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/panorama-porcino-latam/
 - Indicadores Productivos LATAM: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/indicadores-productivos-latam/
+- Variables Fundamentales LATAM: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/variables-fundamentales/
+- Res, Cerdo y Pollo Mundial: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/res-cerdo-pollo/
+- Brújula PIB FMI: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/brujula-pib-fmi/
 - Costos de Producción LATAM: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/costos-produccion-latam/
 - Indicadores Colombia: https://andrescastroeconomista-commits.github.io/333-latam-dashboards/indicadores-colombia/
 
-> Nota: Res-Cerdo-Pollo Mundial, Variables Fundamentales y Pork Economics siguen en sus sitios de Netlify (siguen en línea, solo los despliegues nuevos están bloqueados por créditos). MSD Chile aún no está en este repo.
-
+> Nota: Pork Economics sigue temporalmente en Netlify (https://porkeconomics.netlify.app/) — falta subir al repo los PDFs de boletines y las fotos de líderes (los audios ya están). La carpeta `pork-economics/` de este repo aún está incompleta.
+>
+> MSD Chile no está enlazado en el hub por decisión editorial, pero el archivo vive en `00_Dashboards_ACTUAL/4_MSD_Chile.html` sin subir al repo todavía.
